@@ -673,7 +673,7 @@ function nicknameFor(uid, fallback){
 const GENSHIN_DEV_BASE = 'https://genshin.jmp.blue';
 
 // Version de l'outil : X.Y.Z — X = changement majeur, Y = nouvelle fonctionnalité, Z = itération/correctif.
-const APP_VERSION = '2.1.0';
+const APP_VERSION = '2.2.1';
 
 const ELEMENTS = {
   Fire:     { name:'Pyro',    color:'#ef5b4a', dmgId:'40' },
@@ -704,6 +704,23 @@ const CHAR_MAIN_STATS = [
 ];
 // Pour retrouver la clé STAT_TARGETS correspondant à chaque libellé de mini-stat.
 const STAT_LABEL_TO_KEY = { 'PV':'hp', 'ATQ':'atk', 'DEF':'def', 'Taux CRIT':'critRate', 'DGT CRIT':'critDmg', "Recharge d'Énergie":'er', 'Maîtrise Élém.':'em' };
+const STAT_KEY_TO_LABEL = { hp:'PV', atk:'ATQ', def:'DEF', critRate:'Taux CRIT', critDmg:'DGT CRIT', er:'Recharge', em:'Maîtrise' };
+// Formate les cibles de STAT_TARGETS en texte lisible — SOURCE UNIQUE utilisée à la fois
+// par la fiche Collection (mini-stats en rouge) et par la fiche Bibliothèque, pour qu'elles
+// ne puissent jamais afficher des chiffres différents pour un même personnage.
+function formatStatTargetsText(name){
+  const clean = stripConstellationRefinement(name||'').trim();
+  const t = STAT_TARGETS[clean] || STAT_TARGETS[Object.keys(STAT_TARGETS).find(k=>k.toLowerCase()===clean.toLowerCase())];
+  if (!t) return null;
+  const order = ['atk','hp','def','critRate','critDmg','er','em'];
+  const parts = order.filter(k=>t[k]).map(k=>{
+    const [min,max]=t[k];
+    const label = STAT_KEY_TO_LABEL[k] || k;
+    const unit = ['critRate','critDmg','er'].includes(k) ? '%' : '';
+    return min===max ? `${label} ${min}${unit}` : `${label} ${min}-${max}${unit}`;
+  });
+  return parts.join(', ') || null;
+}
 
 // Profil de scaling par personnage : la note d'optimisation ne se joue pas
 // sur le Taux/DGT CRIT pour tout le monde (ex : Citlali/Nefer scalent en
@@ -811,6 +828,7 @@ const STAT_TARGETS = {
   'Kachina': { critRate:[70,70], critDmg:[140,140], def:[1800,1800] },
   'Kinich': { atk:[2300,2300], critRate:[70,70], critDmg:[180,180] },
   'Ororon': { atk:[1800,1800], er:[150,150], critRate:[60,60], critDmg:[120,120] },
+  'Shikanoin Heizou': { atk:[1800,1800], em:[150,150], critRate:[70,70], critDmg:[150,150] }, // profil ATQ retenu (2 profils possibles selon la Gazette, l'autre étant ME 800/RE 140%)
   'Chasca': { atk:[2200,2200], em:[100,100], critRate:[75,75], critDmg:[160,160] },
   'Varesa': { atk:[2000,2000], er:[125,125], critRate:[80,80], critDmg:[180,180] },
   'Iansan': { critRate:[60,60], critDmg:[120,120] },
@@ -917,6 +935,12 @@ let currentUidRef = null; // UID actuellement chargé (pour le rafraîchissement
 // ---------- Helpers ----------
 function el(id){ return document.getElementById(id); }
 function iconUrl(name){ return name ? `https://enka.network/ui/${name}.png` : ''; }
+// Couleur de bordure pour une arme selon sa rareté (5★ doré, 4★ violet, ≤3★ bleu)
+function weaponRarityBorder(rarity){
+  if (rarity === 5) return '#e8c477';
+  if (rarity === 4) return '#b678ea';
+  return '#5b9bd5';
+}
 // Couleur de bordure des cartes perso selon leur rareté (5★ doré, 4★ violet),
 // remplacée par le doré de sélection quand la carte est choisie.
 function rarityBorder(rarity, selected){
@@ -1520,7 +1544,7 @@ function charBlockHtml(c){
 
         ${c.weapon ? `
         <div class="subhead">Arme</div>
-        <div class="weapon-card">
+        <div class="weapon-card" style="border-color:${weaponRarityBorder(c.weapon.rarity)};">
           <img src="${iconUrl(c.weapon.icon)}" alt="" onerror="this.style.opacity=0.3">
           <div>
             <div class="w-name">${c.weapon.name} <span style="color:var(--gold-soft)">R${c.weapon.refinement}</span></div>
@@ -2425,13 +2449,15 @@ function renderLibraryDetail(name){
       <div>${escapeHtml(guide.desc || '—')}</div>
       <div class="subhead">L'essentiel pour le jouer</div>
       <div>${escapeHtml(guide.essentials || '—')}</div>
+      <div class="subhead">Stats cibles</div>
+      <div>${escapeHtml(formatStatTargetsText(name) || guide.stats || '—')}</div>
       <div class="subhead">Armes recommandées</div>
       <div class="artifacts">
-        ${(guide.weapons||[]).map(w => `<div class="art-card"><div class="a-set">${escapeHtml(w.name)} ${'★'.repeat(w.rarity)}</div><div style="font-size:.72rem; color:var(--text-dim); margin-top:4px;">${escapeHtml(w.note||'')}</div></div>`).join('') || '<div class="helpbox">—</div>'}
+        ${(guide.weapons||[]).map(w => `<div class="art-card" style="border-color:${weaponRarityBorder(w.rarity)}; border-width:2px;"><div class="a-set">${escapeHtml(w.name)} ${'★'.repeat(w.rarity)}</div><div style="font-size:.72rem; color:var(--text-dim); margin-top:4px;">${escapeHtml(w.note||'')}</div></div>`).join('') || '<div class="helpbox">—</div>'}
       </div>
       <div class="subhead">Artéfacts recommandés</div>
       <div class="artifacts">
-        ${(guide.artifacts||[]).map(a => `<div class="art-card"><div class="a-set">${escapeHtml(a.set)}</div><div style="font-size:.72rem; color:var(--text-dim); margin-top:4px;">${escapeHtml(a.note||'')}</div>${a.target?`<div class="a-main" style="margin-top:4px;">Cible : ${escapeHtml(a.target)}</div>`:''}</div>`).join('') || '<div class="helpbox">—</div>'}
+        ${(guide.artifacts||[]).map(a => `<div class="art-card"><div class="a-set">${escapeHtml(a.set)}</div><div style="font-size:.72rem; color:var(--text-dim); margin-top:4px;">${escapeHtml(a.note||'')}</div></div>`).join('') || '<div class="helpbox">—</div>'}
       </div>
       ${guide.advantages ? `<div class="subhead">Avantages</div><div>${escapeHtml(guide.advantages)}</div>` : ''}
       ${guide.disadvantages ? `<div class="subhead">Inconvénients</div><div>${escapeHtml(guide.disadvantages)}</div>` : ''}
@@ -2708,44 +2734,7 @@ function knownCharacterNames(){
   return dpsNameListCache;
 }
 
-const DEFAULT_DPS_ROWS = [
-  ['SDEM_B','Clément',['Skirk (C6R1)','Dahlia (C6)','Escoffier (R1)','Mona (C4)'],'BURST / Freeze',[330,250,270,251,278,123,220],491579],
-  ['SEMC_B','Clément',['Skirk (C6R1)','Escoffier (R1)','Mona (C4)','Citlali'],'BURST / Freeze',[222,262,219,193,194,189,204],444487],
-  ['SDEM_D','Clément',['Skirk (C6R1)','Dahlia (C6)','Escoffier (R1)','Mona (C4)'],'DPS / Freeze',[189,206,185,195,167,177,153],194543],
-  ['SEMC_D','Clément',['Skirk (C6R1)','Escoffier (R1)','Mona (C4)','Citlali'],'DPS / Freeze',[169,156,175,154,163,156,128],197090],
-  ['AFCN_O','Clément',['Arlecchino (C3R1)','Fischl (C4)','Chevreuse (C6)','Nicole (R1)'],'Overload',[136,168,130,159,157,164,167],215206],
-  ['AENC_M','Clément',['Arlecchino (C3R1)','Escoffier (R1)','Nicole (R1)','Citlali'],'Melt',[120,121,144,139,117,139,151],342039],
-  ['AXNC_M','Clément',['Arlecchino (C3R1)','Xilonen','Nicole (R1)','Citlali'],'Melt',[122,107,137,96,137,136,145],495517],
-  ['AACN_O','Clément',['Arlecchino (C3R1)','Alyosha (C6)','Chevreuse (C6)','Nicole (R1)'],'Overload',[100,143,116,127,133,120,120],200293],
-  ['ASNC_PSF','Clément',['Arlecchino (C3R1)','Sucrose (C6) (LvI70)','Nicole (R1)','Citlali'],'Pyro-Swirl',[106,118,120,129,152,107,114],553463],
-  ['AAON_ACO','Clément',['Arlecchino (C3R1)','Alyosha (C6)','Odette (R1)','Nicole (R1)'],'AstroConduction/Overload',[92,141,114,115,126,114,141],489337],
-  ['AEOC_F','Clément',['Arlecchino (C3R1)','Escoffier (R1)','Odette (R1)','Citlali'],'Freeze',[100,107,98,108,111,91,83],249237],
-  ['AXSB_PS','Clément',['Arlecchino (C3R1)','Xilonen','Sucrose (C6) (Lvl60)','Bennett (C6)'],'Pyro-Swirl',[73,111,106,96,94,104,106],176950],
-  ['AFCD_O','Clément',['Arlecchino (C3R1)','Fischl (C4)','Chevreuse (C6)','Durin'],'Overload',[80,108,103,84,111,110,90],175154],
-  ['ASDN_MP','Clément',['Arlecchino (C3R1)','Sucrose (C6) (Lvl60)','Durin','Nicole (R1)'],'Mono Pyro',[79,87,82,80,97,121,98],187982],
-  ['VANO_AC','Clément',['Voyageur Cryo (C2R3)','Alyosha (C6)','Odette (R1)','Nicole (R1)'],'AstroConduction',[64,107,91,84,100,85,107],503017],
-  ['VEAO_AC','Clément',['Voyageur Cryo (C2R3)','Escoffier (R1)','Alyosha (C6)','Odette (R1)'],'AstroConduction',[73,95,94,99,80,91,102],486581],
-  ['AXBC_M','Clément',['Arlecchino (C3R1)','Xilonen','Bennett (C6)','Citlali'],'Melt',[91,106,97,67,80,85,94],266312],
-  ['AESC_FS','Clément',['Arlecchino (C3R1)','Escoffier (R1)','Sucrose (C6) (Lvl60)','Citlali'],'Freeze/Swirl',[81,89,90,69,76,70,83],222239],
-  ['VAOX_AC','Clément',['Voyageur Cryo (C2R3)','Alyosha (C6)','Odette (R1)','Xilonen'],'AstroConduction',[61,84,55,74,78,89,89],387441],
-  ['ADMC_VF','Clément',['Arlecchino (C3R1)','Dahlia (C6)','Mona (C4)','Citlali'],'Vape/Freeze',[80,60,79,73,62,89,74],274057],
-  ['NCLN_D','Jade',['Nefer (R1)','Columbina (R1)','Lauma','Nilou'],'Seleno-Dendro',[75,58,88,65,74,63,80],76644],
-  ['NCLF_D','Jade',['Nefer (R1)','Columbina (R1)','Lauma','Furina'],'Seleno-Dendro',[69,59,77,73,70,77,58],76644],
-  ['VFOA_AC','Clément',['Voyageur Cryo (C2R3)','Fischl (C4)','Odette (R1)','Alyosha (C6)'],'AstroConduction',[54,72,69,80,62,70,69],303797],
-  ['NDMX_V','Clément',['Clorinde (R1)','Durin','Fischl (C4)','Nicole (R1)'],'Overload',[61,57,70,42,72,50,76],70649],
-  ['VASO_AC','Clément',['Voyageur Cryo (C2R3)','Alyosha (C6)','Sucrose (C6) (Lvl60)','Odette (R1)'],'Astro-SwirlConduc',[47,69,75,60,55,47,51],354636],
-  ['CCDN_O','Clément',['Clorinde (R1)','Durin','Chevreuse (C6)','Nicole (R1)'],'Overload',[59,54,65,38,72,40,57],64716],
-  ['COAV_AC','Clément',['Clorinde (R1)','Odette (R1)','Alyosha (C6)','Voyageur Cryo (C2R3)'],'AstroConduction',[27,42,33,43,49,58,66],321668],
-  ['NEMC_F','Clément',['Neuvillette (C1)','Escoffier (R1)','Mona (C4)','Citlali'],'Freeze',[50,46,35,47,47,44,37],51083],
-  ['NAMO_AC','Clément',['Neuvillette (C1)','Alyosha (C6)','Mona (C4)','Odette (R1)'],'AstroConduction',[33,36,38,42,38,37,37],298006],
-  ['CCFD_O','Clément',['Clorinde (R1)','Chevreuse (C6)','Fischl (C4)','Durin'],'Overload',[36,36,34,38,40,38,37],19792],
-  ['CCFN_O','Clément',['Clorinde (R1)','Chevreuse (C6)','Fischl (C4)','Nicole (R1)'],'Overload',[33,40,37,30,37,42,37],50658],
-  ['MOAV_AS','Clément',['Mizuki (C2) (Lvl20)','Odette (R1)','Alyosha (C6)','Voyageur Cryo (C2R3)'],'Astro-SwirlConduc',[14,33,39,39,38,55,34],303797],
-  ['MOSV_AS','Clément',['Mizuki (C2) (Lvl20)','Odette (R1)','Sucrose (C6) (Lvl60)','Voyageur Cryo (C2R3)'],'Astro-Swirl',[30,34,37,26,36,37,35],183412],
-  ['NFMX_EC','Clément',['Neuvillette (C1)','Fischl (C4)','Mona (C4)','Xilonen'],'Electro-Charged',[38,39,33,39,30,31,21],36366],
-  ['NDMX_V','Clément',['Neuvillette (C1)','Durin','Mona (C4)','Xilonen'],'Vape',[30,30,39,19,30,25,37],65753],
-  ['NCLF_D','Jade',['Hu Tao (C2)','Furina','Mona (C4)','Nicole'],'Seleno-Dendro',[69,59,77,73,70,77,58],76644],
-];
+const DEFAULT_DPS_ROWS = []; // pas de données de démo par défaut (tableau vide à l'ouverture)
 function seedDefaultDpsRows(){
   const existing=getDpsRows();
   if(existing.length) return;
