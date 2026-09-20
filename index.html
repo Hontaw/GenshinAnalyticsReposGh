@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f1420">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GenshinAnalytics">
 <title>GenshinAnalytics</title>
 <style>
   :root{
@@ -208,7 +211,7 @@
   .btn-icon{ padding: 11px 14px; display:inline-flex; align-items:center; gap:6px; }
   .btn-icon.spinning svg{ animation: spin .8s linear infinite; }
   #app-version{
-    position: fixed; bottom: 10px; right: 14px;
+    position: fixed; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); right: calc(14px + env(safe-area-inset-right, 0px));
     font-size: .72rem; font-weight: 700; color: #ffffff;
     opacity: .85; z-index: 50; pointer-events: none;
   }
@@ -267,7 +270,7 @@
 
   #view-dps{ width:calc(100vw - 32px); margin-left:calc(50% - 50vw + 16px); box-sizing:border-box; }
   .dps-wrap{ width:100%; border-radius:10px; border:1px solid var(--border); overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch; }
-  .dps-table{ min-width:900px; }
+  .dps-table{ min-width:1500px; }
   @media (max-width: 640px){
     .nav-buttons{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
     .nav-buttons button{ margin:0; width:100%; font-size:.78rem; padding:8px 6px; }
@@ -684,7 +687,7 @@ function nicknameFor(uid, fallback){
 const GENSHIN_DEV_BASE = 'https://genshin.jmp.blue';
 
 // Version de l'outil : X.Y.Z — X = changement majeur, Y = nouvelle fonctionnalité, Z = itération/correctif.
-const APP_VERSION = '2.3.1';
+const APP_VERSION = '2.3.3';
 
 const ELEMENTS = {
   Fire:     { name:'Pyro',    color:'#ef5b4a', dmgId:'40' },
