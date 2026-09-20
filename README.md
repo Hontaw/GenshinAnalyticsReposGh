@@ -1,0 +1,2 @@
+# GenshinAnalyticsReposGh
+Repos GitHub GenshinAnalytics
