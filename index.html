@@ -270,7 +270,7 @@
 
   #view-dps{ width:calc(100vw - 32px); margin-left:calc(50% - 50vw + 16px); box-sizing:border-box; }
   .dps-wrap{ width:100%; border-radius:10px; border:1px solid var(--border); overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch; }
-  .dps-table{ min-width:1500px; }
+  .dps-table{ min-width:1420px; }
   @media (max-width: 640px){
     .nav-buttons{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
     .nav-buttons button{ margin:0; width:100%; font-size:.78rem; padding:8px 6px; }
@@ -687,7 +687,7 @@ function nicknameFor(uid, fallback){
 const GENSHIN_DEV_BASE = 'https://genshin.jmp.blue';
 
 // Version de l'outil : X.Y.Z — X = changement majeur, Y = nouvelle fonctionnalité, Z = itération/correctif.
-const APP_VERSION = '2.3.3';
+const APP_VERSION = '2.3.4';
 
 const ELEMENTS = {
   Fire:     { name:'Pyro',    color:'#ef5b4a', dmgId:'40' },
@@ -2905,6 +2905,7 @@ function renderDpsView(){
 
   const DPS_COL_WIDTHS = {
     rank:'4ch', idTeam:'9ch', player:'9ch',
+    dps:'140px', subDps:'140px', subDpsSupport:'140px', support:'140px',
     spe:'15ch',
     r0:'6ch', r1:'6ch', r2:'6ch', r3:'6ch', r4:'6ch', r5:'6ch', r6:'6ch',
     moyenne:'9ch', pbr:'9ch', pbHit:'9ch',
