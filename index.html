@@ -32,7 +32,7 @@
   .th-filter-btn:hover{ opacity:1; color: var(--gold); background: rgba(255,255,255,.08); }
   th.has-filter .th-filter-btn{ opacity:1; color: var(--gold); }
   .dps-filter-panel{
-    position:absolute; top:100%; left:0; z-index:80; margin-top:2px; min-width:160px; max-width:240px;
+    min-width:160px; max-width:240px;
     background: var(--bg-panel); border:1px solid var(--border); border-radius:8px; padding:8px;
     box-shadow: 0 8px 24px rgba(0,0,0,.5); text-align:left; font-weight:400; text-transform:none;
   }
@@ -356,6 +356,7 @@
       <button class="btn-ghost" id="btn-open-team-header">🛡 Composition d'équipe</button>
       <button class="btn-ghost" id="btn-open-theorycraft">⚡ TheoryCraft</button>
       <button class="btn-ghost" id="btn-open-library">📖 Bibliothèque</button>
+      <button class="btn-ghost" id="btn-open-wishes">🔮 Invocations</button>
     </div>
   </header>
 
@@ -498,7 +499,7 @@
     </div>
     <input type="text" id="library-search" placeholder="Rechercher un personnage..." style="margin-bottom:16px;">
     <div class="grid" id="library-grid"></div>
-    <div class="helpbox">Double-clique un personnage pour voir sa fiche détaillée (build, stats cibles, essentiel).</div>
+    <div class="helpbox">Clique un personnage pour voir sa fiche détaillée (build, stats cibles, essentiel).</div>
   </section>
 
   <!-- VIEW DÉTAIL BIBLIOTHÈQUE -->
@@ -536,6 +537,41 @@
       <button class="btn-ghost" id="btn-import-all">⬆ Importer les données</button>
       <input type="file" id="import-all-input" accept=".json" style="display:none;">
     </div>
+  </section>
+
+  <!-- VIEW INVOCATIONS -->
+  <section id="view-wishes" class="panel hidden">
+    <div class="topbar">
+      <div class="player-tag">🔮 Invocations — historique des vœux</div>
+      <button class="btn-ghost" id="btn-back-from-wishes">← Retour</button>
+    </div>
+
+    <div class="subhead" style="margin-top:0;">1. Récupère l'URL depuis le jeu</div>
+    <div class="helpbox" style="margin-top:0;">
+      <ol style="margin:0; padding-left:20px; line-height:1.8;">
+        <li>Ouvre Genshin Impact, va dans le menu <b>Invocation</b> (en bas à gauche), clique sur <b>Historique</b> et attends que la page charge (quelques secondes).</li>
+        <li>Télécharge le script ci-dessous, puis clic droit sur le fichier téléchargé → <b>Exécuter avec PowerShell</b>.</li>
+        <li>Une fenêtre s'ouvre, cherche l'URL, puis affiche une confirmation et attend que tu appuies sur une touche avant de se fermer — l'URL est déjà copiée dans ton presse-papiers à ce moment-là.</li>
+        <li>Colle-la directement dans le champ plus bas.</li>
+        <li>La clé expire au bout de quelques heures : refais cette opération de temps en temps pour récupérer tes nouveaux tirages. <b>Rien n'est supprimé</b> — les imports se cumulent avec ce que tu as déjà.</li>
+      </ol>
+    </div>
+
+    <div class="subhead">Script</div>
+    <div class="row" style="margin-top:0;">
+      <button class="btn-primary" id="btn-download-wish-script">⬇ Télécharger le script (.ps1)</button>
+    </div>
+
+    <div class="subhead">2. Colle l'URL récupérée ici</div>
+    <div class="row" style="margin-top:0;">
+      <input type="text" id="wish-url-input" placeholder="https://... (ou juste authkey=...)" style="flex:1; min-width:220px;">
+      <button class="btn-primary" id="btn-import-wishes">⬇ Importer l'historique</button>
+    </div>
+    <div id="wish-import-status" style="font-size:.8rem; color:var(--text-dim); margin-top:8px;"></div>
+
+    <div class="subhead">Historique</div>
+    <div class="row" id="wish-banner-tabs" style="margin-top:0;"></div>
+    <div id="wish-results"></div>
   </section>
 
   <!-- VIEW LOG : journal technique -->
@@ -603,6 +639,7 @@
     <div class="dps-wrap">
       <table class="dps-table" id="dps-table"></table>
     </div>
+    <div id="dps-filter-popup" style="display:none; position:fixed; z-index:9999;"></div>
     <div class="helpbox">
       Clique un en-tête de colonne pour trier. Les colonnes R1 à R7 correspondent aux 7 mesures, MOYENNE à leur moyenne et PBR à la valeur maximale. Le dégradé de MOYENNE est calculé sur toutes les lignes, indépendamment du tri. Pour un personnage connu, l'élément et sa couleur sont automatiques ; pour un nom inconnu, un choix d'élément reste disponible.
     </div>
@@ -687,7 +724,7 @@ function nicknameFor(uid, fallback){
 const GENSHIN_DEV_BASE = 'https://genshin.jmp.blue';
 
 // Version de l'outil : X.Y.Z — X = changement majeur, Y = nouvelle fonctionnalité, Z = itération/correctif.
-const APP_VERSION = '2.3.4';
+const APP_VERSION = '3.1.1';
 
 const ELEMENTS = {
   Fire:     { name:'Pyro',    color:'#ef5b4a', dmgId:'40' },
@@ -950,6 +987,150 @@ let currentUidRef = null; // UID actuellement chargé (pour le rafraîchissement
 function el(id){ return document.getElementById(id); }
 function iconUrl(name){ return name ? `https://enka.network/ui/${name}.png` : ''; }
 // Couleur de bordure pour une arme selon sa rareté (5★ doré, 4★ violet, ≤3★ bleu)
+const WEAPON_ICON_BY_NAME = {
+  'a thousand blazing suns':'UI_EquipIcon_Claymore_RadianceSword',
+  'absolution':'UI_EquipIcon_Sword_Estoc',
+  'alley hunter':'UI_EquipIcon_Bow_Outlaw',
+  'amenoma kageuchi':'UI_EquipIcon_Sword_Bakufu',
+  'amos\' bow':'UI_EquipIcon_Bow_Amos',
+  'apprentice\'s notes':'UI_EquipIcon_Catalyst_Apprentice',
+  'aqua simulacra':'UI_EquipIcon_Bow_Kirin',
+  'aquila favonia':'UI_EquipIcon_Sword_Falcon',
+  'ash-graven drinking horn':'UI_EquipIcon_Catalyst_ConchSprayer',
+  'athame artis':'UI_EquipIcon_Sword_Motsognir',
+  'ballad of the boundless blue':'UI_EquipIcon_Catalyst_DandelionPoem',
+  'beacon of the reed sea':'UI_EquipIcon_Claymore_Deshret',
+  'beginner\'s protector':'UI_EquipIcon_Pole_Gewalt',
+  'black tassel':'UI_EquipIcon_Pole_Noire',
+  'blackcliff longsword':'UI_EquipIcon_Sword_Blackrock',
+  'blackcliff pole':'UI_EquipIcon_Pole_Blackrock',
+  'blackcliff slasher':'UI_EquipIcon_Claymore_Blackrock',
+  'blackmarrow lantern':'UI_EquipIcon_Catalyst_Ilmarinen',
+  'bloodsoaked ruins':'UI_EquipIcon_Pole_TummaLyhty',
+  'bloodtainted greatsword':'UI_EquipIcon_Claymore_Siegfry',
+  'calamity of eshu':'UI_EquipIcon_Sword_SacrificialNgombe',
+  'calamity queller':'UI_EquipIcon_Pole_Santika',
+  'compound bow':'UI_EquipIcon_Bow_Exotic',
+  'cool steel':'UI_EquipIcon_Sword_Steel',
+  'crane\'s echoing call':'UI_EquipIcon_Catalyst_MountainGale',
+  'dialogues of the desert sages':'UI_EquipIcon_Pole_Caduceus',
+  'dragonspine spear':'UI_EquipIcon_Pole_Everfrost',
+  'dull blade':'UI_EquipIcon_Sword_Blunt',
+  'emerald orb':'UI_EquipIcon_Catalyst_Jade',
+  'end of the line':'UI_EquipIcon_Bow_Fin',
+  'engulfing lightning':'UI_EquipIcon_Pole_Narukami',
+  'etherlight spindlelute':'UI_EquipIcon_Catalyst_SeeliesLute',
+  'fading twilight':'UI_EquipIcon_Bow_Fallensun',
+  'favonius codex':'UI_EquipIcon_Catalyst_Zephyrus',
+  'favonius lance':'UI_EquipIcon_Pole_Zephyrus',
+  'favonius sword':'UI_EquipIcon_Sword_Zephyrus',
+  'favonius warbow':'UI_EquipIcon_Bow_Zephyrus',
+  'festering desire':'UI_EquipIcon_Sword_Magnum',
+  'finale of the deep':'UI_EquipIcon_Sword_Vorpal',
+  'fleuve cendre ferryman':'UI_EquipIcon_Sword_Machination',
+  'flower-wreathed feathers':'UI_EquipIcon_Bow_Umpakati',
+  'flowing purity':'UI_EquipIcon_Catalyst_Vorpal',
+  'flute of ezpitzal':'UI_EquipIcon_Sword_Isikhulu',
+  'footprint of the rainbow':'UI_EquipIcon_Pole_Isikhulu',
+  'fractured halo':'UI_EquipIcon_Pole_Perdix',
+  'frostbearer':'UI_EquipIcon_Catalyst_Everfrost',
+  'fruit of fulfillment':'UI_EquipIcon_Catalyst_Arakalari',
+  'fruitful hook':'UI_EquipIcon_Claymore_Umpakati',
+  'hakushin ring':'UI_EquipIcon_Catalyst_Bakufu',
+  'hamayumi':'UI_EquipIcon_Bow_Bakufu',
+  'hunter\'s bow':'UI_EquipIcon_Bow_Hunters',
+  'hunter\'s path':'UI_EquipIcon_Bow_Ayus',
+  'iron point':'UI_EquipIcon_Pole_Rod',
+  'jadefall\'s splendor':'UI_EquipIcon_Catalyst_Morax',
+  'kagotsurube isshin':'UI_EquipIcon_Sword_Youtou',
+  'katsuragikiri nagamasa':'UI_EquipIcon_Claymore_Bakufu',
+  'key of khaj-nisut':'UI_EquipIcon_Sword_Deshret',
+  'light of foliar incision':'UI_EquipIcon_Sword_Ayus',
+  'lithic blade':'UI_EquipIcon_Claymore_Lapis',
+  'lithic spear':'UI_EquipIcon_Pole_Lapis',
+  'lumidouce elegy':'UI_EquipIcon_Pole_Muguet',
+  'luxurious sea-lord':'UI_EquipIcon_Claymore_MillenniaTuna',
+  'magic guide':'UI_EquipIcon_Catalyst_Intro',
+  'mappa mare':'UI_EquipIcon_Catalyst_Exotic',
+  'master key':'UI_EquipIcon_Claymore_Ilmarinen',
+  'mirror breaker':'UI_EquipIcon_Bow_Hunters',
+  'missive windspear':'UI_EquipIcon_Pole_Windvane',
+  'mistsplitter reforged':'UI_EquipIcon_Sword_Narukami',
+  'mouun\'s moon':'UI_EquipIcon_Bow_Maria',
+  'nightweaver\'s looking glass':'UI_EquipIcon_Catalyst_MenulisRing',
+  'one side':'UI_EquipIcon_Sword_Blunt',
+  'otherworldly story':'UI_EquipIcon_Catalyst_Lightnov',
+  'peak patrol song':'UI_EquipIcon_Sword_XochitlsTube',
+  'pocket grimoire':'UI_EquipIcon_Catalyst_Pocket',
+  'portable power saw':'UI_EquipIcon_Claymore_Mechanic',
+  'predator':'UI_EquipIcon_Bow_Predator',
+  'primordial jade cutter':'UI_EquipIcon_Sword_Blunt',
+  'primordial jade greatsword':'UI_EquipIcon_Claymore_Aniki',
+  'primordial jade winged-spear':'UI_EquipIcon_Pole_Morax',
+  'prized isshin blade':'UI_EquipIcon_Sword_YoutouShattered',
+  'prospector\'s shovel':'UI_EquipIcon_Pole_Ilmarinen',
+  'prototype amber':'UI_EquipIcon_Catalyst_Proto',
+  'prototype archaic':'UI_EquipIcon_Claymore_Proto',
+  'prototype rancour':'UI_EquipIcon_Sword_Proto',
+  'prototype starglitter':'UI_EquipIcon_Pole_Proto',
+  'quartz':'UI_EquipIcon_Claymore_Quartz',
+  'rainbow serpent\'s rain bow':'UI_EquipIcon_Bow_ElegguaBow',
+  'rainslasher':'UI_EquipIcon_Claymore_Perdue',
+  'raven bow':'UI_EquipIcon_Bow_Crowfeather',
+  'recurve bow':'UI_EquipIcon_Bow_Curve',
+  'redhorn stonethresher':'UI_EquipIcon_Claymore_Itadorimaru',
+  'reliquary of truth':'UI_EquipIcon_Catalyst_Sistrum',
+  'rightful reward':'UI_EquipIcon_Pole_Vorpal',
+  'ring of yaxche':'UI_EquipIcon_Catalyst_Isikhulu',
+  'royal greatsword':'UI_EquipIcon_Claymore_Theocrat',
+  'royal longsword':'UI_EquipIcon_Sword_Theocrat',
+  'rust':'UI_EquipIcon_Bow_Recluse',
+  'sacrificer\'s staff':'UI_EquipIcon_Pole_Krivule',
+  'sacrificial greatsword':'UI_EquipIcon_Claymore_Fossil',
+  'sacrificial sword':'UI_EquipIcon_Sword_Fossil',
+  'sapwood blade':'UI_EquipIcon_Sword_Arakalari',
+  'scion of the blazing sun':'UI_EquipIcon_Bow_Gurabad',
+  'serenity\'s call':'UI_EquipIcon_Sword_Ilmarinen',
+  'serpent spine':'UI_EquipIcon_Claymore_Kione',
+  'sharpshooter\'s oath':'UI_EquipIcon_Bow_Arjuna',
+  'skyward atlas':'UI_EquipIcon_Catalyst_Dvalin',
+  'skyward blade':'UI_EquipIcon_Sword_Dvalin',
+  'skyward harp':'UI_EquipIcon_Bow_Dvalin',
+  'song of stillness':'UI_EquipIcon_Bow_Vorpal',
+  'staff of the scarlet sands':'UI_EquipIcon_Pole_Deshret',
+  'starcaller\'s watch':'UI_EquipIcon_Catalyst_Figurines',
+  'sturdy bone':'UI_EquipIcon_Sword_Umpakati',
+  'summit shaper':'UI_EquipIcon_Sword_Kunwu',
+  'surf\'s up':'UI_EquipIcon_Catalyst_MechaPufferfish',
+  'symphonist of scents':'UI_EquipIcon_Pole_Trident',
+  'talking stick':'UI_EquipIcon_Claymore_BeastTamer',
+  'the alley flash':'UI_EquipIcon_Sword_Outlaw',
+  'the bell':'UI_EquipIcon_Claymore_Troupe',
+  'the first great magic':'UI_EquipIcon_Bow_Pledge',
+  'the flute':'UI_EquipIcon_Sword_Troupe',
+  'the other side':'UI_EquipIcon_Claymore_Aniki',
+  'the unforged':'UI_EquipIcon_Claymore_Kunwu',
+  'the widsith':'UI_EquipIcon_Catalyst_Troupe',
+  'toukabou shigure':'UI_EquipIcon_Sword_Kasabouzu',
+  'tulaytullah\'s remembrance':'UI_EquipIcon_Catalyst_Alaya',
+  'uraku misugiri':'UI_EquipIcon_Sword_Needle',
+  'verdict':'UI_EquipIcon_Claymore_GoldenVerdict',
+  'vivid notions':'UI_EquipIcon_Catalyst_VaresaTransformer',
+  'vortex vanquisher':'UI_EquipIcon_Pole_Kunwu',
+  'waveriding whirl':'UI_EquipIcon_Catalyst_Umpakati',
+  'white iron greatsword':'UI_EquipIcon_Claymore_Tin',
+  'white tassel':'UI_EquipIcon_Pole_Ruby',
+  'windblume ode':'UI_EquipIcon_Bow_Fleurfair',
+  'wine and song':'UI_EquipIcon_Catalyst_Outlaw',
+  'wolf-fang':'UI_EquipIcon_Sword_Boreas',
+  'xiphos\' moonlight':'UI_EquipIcon_Sword_Pleroma'
+};
+// Table incomplète (~136 armes) : la base de référence ne couvre pas les armes trop récentes.
+// Repli propre (juste le texte) quand une arme n'y figure pas.
+function weaponIconUrl(name){
+  const icon = WEAPON_ICON_BY_NAME[(name||'').trim().toLowerCase()];
+  return icon ? iconUrl(icon) : null;
+}
 function weaponRarityBorder(rarity){
   if (rarity === 5) return '#e8c477';
   if (rarity === 4) return '#b678ea';
@@ -1355,7 +1536,7 @@ function buildCharacters(apiData){
 // ---------- Rendering ----------
 let activeView = 'view-uid';
 function showView(id){
-  ['view-uid','view-select','view-stats','view-collection','view-team','view-dps','view-theorycraft','view-log','view-library','view-library-detail','view-settings'].forEach(v => el(v).classList.toggle('hidden', v !== id));
+  ['view-uid','view-select','view-stats','view-collection','view-team','view-dps','view-theorycraft','view-log','view-library','view-library-detail','view-settings','view-wishes'].forEach(v => el(v).classList.toggle('hidden', v !== id));
   activeView = id;
 }
 
@@ -1814,9 +1995,327 @@ function downloadJson(obj, filename){
   document.body.appendChild(a); a.click(); a.remove();
   URL.revokeObjectURL(url);
 }
+function downloadText(text, filename){
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
 
 // ---------- Paramètres : liaison UID ↔ pseudo ----------
 let preSettingsView = 'view-uid';
+// ---------- Invocations : historique des vœux (wish history) ----------
+// Script PowerShell : retrouve l'URL d'historique des vœux (avec sa clé authkey
+// temporaire) dans le cache local du jeu, après que le joueur a ouvert la page
+// d'historique en jeu. Principe documenté publiquement (même mécanisme que
+// paimon.moe et autres outils communautaires) : le jeu charge cette page via
+// une mini-fenêtre web interne, dont l'URL finit dans un fichier de cache.
+const WISH_SCRIPT_TEXT = `Add-Type -AssemblyName System.Web
+
+function GA-FindWishUrl {
+  $logPaths = @(
+    "$env:UserProfile\\AppData\\LocalLow\\miHoYo\\Genshin Impact\\output_log.txt",
+    "$env:UserProfile\\AppData\\LocalLow\\Cognosphere\\Genshin Impact\\output_log.txt"
+  )
+  $logPath = $logPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+  if (-not $logPath) {
+    Write-Host "Fichier introuvable. Ouvre d'abord l'historique des voeux dans le jeu, puis relance ce script." -ForegroundColor Red
+    return
+  }
+
+  $logs = Get-Content -Path $logPath
+  $lineMatch = $logs -match "(?m).:/.+(GenshinImpact_Data|YuanShen_Data)"
+  if ($lineMatch.Length -eq 0) {
+    Write-Host "Chemin du jeu introuvable dans le log. Ouvre l'historique des voeux en jeu, attends que ca charge, puis relance ce script." -ForegroundColor Red
+    return
+  }
+  $null = $lineMatch[0] -match "(.:/.+(GenshinImpact_Data|YuanShen_Data))"
+  $gameDataDir = $matches[1]
+
+  $webcachePath = Resolve-Path "$gameDataDir/webCaches" -ErrorAction SilentlyContinue
+  if (-not $webcachePath) {
+    Write-Host "Dossier webCaches introuvable." -ForegroundColor Red
+    return
+  }
+  $latestVersionDir = Get-ChildItem -Path $webcachePath | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+  $cacheFile = Resolve-Path "$($latestVersionDir.FullName)/Cache/Cache_Data/data_2" -ErrorAction SilentlyContinue
+  if (-not $cacheFile) {
+    Write-Host "Fichier de cache introuvable." -ForegroundColor Red
+    return
+  }
+
+  # Copie dans un fichier temporaire : le jeu garde parfois ce fichier ouvert.
+  $tmpFile = Join-Path $env:TEMP "ga_cache_data_2"
+  Copy-Item $cacheFile -Destination $tmpFile -Force
+
+  function GA-TestLink($url) {
+    try {
+      $ProgressPreference = 'SilentlyContinue'
+      $uri = [System.UriBuilder]::New($url)
+      $uri.Path = "gacha_info/api/getGachaLog"
+      $uri.Fragment = ""
+      $params = [System.Web.HttpUtility]::ParseQueryString($uri.Query)
+      $params.Set("lang", "fr")
+      $params.Set("gacha_type", 301)
+      $params.Set("size", "5")
+      $uri.Query = $params.ToString()
+      $response = Invoke-WebRequest -Uri $uri.Uri.AbsoluteUri -ContentType "application/json" -UseBasicParsing -TimeoutSec 10 | ConvertFrom-Json
+      return $response.retcode -eq 0
+    } catch {
+      return $false
+    }
+  }
+
+  $content = Get-Content -Encoding UTF8 -Raw $tmpFile
+  $chunks = $content -split "1/0/"
+  $candidates = $chunks -match "webview_gacha"
+  Remove-Item $tmpFile -ErrorAction SilentlyContinue
+
+  if ($candidates.Length -eq 0) {
+    Write-Host "Aucune URL trouvee. Ouvre bien l'historique des voeux en jeu (pas juste le menu invocation), attends que ca charge, puis relance ce script." -ForegroundColor Red
+    return
+  }
+
+  $validUrl = $null
+  for ($i = $candidates.Length - 1; $i -ge 0; $i -= 1) {
+    $null = $candidates[$i] -match "(https.+?game_biz=)"
+    $candidateUrl = $matches[0]
+    if (-not $candidateUrl) { continue }
+    Write-Host "\`rVerification du lien $($candidates.Length - $i) sur $($candidates.Length)..." -NoNewline
+    if (GA-TestLink $candidateUrl) {
+      $validUrl = $candidateUrl
+      break
+    }
+    Start-Sleep -Milliseconds 500
+  }
+  Write-Host ""
+
+  if (-not $validUrl) {
+    Write-Host "Aucun lien valide trouve (ils ont peut-etre tous expire). Reouvre l'historique des voeux en jeu et relance ce script." -ForegroundColor Red
+    return
+  }
+
+  $validUrl | Set-Clipboard
+  Write-Host "URL verifiee et copiee dans le presse-papiers !" -ForegroundColor Green
+  Write-Host "Colle-la maintenant dans GenshinAnalytics (onglet Invocations)." -ForegroundColor Cyan
+}
+
+try {
+  GA-FindWishUrl
+} catch {
+  Write-Host ""
+  Write-Host "Erreur inattendue : $($_.Exception.Message)" -ForegroundColor Red
+} finally {
+  Write-Host ""
+  $null = Read-Host "Appuie sur Entree pour fermer cette fenetre"
+}`;
+// 301 et 400 sont DEUX codes techniques pour la MÊME vraie bannière "Événement Personnage"
+// (Hoyoverse a ajouté le 400 en cours de route, sans que ça corresponde à une bannière
+// distincte) — on les regroupe sous une seule entrée pour ne pas fragmenter l'historique.
+const WISH_BANNER_GROUPS = {
+  '100': { label: 'Débutant', types: ['100'] },
+  '200': { label: 'Permanent', types: ['200'] },
+  '301': { label: 'Événement Personnage', types: ['301', '400'] },
+  '302': { label: 'Événement Arme', types: ['302'] },
+  '500': { label: 'Chronique', types: ['500'] },
+};
+// Migration silencieuse : si d'anciens tirages type 400 existent déjà séparément
+// (versions précédentes de l'appli), on les fusionne dans le groupe 301 une fois pour toutes.
+(function migrateWish400(){
+  try {
+    const h = JSON.parse(localStorage.getItem('gdb_wish_history_v1') || '{}');
+    if (h['400'] && Object.keys(h['400']).length) {
+      h['301'] = Object.assign({}, h['301'] || {}, h['400']);
+      delete h['400'];
+      localStorage.setItem('gdb_wish_history_v1', JSON.stringify(h));
+    }
+  } catch(e) {}
+})();
+const WISH_HISTORY_KEY = 'gdb_wish_history_v1'; // { [gachaType]: { [wishId]: item } }
+
+function getWishHistory(){ try { return JSON.parse(localStorage.getItem(WISH_HISTORY_KEY) || '{}'); } catch(e){ return {}; } }
+function saveWishHistory(obj){ try { localStorage.setItem(WISH_HISTORY_KEY, JSON.stringify(obj)); } catch(e){} }
+
+// Extrait le host + l'authkey depuis l'URL collée, PAS juste la clé seule : le host
+// change selon le serveur (Asie/Europe/Amérique/etc.) et doit être réutilisé tel quel.
+function parseWishUrl(input){
+  input = (input || '').trim();
+  if (!input) return null;
+  let url;
+  try { url = new URL(input); }
+  catch(e) {
+    const m = input.match(/authkey=([^&\s]+)/);
+    if (m) { url = new URL('https://hk4e-api-os.hoyoverse.com/event/gacha_info/api/getGachaLog'); url.searchParams.set('authkey', decodeURIComponent(m[1])); }
+    else return null;
+  }
+  if (!url.searchParams.get('authkey')) return null;
+  return url; // on garde l'objet URL complet — pas de reconstruction manuelle par concaténation
+}
+
+let lastWishDebug = null;
+async function fetchGachaLogPage(baseUrl, gachaType, endId){
+  // On clone l'URL d'origine (avec tous ses paramètres : game_biz, region, authkey_ver...) et on
+  // modifie seulement ce qui doit changer, via les setters natifs de URL — jamais de concaténation
+  // manuelle de chaînes, qui avait cassé le séparateur "?" précédemment.
+  const url = new URL(baseUrl.href);
+  // Le chemin (avec ou sans "/event/" selon le serveur) est déjà correct dans l'URL d'origine —
+  // extrait directement du jeu, donc source de vérité. On ne le modifie surtout pas.
+  if (!url.searchParams.get('lang')) url.searchParams.set('lang', 'fr');
+  url.searchParams.delete('gacha_id'); // figé sur la bannière affichée en jeu au moment du script — fausse les autres gacha_type
+  url.searchParams.set('gacha_type', gachaType);
+  url.searchParams.set('page', '1');
+  url.searchParams.set('size', '20');
+  url.searchParams.set('end_id', endId);
+  const target = url.href;
+
+  async function doFetch(fetchUrl){
+    const res = await fetchWithTimeout(fetchUrl, 20000);
+    const rawText = await res.text();
+    lastWishDebug = { url: fetchUrl, status: res.status, rawText: rawText.slice(0, 800) };
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    let data;
+    try { data = JSON.parse(rawText); } catch(e) { throw new Error('Réponse illisible (pas du JSON).'); }
+    if (data.retcode !== 0) throw new Error(data.message || "Clé invalide ou expirée — relance le script pour en récupérer une nouvelle.");
+    return data.data.list || [];
+  }
+
+  let list;
+  try {
+    list = await doFetch(target);
+  } catch(e) {
+    // Échec réseau direct : chaîne de relais de secours, comme pour Enka (allorigins puis codetabs).
+    try {
+      list = await doFetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(target));
+    } catch(e2) {
+      list = await doFetch('https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(target));
+    }
+    return list;
+  }
+  // Cas particulier : la requête directe "réussit" (retcode 0) mais renvoie une liste vide dès
+  // la première page. C'est le signe probable que le serveur miHoYo n'aime pas l'origine de la
+  // requête (un navigateur envoie un en-tête Referer que le script PowerShell n'envoie pas).
+  // On revérifie via la chaîne de relais avant de conclure que c'est vraiment vide.
+  if (!list.length && endId === '0') {
+    for (const relay of ['https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']) {
+      try {
+        const retry = await doFetch(relay + encodeURIComponent(target));
+        if (retry.length) return retry;
+      } catch(e) { /* on essaie le relais suivant */ }
+    }
+  }
+  return list;
+}
+
+async function importWishHistory(rawInput, onProgress){
+  const wishSource = parseWishUrl(rawInput);
+  if (!wishSource) throw new Error("Impossible de trouver une clé dans ce que tu as collé — colle l'URL complète copiée par le script.");
+  const history = getWishHistory();
+  let totalNew = 0;
+  const errors = [];
+  let firstBanner = true;
+  for (const groupKey of Object.keys(WISH_BANNER_GROUPS)) {
+    const group = WISH_BANNER_GROUPS[groupKey];
+    if (!history[groupKey]) history[groupKey] = {};
+    for (const gachaType of group.types) {
+      if (!firstBanner) await sleep(900); // pause entre deux requêtes de bannière, pas seulement entre deux pages
+      firstBanner = false;
+      let endId = '0', page = 0;
+      while (true) {
+        page++;
+        if (onProgress) onProgress(group.label, page);
+        let list;
+        try {
+          list = await fetchGachaLogPage(wishSource, gachaType, endId);
+        } catch(e) {
+          // Deux tentatives de plus, avec une pause croissante, avant d'abandonner cette page —
+          // évite qu'un simple aléa réseau ou un rate-limit coupe l'import en plein milieu.
+          let lastErr = e, recovered = null;
+          for (const delay of [1200, 2500]) {
+            await sleep(delay);
+            try { recovered = await fetchGachaLogPage(wishSource, gachaType, endId); break; }
+            catch(e2) { lastErr = e2; }
+          }
+          if (recovered === null) {
+            errors.push(`${group.label} (page ${page}) : ${lastErr.message || lastErr}`);
+            break;
+          }
+          list = recovered;
+        }
+        if (!list.length) break;
+        let newInPage = 0;
+        list.forEach(item => { if (!history[groupKey][item.id]) { history[groupKey][item.id] = item; newInPage++; totalNew++; } });
+        endId = list[list.length - 1].id;
+        if (list.length < 20) break;
+        if (newInPage === 0 && page > 1) break; // le reste est déjà connu (l'historique est chronologique)
+        await sleep(600); // rester "soft" vis-à-vis de l'API, comme pour Enka
+      }
+    }
+  }
+  saveWishHistory(history);
+  return { totalNew, errors };
+}
+
+let wishActiveBanner = '301';
+function renderWishesView(){
+  const history = getWishHistory();
+  el('wish-banner-tabs').innerHTML = Object.entries(WISH_BANNER_GROUPS).map(([groupKey,group]) => {
+    const count = Object.keys(history[groupKey] || {}).length;
+    return `<button class="btn-ghost btn-small" data-wish-banner="${groupKey}" style="${wishActiveBanner===groupKey?'border-color:var(--gold); color:var(--gold);':''}">${escapeHtml(group.label)} (${count})</button>`;
+  }).join('');
+  const items = Object.values(history[wishActiveBanner] || {}).sort((a,b) => (a.time||'').localeCompare(b.time||'') || Number(a.id)-Number(b.id));
+  if (!items.length) {
+    el('wish-results').innerHTML = `<div class="helpbox">Aucune invocation importée pour cette bannière pour l'instant.</div>`;
+  } else {
+    let pity = 0;
+    const withPity = items.map(it => {
+      pity++;
+      const rowPity = pity;
+      if (Number(it.rank_type) === 5) pity = 0;
+      return { it, rowPity };
+    });
+    const fives = withPity.filter(w => Number(w.it.rank_type) === 5);
+    const fours = withPity.filter(w => Number(w.it.rank_type) === 4);
+    const avgPity5 = fives.length ? (fives.reduce((s,w)=>s+w.rowPity,0)/fives.length) : 0;
+    const avgPity4 = fours.length ? (fours.reduce((s,w)=>s+w.rowPity,0)/fours.length) : 0;
+    const pct = (n) => items.length ? (n/items.length*100).toFixed(2)+'%' : '0%';
+
+    const statCard = (label, value, sub) => `<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:10px 14px; min-width:110px;">
+      <div style="font-size:.68rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px;">${escapeHtml(label)}</div>
+      <div style="font-size:1.3rem; font-weight:700; color:var(--gold); margin-top:2px;">${value}</div>
+      ${sub ? `<div style="font-size:.68rem; color:var(--text-dim); margin-top:2px;">${sub}</div>` : ''}
+    </div>`;
+
+    const summaryHtml = `<div class="row" style="flex-wrap:wrap; margin-top:0;">
+      ${statCard('Total', items.length)}
+      ${statCard('5★', fives.length, pct(fives.length) + ' · pity moy. ' + avgPity5.toFixed(1))}
+      ${statCard('4★', fours.length, pct(fours.length) + ' · pity moy. ' + avgPity4.toFixed(1))}
+    </div>`;
+
+    const chip = (w) => {
+      const rarity = Number(w.it.rank_type);
+      const border = rarity===5 ? '#e8c477' : '#b678ea';
+      const textColor = rarity===5 ? 'var(--gold)' : '#b678ea';
+      return `<div title="${escapeHtml(w.it.time||'')}" style="display:inline-flex; align-items:center; gap:6px; border:1.5px solid ${border}; border-radius:999px; padding:6px 14px; margin:4px; background:var(--bg-card);">
+        <span style="color:${textColor}; font-weight:600; font-size:.82rem;">${escapeHtml(w.it.name)}</span>
+        <span style="font-size:.72rem; color:var(--text-dim);">${w.rowPity}</span>
+      </div>`;
+    };
+
+    const notable = withPity.filter(w => Number(w.it.rank_type) >= 4).slice().reverse(); // du plus récent au plus ancien, 3★ exclus
+    const chipsHtml = notable.length
+      ? `<div class="subhead">Historique (plus récent → plus ancien)</div><div style="display:flex; flex-wrap:wrap;">${notable.map(chip).join('')}</div>`
+      : '';
+
+    el('wish-results').innerHTML = summaryHtml + chipsHtml;
+  }
+  document.querySelectorAll('[data-wish-banner]').forEach(btn => {
+    btn.addEventListener('click', () => { wishActiveBanner = btn.dataset.wishBanner; renderWishesView(); });
+  });
+  showView('view-wishes');
+}
+
 function renderSettingsView(){
   const links = getUidLinks();
   const historyUids = getHistory().map(h => h.uid);
@@ -2414,7 +2913,7 @@ function getLibraryList(){
     list.push({ name, icon: cdata.SideIconName, elem, rarity });
   });
   Object.values(CHARACTER_ID_OVERRIDES).forEach(ov => {
-    if (!seen.has(ov.name)) { seen.add(ov.name); list.push({ name: ov.name, icon: null, elem: ELEMENTS[ov.elem] || {name:'?',color:'#888'}, rarity: 5 }); }
+    if (!seen.has(ov.name)) { seen.add(ov.name); list.push({ name: ov.name, icon: ov.icon || null, elem: ELEMENTS[ov.elem] || {name:'?',color:'#888'}, rarity: ov.rarity || 5 }); }
   });
   Object.entries(NAME_ELEMENT_OVERRIDES).forEach(([key, ov]) => {
     const displayName = key.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -2434,7 +2933,7 @@ function renderLibraryView(){
   }
   const list = getLibraryList().filter(c => c.name.toLowerCase().includes(librarySearch.toLowerCase()));
   el('library-grid').innerHTML = list.map(c => `
-    <div class="char-card" data-name="${escapeHtml(c.name)}" title="Double-clic pour la fiche" style="border-color:${rarityBorder(c.rarity,false)}">
+    <div class="char-card" data-name="${escapeHtml(c.name)}" title="Clique pour la fiche" style="border-color:${rarityBorder(c.rarity,false)}">
       <img src="${iconUrl(c.icon)}" alt="${escapeHtml(c.name)}" onerror="this.style.opacity=0.3">
       <div class="name">${escapeHtml(c.name)}</div>
       <div class="sub" style="color:${c.elem.color}">${c.elem.name}</div>
@@ -2442,7 +2941,7 @@ function renderLibraryView(){
     </div>
   `).join('') || `<div class="helpbox">Aucun résultat.</div>`;
   document.querySelectorAll('#library-grid .char-card').forEach(card => {
-    card.addEventListener('dblclick', () => renderLibraryDetail(card.dataset.name));
+    card.addEventListener('click', () => renderLibraryDetail(card.dataset.name));
   });
   showView('view-library');
 }
@@ -2467,7 +2966,7 @@ function renderLibraryDetail(name){
       <div>${escapeHtml(formatStatTargetsText(name) || guide.stats || '—')}</div>
       <div class="subhead">Armes recommandées</div>
       <div class="artifacts">
-        ${(guide.weapons||[]).map(w => `<div class="art-card" style="border-color:${weaponRarityBorder(w.rarity)}; border-width:2px;"><div class="a-set">${escapeHtml(w.name)} ${'★'.repeat(w.rarity)}</div><div style="font-size:.72rem; color:var(--text-dim); margin-top:4px;">${escapeHtml(w.note||'')}</div></div>`).join('') || '<div class="helpbox">—</div>'}
+        ${(guide.weapons||[]).map(w => { const icon = weaponIconUrl(w.name); return `<div class="art-card" style="border-color:${weaponRarityBorder(w.rarity)}; border-width:2px;">${icon ? `<img src="${icon}" alt="" style="width:40px; height:40px; display:block; margin:0 auto 4px;" onerror="this.style.display='none';">` : ''}<div class="a-set">${escapeHtml(w.name)} ${'★'.repeat(w.rarity)}</div><div style="font-size:.72rem; color:var(--text-dim); margin-top:4px;">${escapeHtml(w.note||'')}</div></div>`; }).join('') || '<div class="helpbox">—</div>'}
       </div>
       <div class="subhead">Artéfacts recommandés</div>
       <div class="artifacts">
@@ -2633,8 +3132,11 @@ function suggestReaction(elemNames){
 // qu'elles se resynchronisent. Ces quelques entrées comblent les trous
 // signalés en attendant — à étendre à la demande.
 const CHARACTER_ID_OVERRIDES = {
-  10000131: { name: 'Nicole', elem: 'Fire' },
-  10000127: { name: 'Illuga', elem: 'Rock' },
+  10000131: { name: 'Nicole', elem: 'Fire', icon: 'UI_AvatarIcon_Side_Nicole', rarity: 5 },
+  10000127: { name: 'Illuga', elem: 'Rock', icon: 'UI_AvatarIcon_Side_Illuga', rarity: 4 },
+  10000125: { name: 'Columbina', elem: 'Water', icon: 'UI_AvatarIcon_Side_Columbina', rarity: 5 },
+  10000120: { name: 'Flins', elem: 'Electric', icon: 'UI_AvatarIcon_Side_Flins', rarity: 5 },
+  10000121: { name: 'Aino', elem: 'Water', icon: 'UI_AvatarIcon_Side_Aino', rarity: 4 },
 };
 // Pour ces persos, l'élément est confirmé mais je n'ai pas encore d'ID
 // numérique fiable à 100% (aucune source publique ne le donnait au moment
@@ -2644,8 +3146,9 @@ const CHARACTER_ID_OVERRIDES = {
 // pièce manquante à me donner pour le brancher définitivement.
 const NAME_ELEMENT_OVERRIDES = {
   'odette': { elem:'Ice', rarity:5 },      // 5★ Cryo Épée, sortie v7.0 (12 août 2026)
+  'vesna': { elem:'Wind', rarity:5 },      // 5★ Anémo Épée, sortie v7.1 (23 septembre 2026)
+  'vodyanitsa': { elem:'Water', rarity:5 }, // 5★ Hydro Catalyseur, sortie v7.1 (23 septembre 2026)
   'alyosha': { elem:'Electric', rarity:4 }, // 4★ Electro Lance, sortie v7.0 (12 août 2026)
-  'columbina': { elem:'Water', rarity:5 }, // 5★ Hydro Catalyseur — corrige une mauvaise résolution en Pyro
   'voyageur cryo': { elem:'Ice', rarity:5 }, // variante Cryo du Voyageur, au cas où absente de la base de référence
   'voyageur anémo': { elem:'Wind', rarity:5 },
   'voyageur dendro': { elem:'Grass', rarity:5 },
@@ -2653,8 +3156,6 @@ const NAME_ELEMENT_OVERRIDES = {
   'voyageur géo': { elem:'Rock', rarity:5 },
   'voyageur hydro': { elem:'Water', rarity:5 },
   'voyageur pyro': { elem:'Fire', rarity:5 },
-  'aino': { elem:'Water', rarity:4 },  // 4★ Hydro, région Nod-Krai, sortie v7.0
-  'flins': { elem:'Electric', rarity:5 }, // 5★ Électro Arme d'hast, sortie v7.0
 };
 const HASH_NAME_OVERRIDES = {
   '2944936171': 'Semblance de la lune écarlate', // arme signature d'Arlecchino, hash renuméroté en 7.0
@@ -2673,6 +3174,13 @@ const HASH_NAME_OVERRIDES = {
   '1086878883': 'Disenchantment in Deep Shadows', // set Superconduct 6.6, confirmé
   '4291032347': "Heaven's Gift", // set Hexerei/Nicole 6.6, confirmé
   '1249831355': 'Vermillion Hereafter', // set Fischl/Neuvillette/Keqing, confiance moyenne (mécanique PV haut/bas)
+  '1337665995': 'Tenacity of the Millelith', // set Clorinde/Nefer, confirmé (décalage +512)
+  '3618166787': 'Scholar', // set Xingqiu, confirmé (décalage +512)
+  '2546254299': 'Husk of Opulent Dreams', // set Arataki Itto/Nefer, confirmé (décalage +512)
+  '1675078771': 'Deepwood Memories', // set Lauma, confirmé (décalage +512)
+  '4144068739': "Shimenawa's Reminiscence", // set Xiao, confirmé (décalage +512)
+  '3761476939': "Long Night's Oath", // set Xiao, confirmé (décalage +512)
+  '1441327235': 'Nocturne of the Hidden Veil', // arme signature de Columbina, 5★ Catalyseur, confirmé
   '2949387691': 'Scroll of the Hero of Cinder City', // set Xilonen, confirmé (décalage +512 vs base de référence)
   '1774578891': 'Obsidian Codex', // set de Mavuika notamment, confirmé (décalage +512)
 };
@@ -2812,7 +3320,46 @@ function dpsMax(arr){
 let dpsSortCol = null;
 let dpsSortAsc = false;
 let dpsColumnFilters = {}; // { colKey: Set(valeurs autorisées) } — absent = pas de filtre sur cette colonne
-let dpsOpenFilterCol = null;
+let lastComputedDpsRows = []; // snapshot du dernier rendu, pour lister les valeurs disponibles dans le panneau de filtre
+function dpsFilterPanelHtml(key){
+  const allowed = dpsColumnFilters[key];
+  // Ne propose que les valeurs encore possibles compte tenu des AUTRES filtres déjà actifs
+  // (comme Excel) : trier/filtrer la colonne A réduit d'abord les lignes visibles, puis la
+  // colonne B ne propose que ce qui reste parmi elles — jamais une valeur qui a disparu.
+  const rowsForThisColumn = lastComputedDpsRows.filter(c =>
+    Object.entries(dpsColumnFilters).every(([k, allowedSet]) => k === key || !allowedSet || !allowedSet.size || allowedSet.has(dpsCellFilterLabel(c, k)))
+  );
+  const values = Array.from(new Set(rowsForThisColumn.map(c => dpsCellFilterLabel(c, key)))).sort((a,b)=> a.localeCompare(b, undefined, {numeric:true}));
+  const allChecked = !allowed || allowed.size >= values.length;
+  return `<div class="dps-filter-panel" data-filter-panel="${key}">
+    <label class="dps-filter-all"><input type="checkbox" data-filter-toggle-all="${key}" ${allChecked?'checked':''}> Tout sélectionner</label>
+    <div class="dps-filter-list">
+      ${values.map(v => `<label><input type="checkbox" data-filter-value="${key}" value="${escapeHtml(v)}" ${(!allowed || allowed.has(v))?'checked':''}> ${escapeHtml(v)}</label>`).join('') || '<div class="helpbox" style="margin:0;">Aucune valeur.</div>'}
+    </div>
+    <button class="btn-primary btn-small" data-filter-close="${key}">OK</button>
+  </div>`;
+}
+function openDpsFilterPopup(th, key){
+  const popup = el('dps-filter-popup');
+  popup.innerHTML = dpsFilterPanelHtml(key);
+  popup.style.display = 'block';
+  const rect = th.getBoundingClientRect();
+  const popupWidth = 240; // correspond au max-width du panneau
+  let left = rect.left;
+  if (left + popupWidth > window.innerWidth - 10) left = window.innerWidth - popupWidth - 10;
+  if (left < 10) left = 10;
+  let top = rect.bottom + 4;
+  // Si ça déborderait en bas de l'écran, on l'ouvre plutôt au-dessus de la colonne.
+  const estimatedHeight = 260;
+  if (top + estimatedHeight > window.innerHeight - 10) top = Math.max(10, rect.top - estimatedHeight - 4);
+  popup.style.left = left + 'px';
+  popup.style.top = top + 'px';
+}
+function closeDpsFilterPopup(){
+  const popup = el('dps-filter-popup');
+  popup.style.display = 'none';
+  popup.innerHTML = '';
+}
 
 // Valeur d'une colonne pour un objet "computed" (tri ET filtre s'appuient dessus)
 function dpsCellValue(c, key){
@@ -2869,6 +3416,7 @@ function renderDpsView(){
   });
 
   let display = computed.map(c => ({ ...c, rank: rankMap[c.row.id] }));
+  lastComputedDpsRows = display; // pour lister les valeurs disponibles dans le panneau de filtre, avant filtrage
 
   // Filtres par colonne façon Excel (multi-sélection de valeurs)
   Object.entries(dpsColumnFilters).forEach(([key, allowed]) => {
@@ -2916,25 +3464,8 @@ function renderDpsView(){
     <col style="width:30px;">
   </colgroup>`;
 
-  function dpsFilterPanelHtml(key){
-    const allowed = dpsColumnFilters[key];
-    const values = Array.from(new Set(computed.map(c => dpsCellFilterLabel(c, key)))).sort((a,b)=> a.localeCompare(b, undefined, {numeric:true}));
-    const allChecked = !allowed || allowed.size >= values.length;
-    return `<div class="dps-filter-panel" data-filter-panel="${key}">
-      <label class="dps-filter-all"><input type="checkbox" data-filter-toggle-all="${key}" ${allChecked?'checked':''}> Tout sélectionner</label>
-      <div class="dps-filter-list">
-        ${values.map(v => `<label><input type="checkbox" data-filter-value="${key}" value="${escapeHtml(v)}" ${(!allowed || allowed.has(v))?'checked':''}> ${escapeHtml(v)}</label>`).join('') || '<div class="helpbox" style="margin:0;">Aucune valeur.</div>'}
-      </div>
-      <button class="btn-primary btn-small" data-filter-close="${key}">OK</button>
-    </div>`;
-  }
-
   const thead = `<thead><tr><th><input type="checkbox" id="dps-select-all-checkbox" title="Tout sélectionner"></th>${DPS_COLUMNS.map(c => `<th data-col="${c.key}" class="${dpsSortCol===c.key ? 'sorted '+(dpsSortAsc?'asc':'') : ''}${dpsColumnFilters[c.key] && dpsColumnFilters[c.key].size ? ' has-filter' : ''}">
-    <div class="th-head">
-      <span class="th-label" data-sort-col="${c.key}" title="${c.label} (clic : trier)">${c.label}</span>
-      <span class="th-filter-btn" data-filter-btn="${c.key}" title="Filtrer les valeurs affichées">▾</span>
-    </div>
-    ${dpsOpenFilterCol === c.key ? dpsFilterPanelHtml(c.key) : ''}
+    <span class="th-label" data-sort-col="${c.key}" title="${c.label} (clic : trier · clic droit : filtrer)">${c.label}</span>
   </th>`).join('')}<th></th></tr></thead>`;
 
   const rowsHtml = display.map(({row, moyenne, pbr, rank}) => {
@@ -3052,6 +3583,46 @@ el('dps-table').addEventListener('change', (e) => {
   renderDpsView();
 });
 
+el('dps-table').addEventListener('contextmenu', (e) => {
+  const th = e.target.closest('th[data-col]');
+  if (!th) return;
+  e.preventDefault(); // empêche le menu contextuel du navigateur, ouvre le nôtre à la place
+  const popup = el('dps-filter-popup');
+  const alreadyOpenForThisCol = popup.style.display === 'block' && popup.dataset.forCol === th.dataset.col;
+  if (alreadyOpenForThisCol) { closeDpsFilterPopup(); return; }
+  popup.dataset.forCol = th.dataset.col;
+  openDpsFilterPopup(th, th.dataset.col);
+});
+
+// Le panneau flottant vit hors du tableau (pour ne jamais être coupé par son défilement) :
+// on gère ses cases à cocher et son bouton OK avec ses propres écouteurs.
+el('dps-filter-popup').addEventListener('change', (e) => {
+  const t = e.target;
+  const key = t.dataset.filterToggleAll || t.dataset.filterValue;
+  if (!key) return;
+  if (t.dataset.filterToggleAll) {
+    if (t.checked) delete dpsColumnFilters[key];
+    else dpsColumnFilters[key] = new Set();
+  } else {
+    const panel = t.closest('[data-filter-panel]');
+    const allValues = Array.from(panel.querySelectorAll('[data-filter-value]')).map(el2 => el2.value);
+    let allowed = dpsColumnFilters[key] ? new Set(dpsColumnFilters[key]) : new Set(allValues);
+    if (t.checked) allowed.add(t.value); else allowed.delete(t.value);
+    dpsColumnFilters[key] = allowed;
+  }
+  renderDpsView();
+  openDpsFilterPopup(document.querySelector(`th[data-col="${key}"]`), key); // ré-affiche le panneau à jour, ouvert
+});
+el('dps-filter-popup').addEventListener('click', (e) => {
+  if (e.target.closest('[data-filter-close]')) closeDpsFilterPopup();
+});
+document.addEventListener('click', (e) => {
+  const popup = el('dps-filter-popup');
+  if (popup.style.display === 'block' && !popup.contains(e.target) && !e.target.closest('th[data-col]')) {
+    closeDpsFilterPopup();
+  }
+});
+
 el('dps-table').addEventListener('click', (e) => {
   const rm = e.target.closest('[data-remove-row]');
   if (rm) {
@@ -3067,45 +3638,14 @@ el('dps-table').addEventListener('click', (e) => {
     const col = th.dataset.sortCol;
     if (dpsSortCol === col) dpsSortAsc = !dpsSortAsc;
     else { dpsSortCol = col; dpsSortAsc = false; }
-    dpsOpenFilterCol = null;
-    renderDpsView();
-    return;
-  }
-  const filterBtn = e.target.closest('[data-filter-btn]');
-  if (filterBtn) {
-    dpsOpenFilterCol = dpsOpenFilterCol === filterBtn.dataset.filterBtn ? null : filterBtn.dataset.filterBtn;
-    renderDpsView();
-    return;
-  }
-  const filterClose = e.target.closest('[data-filter-close]');
-  if (filterClose) {
-    dpsOpenFilterCol = null;
+    closeDpsFilterPopup();
     renderDpsView();
     return;
   }
 });
 
 // Cases à cocher des panneaux de filtre (colonne, valeur individuelle, tout sélectionner)
-el('dps-table').addEventListener('change', (e) => {
-  const t = e.target;
-  if (t.dataset.filterToggleAll) {
-    const key = t.dataset.filterToggleAll;
-    if (t.checked) delete dpsColumnFilters[key];
-    else dpsColumnFilters[key] = new Set(); // rien coché = aucune ligne
-    renderDpsView();
-    return;
-  }
-  if (t.dataset.filterValue) {
-    const key = t.dataset.filterValue;
-    const panel = t.closest('[data-filter-panel]');
-    const allValues = Array.from(panel.querySelectorAll('[data-filter-value]')).map(el2 => el2.value);
-    let allowed = dpsColumnFilters[key] ? new Set(dpsColumnFilters[key]) : new Set(allValues);
-    if (t.checked) allowed.add(t.value); else allowed.delete(t.value);
-    dpsColumnFilters[key] = allowed;
-    renderDpsView();
-  }
-});
-el('btn-dps-clear-filters').addEventListener('click', () => { dpsColumnFilters = {}; dpsOpenFilterCol = null; renderDpsView(); });
+el('btn-dps-clear-filters').addEventListener('click', () => { dpsColumnFilters = {}; closeDpsFilterPopup(); renderDpsView(); });
 
 el('btn-dps-delete-selected').addEventListener('click', () => {
   if (!dpsSelectedRows.size) return;
@@ -3361,6 +3901,37 @@ el('btn-open-team-header').addEventListener('click', renderTeamView);
 el('btn-open-theorycraft').addEventListener('click', renderTheoryCraftView);
 el('tc-collection-picker').addEventListener('change', (e) => { setActiveCollectionId(e.target.value); tcKeys=[null,null,null,null]; renderTheoryCraftView(); });
 el('btn-open-library').addEventListener('click', () => { librarySearch=''; el('library-search').value=''; renderLibraryView(); });
+el('btn-open-wishes').addEventListener('click', renderWishesView);
+el('btn-download-wish-script').addEventListener('click', () => downloadText(WISH_SCRIPT_TEXT, 'GenshinAnalytics-invocations.ps1'));
+el('btn-back-from-wishes').addEventListener('click', () => showView('view-uid'));
+el('btn-import-wishes').addEventListener('click', async () => {
+  const raw = el('wish-url-input').value;
+  if (!raw.trim()) { el('wish-import-status').textContent = "Colle d'abord l'URL récupérée via le script."; return; }
+  const btn = el('btn-import-wishes'); btn.disabled = true;
+  el('wish-import-status').innerHTML = 'Import en cours...';
+  try {
+    const { totalNew, errors } = await importWishHistory(raw, (label, page) => {
+      el('wish-import-status').textContent = `Lecture de "${label}" (page ${page})...`;
+    });
+    const errorsHtml = errors.length
+      ? `<div style="color:var(--danger); margin-top:6px; font-size:.75rem;">${errors.length} bannière(s)/page(s) interrompue(s) par une erreur réseau : ${errors.map(escapeHtml).join(' · ')}. Relance l'import, il complétera ce qui manque.</div>`
+      : '';
+    if (totalNew) {
+      el('wish-import-status').innerHTML = `Import terminé : ${totalNew} nouvelle(s) invocation(s) ajoutée(s).` + errorsHtml;
+      el('wish-url-input').value = '';
+    } else {
+      // Rien trouvé : on affiche la requête et la réponse brute exactes pour pouvoir diagnostiquer.
+      const dbg = lastWishDebug;
+      el('wish-import-status').innerHTML = `Import terminé : rien de nouveau. Voici la dernière requête envoyée, pour diagnostic :` +
+        `<pre style="user-select:text; cursor:text; background:var(--bg-panel); border:1px solid var(--border); border-radius:8px; padding:10px; font-size:.68rem; overflow-x:auto; white-space:pre-wrap; word-break:break-all; margin-top:6px;">URL : ${escapeHtml(dbg ? dbg.url : '?')}\nStatut HTTP : ${dbg ? dbg.status : '?'}\nRéponse : ${escapeHtml(dbg ? dbg.rawText : '?')}</pre>` + errorsHtml;
+    }
+    renderWishesView();
+  } catch(e) {
+    el('wish-import-status').textContent = "Échec : " + (e.message || 'clé invalide ou expirée. Relance le script pour en récupérer une nouvelle.');
+  } finally {
+    btn.disabled = false;
+  }
+});
 el('btn-back-from-library').addEventListener('click', () => showView('view-uid'));
 el('btn-back-from-library-detail').addEventListener('click', renderLibraryView);
 el('library-search').addEventListener('input', (e) => { librarySearch = e.target.value; renderLibraryView(); });
