@@ -428,9 +428,7 @@
   .hint{ display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; margin-left:6px; border-radius:50%; background:var(--border); color:var(--text-dim); font-size:.68rem; font-weight:700; cursor:help; position:relative; text-transform:none; }
   .hint:hover::after, .hint:focus::after, .hint.open::after{ content:attr(data-hint); position:absolute; left:50%; top:130%; transform:translateX(-50%); width:max-content; max-width:240px; padding:6px 10px; border-radius:8px; background:#0e1422; border:1px solid var(--accent-soft); color:var(--text); font-size:.74rem; font-weight:400; line-height:1.4; z-index:200; white-space:normal; }
   body{ padding-bottom:56px; }
-  .th-filter{ background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:.7rem; padding:4px 5px; line-height:1; border-radius:4px; }
-  .th-filter:hover{ color:var(--accent); background:rgba(94,216,255,.12); }
-  th.has-filter .th-filter{ color:var(--accent); }
+  .dps-table thead th[data-col]{ cursor:pointer; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
   .dps-table.compact{ min-width:1000px; }
   .dps-table.compact .c-r{ display:none; }
   .dps-scroll-hint{ font-size:.76rem; color:var(--accent); margin:6px 2px; }
@@ -449,7 +447,108 @@
     .tc-card{ grid-template-columns:56px 1fr; gap:10px; }
     .tc-card .portrait img{ width:56px !important; height:56px !important; }
   }
-  @media (pointer:coarse){ .linklike{ padding:10px 4px; display:inline-block; } .th-filter{ min-width:24px; min-height:32px; } }
+  @media (pointer:coarse){ .linklike{ padding:10px 4px; display:inline-block; } }
+  .tc-sticky{ position:sticky; top:0; z-index:25; padding:6px 0 8px; background:linear-gradient(180deg, rgba(14,20,34,.97) 70%, rgba(14,20,34,0)); }
+  .tc-bar{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px; }
+  .tc-chip{ position:relative; display:flex; align-items:center; gap:8px; height:56px; padding:6px 30px 6px 8px; border:1.5px solid var(--gold-soft); border-radius:12px; background:var(--bg-card); min-width:0; }
+  .tc-chip.empty{ border-style:dashed; border-color:var(--border); color:var(--text-dim); justify-content:center; padding:6px; font-size:.82rem; }
+  .tc-chip img{ width:40px; height:40px; border-radius:50%; object-fit:cover; flex:none; background:#0a0e18; }
+  .tc-chip-txt{ min-width:0; }
+  .tc-chip .tname{ font-size:.82rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tc-chip .tsub{ font-size:.66rem; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tc-chip-x{ position:absolute; top:4px; right:4px; width:22px; height:22px; min-height:0 !important; padding:0; border-radius:50%; background:var(--danger); color:#fff; font-size:.62rem; line-height:1; }
+  .tc-tools{ display:flex; align-items:center; gap:10px; margin:6px 0; }
+  .tc-tools input[type=search]{ flex:1; min-width:0; max-width:340px; }
+  .tc-tools #tc-count{ font-size:.76rem; color:var(--text-dim); white-space:nowrap; }
+  .tc-picker{ display:grid; grid-template-columns:repeat(auto-fill, minmax(92px, 1fr)); gap:8px; max-height:34vh; overflow-y:auto; padding:4px 4px 6px 0; border-top:1px solid var(--border-soft, #26304a); border-bottom:1px solid var(--border-soft, #26304a); }
+  .tc-picker .char-card{ padding:6px 4px; border-radius:10px; position:relative; }
+  .tc-picker .char-card img{ width:40px; height:40px; }
+  .tc-picker .char-card .name{ font-size:.7rem; margin-top:4px; line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; }
+  .tc-picker .char-card .sub{ font-size:.62rem; margin-top:1px; }
+  .tc-picker .char-card .check{ top:3px; right:3px; width:16px; height:16px; font-size:.6rem; }
+  .tc-picker .char-card.selected{ background:rgba(90,209,143,.14); box-shadow:0 0 0 2px #5ad18f inset; }
+  .tc-picker .char-card.selected .check{ background:#5ad18f; color:#06210f; border-color:#5ad18f; font-weight:700; }
+  .tc-picker.full .char-card:not(.selected){ opacity:.45; }
+  .tc-help{ margin:8px 0 0; font-size:.8rem; color:var(--text-dim); }
+  .tc-help summary{ cursor:pointer; }
+  .tc-summary{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; margin-top:12px; }
+  .tc-score{ display:flex; align-items:center; gap:10px; font-size:.84rem; }
+  .tc-score b{ font-size:1.05rem; }
+  .tc-pill{ font-size:.76rem; padding:4px 10px; border-radius:999px; border:1px solid rgba(239,91,74,.55); background:rgba(239,91,74,.08); }
+  .tc-pill.info{ border-color:rgba(90,209,143,.45); background:rgba(90,209,143,.07); }
+  .tc-two{ display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; }
+  .tc-minis{ display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:10px; margin-top:6px; }
+  .tc-mini{ border:1px solid var(--border); border-top:3px solid var(--ec, var(--gold-soft)); border-radius:12px; padding:10px 12px; background:var(--bg-panel, #141b2e); min-width:0; }
+  .tc-mini-head{ display:flex; align-items:center; gap:10px; }
+  .tc-mini-head img{ width:44px; height:44px; border-radius:50%; object-fit:cover; background:#0a0e18; flex:none; }
+  .tc-mini-id{ flex:1; min-width:0; }
+  .tc-mini-id .tname{ font-weight:700; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tc-mini-id .tsub{ font-size:.68rem; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tc-ring{ position:relative; width:44px; height:44px; flex:none; }
+  .tc-ring span{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:700; }
+  .tc-tier{ font-size:.7rem; color:var(--gold-soft, #e8c477); margin:4px 0 2px; }
+  .tc-adv{ list-style:none; margin:4px 0 0; padding:0; display:grid; gap:3px; }
+  .tc-adv li{ font-size:.74rem; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; cursor:help; }
+  .tc-more[open] .tc-adv li{ -webkit-line-clamp:unset; display:block; }
+  .tc-ok{ font-size:.76rem; color:#5ad18f; margin-top:4px; }
+  .tc-more{ margin-top:6px; font-size:.78rem; }
+  .tc-more summary{ cursor:pointer; color:var(--accent); font-size:.74rem; }
+  .tc-rot{ margin-top:18px; padding:12px 14px; border:1px solid var(--accent-soft); border-radius:14px; background:rgba(94,216,255,.04); }
+  .tc-rot h3{ margin:0 0 4px; font-size:1rem; color:var(--accent); }
+  .tc-rot-wait{ margin-top:18px; padding:10px 14px; border:1px dashed var(--border); border-radius:12px; font-size:.82rem; color:var(--text-dim); }
+  .tc-steps{ list-style:none; margin:8px 0 0; padding:0; display:grid; gap:6px; counter-reset:st; }
+  .tc-steps li{ counter-increment:st; display:grid; grid-template-columns:28px 34px 1fr; gap:8px; align-items:start; font-size:.82rem; line-height:1.4; }
+  .tc-steps li::before{ content:counter(st); width:24px; height:24px; border-radius:50%; background:var(--accent-soft); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.78rem; margin-top:2px; }
+  .tc-steps img{ width:32px; height:32px; border-radius:50%; object-fit:cover; background:#0a0e18; }
+  .tc-steps .who{ font-weight:700; }
+  .tc-steps .tag{ font-size:.64rem; padding:1px 7px; border-radius:999px; background:rgba(255,255,255,.07); color:var(--text-dim); margin-left:6px; }
+  .tc-rot ul.tc-notes{ margin:6px 0 0; padding-left:18px; font-size:.8rem; line-height:1.45; }
+  .tc-chip-star{ position:absolute; right:4px; bottom:4px; width:22px; height:22px; min-height:0 !important; padding:0; border-radius:50%; background:transparent; border:1px solid var(--border); color:var(--text-dim); font-size:.78rem; line-height:1; }
+  .tc-chip-star.auto{ color:var(--gold-soft, #e8c477); border-color:var(--gold-soft, #e8c477); }
+  .tc-chip-star.on{ background:var(--gold, #f0b84a); color:#2a1d00; border-color:var(--gold, #f0b84a); }
+  .tc-deduct{ margin-top:10px; padding:8px 12px; border:1px solid var(--border); border-radius:10px; background:rgba(255,255,255,.025); font-size:.8rem; }
+  .tc-deduct .t{ font-weight:700; color:var(--accent); font-size:.8rem; }
+  .tc-deduct ul{ margin:4px 0 0; padding-left:18px; line-height:1.5; }
+  .tc-gift{ font-size:.76rem; color:var(--gold-soft, #e8c477); margin-top:2px; }
+  .tc-loop{ font-size:.76rem; color:var(--text-dim); margin-top:2px; }
+  .tc-detail{ margin-top:10px; font-size:.8rem; }
+  .tc-detail summary{ cursor:pointer; color:var(--accent); font-size:.78rem; }
+  .tc-dets{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:10px 18px; margin-top:8px; }
+  .tc-det-name{ font-weight:700; font-size:.84rem; }
+  .tc-det ul{ margin:2px 0 0; padding-left:16px; line-height:1.45; }
+  .tc-legend{ margin-top:8px; font-size:.72rem; color:var(--text-dim); }
+  .tc-src{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; margin-top:8px; font-size:.72rem; color:var(--text-dim); }
+  .tc-src a{ color:var(--accent); text-decoration:none; }
+  .tc-src a:hover{ text-decoration:underline; }
+  .tc-links{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .tc-links a{ font-size:.78rem; padding:6px 12px; border:1px solid var(--border); border-radius:999px; color:var(--accent); text-decoration:none; }
+  .tc-links a:hover{ border-color:var(--accent-soft); }
+  @media (max-width:640px){
+    .tc-bar{ grid-template-columns:repeat(4, minmax(0,1fr)); gap:5px; }
+    .tc-chip{ flex-direction:column; justify-content:center; gap:2px; height:auto; min-height:62px; padding:5px 2px; text-align:center; }
+    .tc-chip img{ width:34px; height:34px; }
+    .tc-chip-txt{ max-width:100%; }
+    .tc-chip .tname{ font-size:.66rem; }
+    .tc-chip .tsub{ display:none; }
+    .tc-chip.empty{ font-size:.64rem; }
+    .tc-two{ grid-template-columns:1fr; }
+    .tc-picker{ max-height:30vh; grid-template-columns:repeat(auto-fill, minmax(84px, 1fr)); }
+    .tc-steps li{ grid-template-columns:24px 28px 1fr; }
+    .tc-chip-x{ width:24px; height:24px; top:-7px; right:-5px; }
+    .tc-chip-star{ width:22px; height:22px; top:-7px; left:-5px; right:auto; bottom:auto; background:var(--bg-card); }
+    .tc-chip{ overflow:visible; }
+  }
+  .fetch-notice{ margin:8px 0; padding:8px 12px; border-radius:10px; border:1px solid var(--border); font-size:.82rem; line-height:1.45; }
+  .fetch-notice.warn{ border-color:#e8c477; background:rgba(232,196,119,.08); }
+  .fetch-notice.info{ border-color:rgba(94,216,255,.35); background:rgba(94,216,255,.05); }
+  .fetch-notice .btn-ghost{ padding:3px 10px; min-height:0; font-size:.78rem; margin-left:6px; }
+  .enka-stats{ width:100%; border-collapse:collapse; font-size:.78rem; margin:6px 0; }
+  .enka-stats th, .enka-stats td{ text-align:left; padding:3px 8px 3px 0; border-bottom:1px solid var(--border); }
+  .enka-stats th{ color:var(--text-dim); font-weight:600; }
+  .enka-test{ margin-top:8px; padding:8px 12px; border:1px solid var(--border); border-radius:10px; font-size:.82rem; line-height:1.6; }
+  .enka-test-head{ font-size:.76rem; color:var(--text-dim); margin-bottom:4px; }
+  .enka-test-sum{ margin-top:6px; padding-top:6px; border-top:1px solid var(--border); }
+  pre.enka-code{ max-height:260px; overflow:auto; font-size:.72rem; line-height:1.4; padding:10px; border:1px solid var(--border); border-radius:8px; background:rgba(0,0,0,.25); white-space:pre; }
   .modal-overlay{ position:fixed; inset:0; z-index:9000; background:rgba(5,8,16,.72); display:flex; align-items:flex-start; justify-content:center; padding:5vh 12px; overflow:auto; backdrop-filter:blur(3px); }
   .modal-box{ width:100%; max-width:640px; background:var(--bg-panel, #141b2e); border:1px solid var(--accent-soft); border-radius:16px; padding:16px 18px 20px; box-shadow:0 20px 60px rgba(0,0,0,.6); }
   .modal-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
@@ -501,6 +600,7 @@
     <div class="status" id="uid-status"></div>
     <div class="row" id="uid-retry-row" style="display:none;">
       <button class="btn-ghost" id="btn-retry">🔁 Réessayer</button>
+      <button class="btn-ghost" id="btn-lastfull" style="display:none;"></button>
     </div>
     <div class="progress-wrap" id="uid-progress-wrap">
       <div class="progress-label" id="uid-progress-label">Connexion…</div>
@@ -538,6 +638,7 @@
       <div class="progress-label" id="refresh-progress-label">Rafraîchissement…</div>
       <div class="progress-track"><div class="progress-bar" id="refresh-progress-bar"></div></div>
     </div>
+    <div class="fetch-notice" id="fetch-notice" style="display:none;"></div>
     <div class="grid" id="char-grid"></div>
     <div class="row">
       <button class="btn-primary" id="btn-see-stats" disabled>Voir les stats (0 sélectionné)</button>
@@ -680,6 +781,32 @@
     </div>
     <div class="helpbox">Réimporter un fichier ne crée jamais de doublons : les persos et lignes déjà présents sont reconnus, seul ce qui est nouveau ou plus récent est ajouté.</div>
 
+    <div class="subhead" style="margin-top:26px;">Connexion à Enka (vitrine)</div>
+    <div class="helpbox" style="margin-top:0;">
+      L'appli interroge Enka directement ; si Enka limite les requêtes ou ne répond pas, elle attend, réessaie, puis passe par des relais publics et retient le chemin qui marche. Le test ci-dessous montre ce qui fonctionne depuis ce navigateur.
+    </div>
+    <div id="enka-route-stats"></div>
+    <div class="row">
+      <button class="btn-primary" id="btn-enka-test">🩺 Tester la connexion</button>
+    </div>
+    <div class="enka-test" id="enka-test-result" style="display:none;"></div>
+    <div class="subhead" style="margin-top:14px;">Proxy personnel (optionnel, le plus fiable)</div>
+    <div class="row">
+      <input type="text" id="enka-proxy-input" placeholder="https://mon-proxy.mon-compte.workers.dev" autocomplete="off" autocapitalize="off" spellcheck="false" style="flex:1; min-width:220px;">
+      <button class="btn-ghost" id="btn-enka-proxy-save">💾 Enregistrer</button>
+    </div>
+    <details class="onboarding">
+      <summary>🛠 Créer mon proxy gratuit (Cloudflare Workers) — à faire une seule fois</summary>
+      <ol>
+        <li>Crée un compte gratuit sur <b>dash.cloudflare.com</b>, puis ouvre <b>Workers &amp; Pages ▸ Create ▸ Create Worker</b> et valide « Deploy ».</li>
+        <li>Clique <b>Edit code</b>, remplace tout le contenu par le code ci-dessous, puis <b>Deploy</b>.</li>
+        <li>Copie l'adresse du Worker (se termine par <code>.workers.dev</code>), colle-la dans le champ ci-dessus, enregistre, puis lance « Tester la connexion ».</li>
+      </ol>
+      <div class="row"><button class="btn-ghost" id="btn-copy-worker">📋 Copier le code du Worker</button></div>
+      <pre class="enka-code" id="enka-worker-code"></pre>
+      <div class="onb-tip">Ce proxy relaie simplement la requête vers Enka avec son propre User-Agent (demandé par la doc d'Enka) et sa propre adresse IP : c'est ce que font les sites qui affichent les vitrines. Offre gratuite : 100 000 requêtes par jour.</div>
+    </details>
+
     <div class="subhead" style="margin-top:26px;">Base de référence (noms, images)</div>
     <div class="row" style="margin-top:20px; border-top:1px solid var(--border); padding-top:16px;">
       <button class="btn-ghost btn-icon" id="btn-refresh-refbase" title="Recharge les noms de perso/armes/sets les plus récents">🔄 Recharger la base de référence</button>
@@ -764,22 +891,26 @@
   <section id="view-theorycraft" class="panel hidden">
     <div class="topbar">
       <div>
-        <div class="player-tag">TheoryCraft — analyse d'équipe : rôles, résonance et builds</div>
+        <div class="player-tag">TheoryCraft — analyse d'équipe : rôles, résonance, builds et rotation</div>
         <select id="tc-collection-picker" class="btn-ghost" style="padding:6px 10px; margin-top:8px;"></select>
       </div>
-      <button class="btn-ghost" id="btn-back-from-theorycraft">← Retour</button>
+      <div class="row" style="margin-top:0;">
+        <button class="btn-ghost" id="btn-tc-glossary">📖 Glossaire</button>
+        <button class="btn-ghost" id="btn-back-from-theorycraft">← Retour</button>
+      </div>
     </div>
-    <div class="helpbox" style="margin-top:0; margin-bottom:14px;">
-      Sélectionne jusqu'à 4 persos de ta collection : l'analyse se met à jour toute seule. Elle montre les rôles estimés, la résonance et les réactions de l'équipe, le score de chaque build avec les pièces à améliorer en priorité, et une fiche rapide (sets, stats, rotation). Les fiches complètes sont dans la Bibliothèque.
+    <div class="tc-sticky">
+      <div class="tc-bar" id="tc-slots"></div>
     </div>
-    <div class="team-slots" id="tc-slots"></div>
-    <div class="row">
-      <button class="btn-primary" id="btn-tc-calculate">🔍 Actualiser l'analyse</button>
-      <button class="btn-ghost" id="btn-tc-glossary">📖 Glossaire</button>
+    <div class="tc-tools">
+      <input type="search" id="tc-search" placeholder="Chercher un personnage de la collection…" autocomplete="off">
+      <span class="helpbox" id="tc-count" style="margin:0;"></span>
     </div>
+    <div class="tc-picker" id="tc-grid"></div>
+    <details class="tc-help"><summary>ℹ️ Comment ça marche</summary>
+      <div class="helpbox" style="margin-top:6px;">Clique jusqu'à 4 personnages de ta collection : l'analyse se met à jour toute seule. Tu obtiens les rôles estimés, la résonance et les réactions de l'équipe, le score de chaque build avec ses pièces à améliorer, et — une fois les 4 persos choisis — une proposition d'enchaînement des sorts (rotation).</div>
+    </details>
     <div id="tc-result"></div>
-    <div class="subhead" style="margin-top:18px;">Clique un perso de ta collection active pour l'ajouter/retirer (4 max)</div>
-    <div class="grid" id="tc-grid"></div>
   </section>
 
   <!-- VIEW 6 : TABLEAU DPS -->
@@ -805,9 +936,9 @@
     <div class="dps-wrap">
       <table class="dps-table" id="dps-table"></table>
     </div>
-    <div id="dps-filter-popup" style="display:none; position:fixed; z-index:9999;"></div>
+    <div id="dps-filter-popup" style="display:none; position:absolute; z-index:9999;"></div>
     <div class="helpbox">
-      Clique le nom d'une colonne pour trier, et le petit ▾ à côté pour filtrer (clic droit possible sur ordinateur). R1 à R7 sont tes 7 mesures, Moyenne leur moyenne, PBR ton meilleur résultat et PB Hit ton meilleur coup unique. Le dégradé de MOYENNE est calculé sur toutes les lignes, indépendamment du tri. Pour un personnage connu, l'élément et sa couleur sont automatiques ; pour un nom inconnu, un choix d'élément reste disponible.
+      Clique sur un en-tête de colonne pour trier (1er clic : croissant, 2e clic : décroissant) ; clic droit sur l'en-tête (appui long sur téléphone) pour filtrer. R1 à R7 sont tes 7 mesures, Moyenne leur moyenne, PBR ton meilleur résultat et PB Hit ton meilleur coup unique. Le dégradé de MOYENNE est calculé sur toutes les lignes, indépendamment du tri. Pour un personnage connu, l'élément et sa couleur sont automatiques ; pour un nom inconnu, un choix d'élément reste disponible.
     </div>
   </section>
 </div>
@@ -891,7 +1022,7 @@ function nicknameFor(uid, fallback){
 const GENSHIN_DEV_BASE = 'https://genshin.jmp.blue';
 
 // Version de l'outil : X.Y.Z — X = changement majeur, Y = nouvelle fonctionnalité, Z = itération/correctif.
-const APP_VERSION = '5.0.0';
+const APP_VERSION = '5.2.0';
 
 const ELEMENTS = {
   Fire:     { name:'Pyro',    color:'#ef5b4a', dmgId:'40' },
@@ -1159,7 +1290,7 @@ function el(id){ return document.getElementById(id); }
 // Toute écriture dans le stockage de l'appli (collections, tableau DPS, UID, état de l'interface…)
 // met à jour l'indicateur « Sauvegardé à HH:MM:SS ». Les caches techniques sont ignorés.
 (function(){
-  const IGNORE = /^(gdb_assets_cache|gdb_player_cache|gdb_enka_status|gdb_unknown_log)/;
+  const IGNORE = /^(gdb_assets_cache|gdb_player_cache|gdb_enka_status|gdb_enka_routes|gdb_unknown_log)/;
   const orig = Storage.prototype.setItem;
   let flashTimer = null;
   function paint(ok){
@@ -2690,6 +2821,10 @@ const GLOSSARY = [
   ['Sous-stats / rolls', "Les 4 lignes secondaires d'un artéfact. Chaque amélioration (« roll ») fait monter l'une d'elles ; un roll « utile » tombe sur une stat qui compte pour ce personnage."],
   ['Stat principale', "La stat en gros sur un artéfact. Pour le Sablier, la Coupe et la Couronne, elle se choisit : c'est le réglage le plus important."],
   ['2 pièces / 4 pièces', "Un set d'artéfacts donne un bonus avec 2 pièces portées, un autre avec 4. On peut aussi mélanger deux sets en 2 + 2."],
+  ['E / Q', "Touches de la compétence élémentaire (E) et du déchaînement élémentaire (Q). « E puis Q » = lance la compétence, puis le déchaînement."],
+  ['Attaque normale / chargée / plongeante', "Les trois types d'attaque de base : enchaînement de coups (normale), attaque qui consomme de l'endurance (chargée), attaque depuis les airs (plongeante)."],
+  ['AN / AC / AP', "Abréviations des rotations : AN = attaque normale (« 3 AN » = trois coups), AC = attaque chargée, AP = attaque plongeante."],
+  ['A1 / A4 (passifs)', "Passifs débloqués en montant le personnage : A1 à l'ascension 1 (niveau 20), A4 à l'ascension 4 (niveau 60)."],
   ['Rotation', "L'ordre dans lequel on enchaîne les compétences et les attaques de l'équipe pour faire un maximum de dégâts."],
   ['F2P', "Free-to-play : une option qui ne demande rien dépenser (arme 3-4★ ou gratuite par exemple)."],
   ['Sélénocution / Sélénofleurissement', "Réactions de Nod-Krai (équipes « lunaires » : Columbina, Flins, Ineffa, Lauma…)."],
@@ -2747,18 +2882,40 @@ function readPlayerCache(uid){
     return entry;
   } catch(e){ return null; }
 }
-function writePlayerCache(uid, data){
+const hasAvatars = d => !!(d && Array.isArray(d.avatarInfoList) && d.avatarInfoList.length);
+function prunePlayerCaches(keepUid){
   try {
-    const ttl = Number(data && data.ttl);
-    const ttlMs = Number.isFinite(ttl) && ttl > 0 ? ttl * 1000 : PLAYER_CACHE_FALLBACK_TTL;
-    localStorage.setItem(playerCacheKey(uid), JSON.stringify({
-      savedAt: Date.now(),
-      expiresAt: Date.now() + ttlMs,
-      ttl,
-      data
-    }));
-  } catch(e){ /* quota/private mode: l'app continue sans cache */ }
+    const items = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(PLAYER_CACHE_PREFIX) && k !== playerCacheKey(keepUid)) {
+        let at = 0; try { at = JSON.parse(localStorage.getItem(k)).savedAt || 0; } catch(e){}
+        items.push([k, at]);
+      }
+    }
+    items.sort((a, b) => a[1] - b[1]);
+    items.slice(0, Math.max(1, items.length - 1)).forEach(([k]) => localStorage.removeItem(k)); // on garde le plus récent
+  } catch(e){}
 }
+function writePlayerCache(uid, data){
+  const ttl = Number(data && data.ttl);
+  const ttlMs = Number.isFinite(ttl) && ttl > 0 ? ttl * 1000 : PLAYER_CACHE_FALLBACK_TTL;
+  const entry = { savedAt: Date.now(), expiresAt: Date.now() + ttlMs, ttl, data };
+  // Si la nouvelle réponse n'a plus de détails de personnages (vitrine fermée/masquée), on garde la dernière vitrine complète connue.
+  if (!hasAvatars(data)) {
+    const prev = readPlayerCache(uid);
+    const lf = prev && (hasAvatars(prev.data) ? { savedAt: prev.savedAt, data: prev.data } : prev.lastFull);
+    if (lf) entry.lastFull = lf;
+  }
+  const json = JSON.stringify(entry);
+  try { localStorage.setItem(playerCacheKey(uid), json); }
+  catch(e) {
+    // Stockage plein : on supprime les vitrines les plus anciennes d'autres UID et on réessaie une fois.
+    prunePlayerCaches(uid);
+    try { localStorage.setItem(playerCacheKey(uid), json); } catch(e2) { /* mode privé / quota : l'app continue sans cache */ }
+  }
+}
+function lastKnownShowcase(uid){ const c = readPlayerCache(uid); return c && c.lastFull ? c.lastFull : null; }
 function getHistory(){
   try {
     const raw = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
@@ -2837,108 +2994,208 @@ async function loadAssets(force, onProgress){
   return obj;
 }
 
-// ---------- Fournisseur UID : cache + retries + fallback hors-ligne ----------
+// ---------- Fournisseur UID : cache + reprises + chemins multiples ----------
+// ---------- Client Enka robuste ----------
+// Principes (doc officielle d'Enka) : une limite de débit dynamique (réponses de plus en plus lentes, puis 429),
+// un champ « ttl » (données en cache côté Enka jusque-là) et des codes d'erreur précis. On ne martèle donc pas :
+// on respecte le ttl, on attend quand Enka demande de ralentir, puis on change de chemin (autre adresse IP)
+// et on retient le chemin qui marche pour ne plus perdre de temps sur ceux qui échouent.
 const ENKA_KNOWN_ERRORS = {
   400: "UID invalide : vérifie qu'il ne contient que des chiffres, copiés sans espace ni lettre.",
   404: "Joueur introuvable pour cet UID — vérifie qu'il est correct (visible dans ton profil en jeu).",
-  424: "Le jeu Genshin Impact est actuellement en maintenance côté serveur. Réessaie plus tard.",
+  424: "Le jeu Genshin Impact est actuellement en maintenance côté serveur (ou vient d'être mis à jour). Réessaie plus tard.",
   429: "Enka.Network limite temporairement les requêtes. Les données en cache seront utilisées si elles sont disponibles.",
 };
+const ENKA_ROUTES_KEY = 'gdb_enka_routes_v1';
+const ENKA_PROXY_KEY = 'gdb_enka_proxy_v1';
+const ENKA_SAMPLE_UID = '618285856'; // UID d'exemple de la doc Enka, pour le test de connexion
+let ENKA_TIME_SCALE = 1; // 1 en usage normal (réduit uniquement par les tests automatiques)
+const enkaMs = ms => Math.max(15, Math.round(ms * ENKA_TIME_SCALE));
+const enkaWait = ms => sleep(enkaMs(ms));
 
 function sleep(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
 
-async function fetchPlayerNetwork(uid){
-  const target = `https://enka.network/api/uid/${uid}`;
-  // Direct d'abord (source la plus fiable), avec retries à backoff progressif —
-  // c'est ce qui marche très bien en pratique et qu'on veut préserver.
-  const delays = [0, 900, 2200];
+// Proxy personnel (optionnel) : un petit Worker Cloudflare gratuit qui relaie la requête avec un en-tête User-Agent
+// propre et sa propre adresse IP — l'équivalent de ce que font les sites qui affichent les vitrines.
+function getEnkaProxy(){ try { return localStorage.getItem(ENKA_PROXY_KEY) || ''; } catch(e){ return ''; } }
+function normalizeEnkaProxy(v){
+  v = String(v || '').trim();
+  if (!v) return '';
+  if (!/^https:\/\//i.test(v)) throw new Error("L'adresse du proxy doit commencer par https://");
+  let u; try { u = new URL(v); } catch(e) { throw new Error('Adresse de proxy invalide.'); }
+  return u.origin + u.pathname.replace(/\/api\/uid.*$/i, '').replace(/\/+$/, '');
+}
+function setEnkaProxy(v){
+  const n = normalizeEnkaProxy(v);
+  try { if (n) localStorage.setItem(ENKA_PROXY_KEY, n); else localStorage.removeItem(ENKA_PROXY_KEY); } catch(e){}
+  return n;
+}
+
+const ENKA_RELAYS = [
+  { id:'allorigins', label:'Relais AllOrigins',  build: t => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(t) },
+  { id:'codetabs',   label:'Relais CodeTabs',    build: t => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(t) },
+  { id:'corsproxy',  label:'Relais corsproxy.io', build: t => 'https://corsproxy.io/?url=' + encodeURIComponent(t) },
+];
+function enkaAllRoutes(){
+  const routes = [];
+  const proxy = getEnkaProxy();
+  if (proxy) routes.push({ id:'custom', label:'Ton proxy personnel', kind:'proxy', build: (t, uid, info) => proxy + '/api/uid/' + uid + (info ? '?info' : '') });
+  routes.push({ id:'direct', label:'Accès direct à Enka', kind:'direct', build: (t, uid, info) => t + (info ? '?info' : '') });
+  ENKA_RELAYS.forEach(r => routes.push({ id:r.id, label:r.label, kind:'relay', build: (t, uid, info) => r.build(t + (info ? '?info' : '')) }));
+  return routes;
+}
+
+// Mémoire des chemins : statistiques persistantes + pauses de session (limite de débit, échecs répétés).
+function readRouteStats(){ try { return JSON.parse(localStorage.getItem(ENKA_ROUTES_KEY)) || {}; } catch(e){ return {}; } }
+function writeRouteStats(s){ try { localStorage.setItem(ENKA_ROUTES_KEY, JSON.stringify(s)); } catch(e){} }
+const _enkaCooldown = {};
+function noteRoute(id, ok, info){
+  const s = readRouteStats(), r = s[id] || { ok:0, fail:0, streak:0 };
+  if (ok) { r.ok++; r.streak = 0; r.lastOk = Date.now(); s.last = id; delete _enkaCooldown[id]; }
+  else {
+    r.fail++; r.streak++; r.lastFail = Date.now(); r.lastCode = info ? (info.code || info.kind || null) : null;
+    if (info && info.kind === '429') _enkaCooldown[id] = Date.now() + Math.min(Math.max(info.retryAfterMs || 0, 45000), 120000);
+    else if (r.streak >= 2) _enkaCooldown[id] = Date.now() + Math.min(r.streak * 60000, 10 * 60000);
+  }
+  s[id] = r; writeRouteStats(s);
+}
+function orderedRoutes(){
+  const all = enkaAllRoutes(), s = readRouteStats(), now = Date.now();
+  const paused = r => _enkaCooldown[r.id] && _enkaCooldown[r.id] > now;
+  const active = all.filter(r => !paused(r)), waiting = all.filter(paused);
+  // Si l'accès direct déçoit régulièrement (ou est en pause), on passe d'abord par le dernier chemin qui a marché.
+  const directBad = !active.find(r => r.id === 'direct') || (s.direct && s.direct.streak >= 2);
+  if (s.last && directBad) active.sort((a, b) => (b.id === s.last) - (a.id === s.last));
+  return active.concat(waiting);
+}
+
+function parseRetryAfter(v){
+  if (!v) return 0;
+  const n = Number(v);
+  if (Number.isFinite(n)) return Math.max(0, n * 1000);
+  const t = Date.parse(v);
+  return Number.isFinite(t) ? Math.max(0, t - Date.now()) : 0;
+}
+// Une tentative sur un chemin donné → { ok, data } ou { ok:false, kind, code, retryAfterMs, terminal }
+async function enkaAttempt(route, uid, opts){
+  const t0 = Date.now();
+  const url = route.build('https://enka.network/api/uid/' + uid + '/', uid, !!opts.info); // forme exacte de la doc Enka (avec « / » final)
+  let res;
+  try { res = await fetchWithTimeout(url, enkaMs(opts.timeout || 15000), { cache:'no-store' }); }
+  catch(e) { return { ok:false, kind: (e && e.name === 'AbortError') ? 'timeout' : 'network', ms: Date.now() - t0 }; }
+  const ms = Date.now() - t0, st = res.status;
+  const ra = parseRetryAfter(res.headers && res.headers.get ? res.headers.get('Retry-After') : null);
+  if (!res.ok) {
+    return { ok:false, kind: st === 429 ? '429' : st >= 500 ? '5xx' : st === 408 ? 'timeout' : 'http', code: st, ms, retryAfterMs: ra,
+             terminal: route.kind === 'direct' && st !== 429 && !!ENKA_KNOWN_ERRORS[st] };
+  }
+  let data;
+  try { data = await res.json(); } catch(e) { return { ok:false, kind:'badbody', code:'JSON', ms }; }
+  // Un relais peut répondre « 200 » avec une page d'erreur : on n'accepte qu'une vraie réponse Enka.
+  if (!data || typeof data !== 'object' || !(data.playerInfo || data.uid)) return { ok:false, kind:'badbody', code:'forme', ms };
+  return { ok:true, data, ms };
+}
+
+async function fetchPlayerNetwork(uid, opts = {}){
+  const onStep = opts.onStep || (() => {});
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    const e = new Error("Tu es hors ligne : impossible de joindre Enka. Les vitrines déjà enregistrées restent consultables."); e.kind = 'offline'; throw e;
+  }
+  const deadline = Date.now() + enkaMs(60000);
   const journal = [];
-
-  for (let attempt = 0; attempt < delays.length; attempt++) {
-    if (delays[attempt]) await sleep(delays[attempt]);
-    let res;
-    try {
-      res = await fetchWithTimeout(target, 15000, { cache: 'no-store' });
-    } catch(e) {
-      journal.push({ type:'network', code: e && e.name === 'AbortError' ? 'timeout' : null });
-      continue;
+  for (const route of orderedRoutes()) {
+    const maxAttempts = route.kind === 'relay' ? 1 : 3;
+    let last = null;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      if (Date.now() >= deadline) break;
+      onStep(route.label + (attempt > 1 ? ' — essai ' + attempt + '/' + maxAttempts : '') + '…');
+      last = await enkaAttempt(route, uid, { timeout: route.kind === 'relay' ? 12000 : (attempt === 1 ? 20000 : 12000) });
+      journal.push({ route: route.id, rk: route.kind, label: route.label, attempt, kind: last.ok ? 'ok' : last.kind, code: last.code || null, ms: last.ms });
+      if (last.ok) {
+        noteRoute(route.id, true);
+        writePlayerCache(uid, last.data);
+        return { data: last.data, source: route.id, routeKind: route.kind, journal };
+      }
+      if (last.terminal) { noteRoute(route.id, false, last); const e = new Error(ENKA_KNOWN_ERRORS[last.code]); e.kind = 'terminal'; e.code = last.code; e.journal = journal; throw e; }
+      if (attempt >= maxAttempts) break;
+      if (last.kind === '429') {                       // Enka demande de ralentir : une seule reprise, après une courte attente
+        if (attempt >= 2) break;
+        const wait = Math.min(last.retryAfterMs || 4000, 9000);
+        onStep('Enka limite les requêtes — nouvelle tentative dans ' + Math.ceil(wait / 1000) + ' s…');
+        await enkaWait(wait);
+      } else if (last.kind === '5xx') await enkaWait(attempt === 1 ? 1200 : 3000);
+      else if (last.kind === 'timeout') { if (attempt >= 2) break; await enkaWait(800); }
+      else if (last.kind === 'network') { if (attempt >= 2) break; await enkaWait(700); }
+      else break;                                      // réponse inexploitable / erreur 4xx : inutile d'insister sur ce chemin
     }
-
-    if (ENKA_KNOWN_ERRORS[res.status]) {
-      throw new Error(ENKA_KNOWN_ERRORS[res.status]);
-    }
-    if (!res.ok) {
-      journal.push({ type: res.status >= 500 ? 'down' : 'other', code: res.status });
-      if (res.status >= 400 && res.status < 500 && res.status !== 408) break;
-      continue;
-    }
-    try {
-      const data = await res.json();
-      setEnkaStatus('ok');
-      writePlayerCache(uid, data);
-      return { data, source:'network' };
-    } catch(e) {
-      journal.push({ type:'other', code:'JSON' });
-    }
+    if (last && !last.ok) noteRoute(route.id, false, last);
+    if (Date.now() >= deadline) break;
   }
-
-  // Dernier recours seulement : relais publics (les mêmes que l'outil Fetcher,
-  // qui fonctionnent très bien). On reste "soft" en ne les sollicitant
-  // qu'après épuisement de la source directe, pas en parallèle ni d'emblée —
-  // pour ne pas abuser de ces services tiers gratuits.
-  const relays = [
-    'https://api.allorigins.win/raw?url=' + encodeURIComponent(target),
-    'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(target),
-  ];
-  for (const relayUrl of relays) {
-    let res;
-    try {
-      res = await fetchWithTimeout(relayUrl, 15000);
-    } catch(e) {
-      journal.push({ type:'network', code:'relay' });
-      continue;
-    }
-    if (ENKA_KNOWN_ERRORS[res.status]) throw new Error(ENKA_KNOWN_ERRORS[res.status]);
-    if (!res.ok) {
-      journal.push({ type:'other', code: res.status });
-      continue;
-    }
-    try {
-      const data = await res.json();
-      setEnkaStatus('ok');
-      writePlayerCache(uid, data);
-      return { data, source:'relay' };
-    } catch(e) {
-      journal.push({ type:'other', code:'JSON-relay' });
-    }
-  }
-
   throw summarizeFailure(journal);
 }
 
-async function fetchPlayer(uid, options = {}){
+function describeAttempt(j){
+  switch (j.kind) {
+    case '429': return 'limite de débit (429)';
+    case '5xx': return 'serveur indisponible (' + j.code + ')';
+    case 'timeout': return 'pas de réponse à temps';
+    case 'network': return 'connexion refusée ou bloquée';
+    case 'badbody': return 'réponse inexploitable';
+    case 'http': return 'erreur ' + j.code;
+    case 'ok': return 'OK';
+    default: return j.kind;
+  }
+}
+function summarizeFailure(journal){
+  const has = k => journal.some(j => j.kind === k);
+  const known = journal.find(j => j.rk === 'direct' && [400, 404, 424].includes(Number(j.code)));
+  let msg;
+  if (known) msg = ENKA_KNOWN_ERRORS[Number(known.code)];
+  else if (has('429')) msg = "Enka limite temporairement les requêtes venues de ton réseau (trop de demandes récentes). Patiente environ une minute puis réessaie : l'appli a déjà attendu, retenté et essayé des relais.";
+  else if (journal.length && journal.every(j => j.kind === 'network' || j.kind === 'timeout')) msg = "Impossible de joindre Enka depuis ce navigateur (réseau coupé, VPN ou bloqueur de contenu ?). Tes collections déjà enregistrées restent utilisables.";
+  else msg = "Enka.Network ne répond pas correctement pour le moment. Réessaie dans quelques minutes ; tes collections déjà enregistrées restent utilisables.";
+  const e = new Error(msg);
+  e.kind = 'failure'; e.journal = journal; e.retryAfterMs = has('429') ? 60000 : 30000;
+  e.detail = journal.map(j => j.label + (j.attempt > 1 ? ' (essai ' + j.attempt + ')' : '') + ' : ' + describeAttempt(j)).join(' → ') +
+    ". Une ancienne vitrine du cache est utilisée automatiquement quand elle existe.";
+  return e;
+}
+
+// Dernier résultat d'une récupération (pour la bannière et le réessai automatique).
+let lastPlayerFetch = null;
+const _enkaInflight = {};
+function fetchPlayer(uid, options = {}){
+  const k = String(uid);
+  if (_enkaInflight[k]) return _enkaInflight[k];   // deux demandes simultanées = une seule requête (on ménage la limite de débit)
+  const p = fetchPlayerCore(uid, options).finally(() => { delete _enkaInflight[k]; });
+  _enkaInflight[k] = p;
+  return p;
+}
+async function fetchPlayerCore(uid, options){
   const force = !!options.force;
   const cached = readPlayerCache(uid);
-  const now = Date.now();
-
-  // Respecte le TTL fourni par Enka : inutile de refaire une requête tant que
-  // le serveur indique que la vitrine ne sera pas actualisée.
-  if (!force && cached && cached.expiresAt > now) {
+  // Respecte le TTL fourni par Enka : tant qu'il n'est pas écoulé, une nouvelle requête ne donnerait rien de neuf.
+  if (!force && cached && cached.expiresAt > Date.now()) {
     setEnkaStatus('cache');
+    lastPlayerFetch = { uid: String(uid), state:'cache', savedAt: cached.savedAt };
     return cached.data;
   }
-
   try {
-    const result = await fetchPlayerNetwork(uid);
-    return result.data;
+    const r = await fetchPlayerNetwork(uid, { onStep: options.onStep });
+    const state = r.routeKind === 'relay' ? 'relay' : 'ok';
+    setEnkaStatus(state);
+    lastPlayerFetch = { uid: String(uid), state, via: r.source, journal: r.journal, savedAt: Date.now() };
+    return r.data;
   } catch(err) {
-    // Si Enka tombe, une dernière copie valide vaut mieux qu'une page bloquée.
-    // Même expirée, elle permet de consulter et analyser la vitrine.
-    if (cached && cached.data) {
+    const userError = err.kind === 'terminal' && (err.code === 400 || err.code === 404);
+    // Si Enka tombe, une dernière copie valide vaut mieux qu'une page bloquée (sauf UID invalide ou introuvable).
+    if (cached && cached.data && !userError) {
       setEnkaStatus('stale');
+      lastPlayerFetch = { uid: String(uid), state:'stale', savedAt: cached.savedAt, error: err.message, detail: err.detail, journal: err.journal };
       return cached.data;
     }
     setEnkaStatus('down');
+    lastPlayerFetch = { uid: String(uid), state:'down', error: err.message, detail: err.detail, journal: err.journal };
     throw err;
   }
 }
@@ -2948,6 +3205,7 @@ const ENKA_STATUS_KEY = 'gdb_enka_status';
 const ENKA_STATUS_LABELS = {
   ok:      { text:'UID : Enka OK', title:'Dernière récupération effectuée directement depuis Enka.Network' },
   cache:   { text:'UID : cache valide', title:'Aucune requête Enka inutile : le TTL de cette vitrine est encore valide' },
+  relay:   { text:'UID : OK (via relais)', title:"Vitrine récupérée via un relais : l'accès direct à Enka n'a pas répondu depuis ton réseau" },
   stale:   { text:'UID : cache de secours', title:'Enka est momentanément indisponible ; dernière donnée locale utilisée' },
   down:    { text:'UID : indisponible', title:'Aucune donnée réseau ni cache exploitable' },
   unknown: { text:'UID : non testé', title:'Pas encore testé cette session' },
@@ -2956,7 +3214,7 @@ function setEnkaStatus(state){
   const info = ENKA_STATUS_LABELS[state] || ENKA_STATUS_LABELS.unknown;
   const dot = el('enka-status-dot');
   const text = el('enka-status-text');
-  if (dot) { dot.className = 'status-led led-' + (state === 'cache' || state === 'stale' ? 'degraded' : state); dot.title = info.title; }
+  if (dot) { dot.className = 'status-led led-' + (state === 'cache' || state === 'stale' || state === 'relay' ? 'degraded' : state); dot.title = info.title; }
   if (text) text.textContent = info.text;
   try { localStorage.setItem(ENKA_STATUS_KEY, JSON.stringify({ state, at: Date.now() })); } catch(e){}
 }
@@ -2982,14 +3240,6 @@ async function checkGenshinDev(){
     try { localStorage.setItem(GENSHIN_DEV_STATUS_KEY, JSON.stringify({ ok:false, at:Date.now() })); } catch(e2){}
     return false;
   }
-}
-
-function summarizeFailure(journal){
-  const typeLabel = { network:"n'a pas répondu", down:'est temporairement indisponible', other:'a renvoyé une erreur' };
-  const line = journal.map(j => `${typeLabel[j.type] || 'a échoué'}${j.code ? ' (' + j.code + ')' : ''}`).join(', ');
-  const e = new Error("Enka.Network ne répond pas pour le moment. Réessaie dans quelques minutes ; tes collections déjà enregistrées restent utilisables.");
-  e.detail = "Enka.Network : " + line + ". Plusieurs tentatives ont été faites avec un délai progressif ; une ancienne vitrine du cache est utilisée automatiquement quand elle existe.";
-  return e;
 }
 
 function fmtNum(v){ return Math.round(v).toLocaleString('fr-FR'); }
@@ -3133,7 +3383,7 @@ function showView(id){
 function renderSelectView(){
   const pi = currentData.playerInfo || {};
   el('player-tag').innerHTML = pi.nickname
-    ? `Compte : <b>${pi.nickname}</b> · AR ${pi.level || '?'} · ${currentChars.length} perso(s) en vitrine`
+    ? `Compte : <b>${escapeHtml(pi.nickname)}</b> · AR ${pi.level || '?'} · ${currentChars.length} perso(s) en vitrine`
     : `${currentChars.length} perso(s) en vitrine`;
 
   el('char-grid').innerHTML = currentChars.map(c => `
@@ -3154,6 +3404,7 @@ function renderSelectView(){
     });
   });
   updateSeeStatsBtn();
+  renderFetchNotice();
   showView('view-select');
 }
 
@@ -3603,15 +3854,67 @@ function collectionEntries(){
   return id && cols[id] ? Object.values(cols[id].items || {}) : [];
 }
 function activeCollection(){ const cols=getCollections(), id=getActiveCollectionId(); return id && cols[id] ? cols[id] : null; }
+// ---------- Synchro collection ↔ bibliothèque ----------
+// La bibliothèque (corrections par ID / par nom, puis base de référence) est la SEULE source de vérité pour
+// le nom, l'élément (nom ET couleur), la rareté et l'icône d'un personnage ; les noms d'arme et de set sont
+// dérivés de leur icône. Une entrée de collection ne peut donc plus diverger : on la resynchronise à chaque lecture.
+function canonicalCharMeta(name, avatarId){
+  const id = avatarId != null ? Number(avatarId) : null;
+  const lname = String(name || '').toLowerCase();
+  const ov = (id != null && CHARACTER_ID_OVERRIDES[id]) || OVERRIDES_BY_NAME()[lname];
+  if (ov) return { name: ov.name, elemKey: ov.elem, rarity: ov.rarity || null, icon: ov.icon || null };
+  const no = NAME_ELEMENT_OVERRIDES[lname];
+  if (no) return { name: null, elemKey: no.elem, rarity: no.rarity || null, icon: null };
+  if (ASSETS && ASSETS.charactersData && id != null && id !== 10000005 && id !== 10000007) {
+    const cd = ASSETS.charactersData[String(id)];
+    if (cd) {
+      const nm = locName(cd.NameTextMapHash);
+      return { name: (nm && nm !== 'Inconnu') ? nm : null, elemKey: cd.Element || null, rarity: String(cd.QualityType).includes('ORANGE') ? 5 : 4, icon: cd.SideIconName || null };
+    }
+  }
+  if (ASSETS && ASSETS.charactersData) {
+    const lib = getLibraryList().find(x => x.name === name);
+    if (lib && lib.elem) return { name: null, elemKey: Object.keys(ELEMENTS).find(k => ELEMENTS[k].name === lib.elem.name) || null, rarity: lib.rarity || null, icon: lib.icon || null };
+  }
+  return null;
+}
+function syncChar(c){
+  if (!c || typeof c !== 'object') return c;
+  let out = c;
+  const upd = (k, v) => { if (v == null || v === '' || out[k] === v) return; if (out === c) out = { ...c }; out[k] = v; };
+  const m = canonicalCharMeta(c.name, c.avatarId);
+  if (m) {
+    if (m.name) upd('name', m.name);
+    const e = m.elemKey && ELEMENTS[m.elemKey];
+    if (e && (!c.elem || c.elem.name !== e.name || c.elem.color !== e.color)) { if (out === c) out = { ...c }; out.elem = e; }
+    if (m.rarity) upd('rarity', m.rarity);
+    if (m.icon && (!c.icon || (CHARACTER_ID_OVERRIDES[c.avatarId] && c.icon !== m.icon))) upd('icon', m.icon);
+  }
+  if (!m || !m.elemKey) {   // pas de référence : au moins une couleur cohérente avec le libellé stocké
+    const e = c.elem && Object.values(ELEMENTS).find(x => x.name === c.elem.name);
+    if (e && c.elem.color !== e.color) { if (out === c) out = { ...c }; out.elem = e; }
+  }
+  if (c.weapon) {
+    const wn = weaponNameFromIcon(c.weapon.icon) || weaponNameFr(c.weapon.name);
+    const wr = weaponRarityOf(wn, c.weapon.rarity);
+    const nameOk = !wn || wn === c.weapon.name || /^Arme inconnue/.test(wn);
+    if (!nameOk || (wr && wr !== c.weapon.rarity)) { if (out === c) out = { ...c }; out.weapon = { ...c.weapon, name: nameOk ? c.weapon.name : wn, rarity: wr || c.weapon.rarity }; }
+  }
+  if (Array.isArray(c.artifacts) && c.artifacts.some(a => { const n = setNameFromIcon(a.icon) || setNameFr(a.setName); return n && n !== a.setName; })) {
+    if (out === c) out = { ...c };
+    out.artifacts = c.artifacts.map(a => { const n = setNameFromIcon(a.icon) || setNameFr(a.setName); return (n && n !== a.setName) ? { ...a, setName: n } : a; });
+  }
+  return out;
+}
 function collectionList(){
-  return collectionEntries().map(e => e.char).filter(Boolean).sort((a,b) => b.rarity - a.rarity || a.name.localeCompare(b.name));
+  return collectionEntries().map(e => syncChar(e.char)).filter(Boolean).sort((a,b) => b.rarity - a.rarity || a.name.localeCompare(b.name));
 }
 function allCollectionEntries(){
   const cols = getCollections();
   const out = [];
   Object.values(cols).forEach(col => Object.values(col.items || {}).forEach(entry => {
     if (!entry || !entry.char) return;
-    out.push({ ...entry.char, collectionId:col.id, collectionName:col.name, sourceUid:String(entry.uid || col.uid || '') });
+    out.push({ ...syncChar(entry.char), collectionId:col.id, collectionName:col.name, sourceUid:String(entry.uid || col.uid || '') });
   }));
   return out;
 }
@@ -4025,6 +4328,105 @@ function renderWishesView(){
   showView('view-wishes');
 }
 
+const ENKA_WORKER_CODE = [
+  "// Proxy Enka pour GenshinAnalytics — Worker Cloudflare (offre gratuite)",
+  "const UPSTREAM = 'https://enka.network';",
+  "const ALLOWED_ORIGIN = '*'; // pour restreindre : 'https://TON-PSEUDO.github.io'",
+  "const USER_AGENT = 'GenshinAnalytics-perso/1.0';",
+  "",
+  "function cors(extra) {",
+  "  return Object.assign({",
+  "    'Access-Control-Allow-Origin': ALLOWED_ORIGIN,",
+  "    'Access-Control-Allow-Methods': 'GET, OPTIONS',",
+  "    'Access-Control-Allow-Headers': '*',",
+  "    'Access-Control-Expose-Headers': 'Retry-After',",
+  "  }, extra || {});",
+  "}",
+  "",
+  "export default {",
+  "  async fetch(request) {",
+  "    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors() });",
+  "    const url = new URL(request.url);",
+  "    const m = /^\\/api\\/uid\\/(\\d{6,10})\\/?$/.exec(url.pathname);",
+  "    if (request.method !== 'GET' || !m) return new Response('Not found', { status: 404, headers: cors() });",
+  "    const target = UPSTREAM + '/api/uid/' + m[1] + '/' + (url.searchParams.has('info') ? '?info' : '');",
+  "    let res;",
+  "    try {",
+  "      res = await fetch(target, {",
+  "        headers: { 'User-Agent': USER_AGENT, 'Accept': 'application/json' },",
+  "        cf: { cacheEverything: true, cacheTtlByStatus: { '200-299': 20, '300-599': -1 } },",
+  "      });",
+  "    } catch (e) {",
+  "      return new Response(JSON.stringify({ error: 'Enka injoignable' }), { status: 502, headers: cors({ 'Content-Type': 'application/json' }) });",
+  "    }",
+  "    const h = cors({ 'Content-Type': res.headers.get('Content-Type') || 'application/json' });",
+  "    const ra = res.headers.get('Retry-After');",
+  "    if (ra) h['Retry-After'] = ra;",
+  "    return new Response(res.body, { status: res.status, headers: h });",
+  "  },",
+  "};",
+].join('\n');
+
+function renderEnkaSettings(){
+  el('enka-proxy-input').value = getEnkaProxy();
+  const s = readRouteStats();
+  const rows = enkaAllRoutes().map(r => {
+    const x = s[r.id] || {};
+    const lc = x.lastCode, lcLabel = typeof lc === 'number' ? 'erreur ' + lc : ({ network:'bloqué / injoignable', timeout:'pas de réponse', badbody:'réponse inexploitable', JSON:'réponse inexploitable', 'forme':'réponse inexploitable' }[lc] || String(lc || '?'));
+    const last = x.lastFail && (!x.lastOk || x.lastFail > x.lastOk) ? '❌ ' + escapeHtml(lcLabel) : (x.lastOk ? '✅' : '—');
+    return `<tr><td>${escapeHtml(r.label)}${s.last === r.id ? ' <b title="Dernier chemin qui a fonctionné">★</b>' : ''}</td><td>${x.ok || 0}</td><td>${x.fail || 0}</td><td>${last}</td></tr>`;
+  }).join('');
+  el('enka-route-stats').innerHTML = `<table class="enka-stats"><tr><th>Chemin</th><th>Réussis</th><th>Échoués</th><th>Dernier</th></tr>${rows}</table>`;
+  el('enka-worker-code').textContent = ENKA_WORKER_CODE;
+}
+async function runEnkaTest(){
+  const btn = el('btn-enka-test'), box = el('enka-test-result');
+  if (btn.disabled) return;
+  btn.disabled = true; box.style.display = 'block';
+  const uid = (getHistory()[0] && getHistory()[0].uid) || ENKA_SAMPLE_UID;
+  const routes = enkaAllRoutes();
+  const lines = routes.map(r => '⏳ ' + escapeHtml(r.label) + ' — en cours…');
+  let summary = '';
+  const draw = () => { box.innerHTML = `<div class="enka-test-head">Test sur l'UID ${escapeHtml(uid)} (requête légère « ?info »)</div>` + lines.map(l => `<div>${l}</div>`).join('') + summary; };
+  draw();
+  const res = {};
+  for (let i = 0; i < routes.length; i++) {
+    const r = await enkaAttempt(routes[i], uid, { info: true, timeout: 12000 });
+    res[routes[i].id] = r;
+    if (r.ok) noteRoute(routes[i].id, true); else noteRoute(routes[i].id, false, r);
+    lines[i] = (r.ok ? '✅ ' : r.kind === '429' ? '⚠️ ' : '❌ ') + escapeHtml(routes[i].label) + ' — ' + (r.ok ? r.ms + ' ms' : escapeHtml(describeAttempt({ kind: r.kind, code: r.code })));
+    draw();
+  }
+  const anyRelay = ENKA_RELAYS.some(x => res[x.id] && res[x.id].ok);
+  let advice;
+  if (res.custom && res.custom.ok) advice = '✅ Ton proxy personnel fonctionne : il est utilisé en premier.';
+  else if (res.direct && res.direct.ok) advice = "✅ L'accès direct à Enka fonctionne depuis ce navigateur. Les échecs éventuels viennent alors surtout de la limite de débit d'Enka (429) : l'appli attend et réessaie toute seule ; un proxy personnel les évite presque totalement.";
+  else if (res.direct && res.direct.kind === '429') advice = "⚠️ Enka limite actuellement les requêtes de ton réseau (429). Patiente une minute ; un proxy personnel (ci-dessous) contourne ce problème durablement.";
+  else if (anyRelay) advice = "⚠️ L'accès direct échoue mais un relais fonctionne : ça marche, de façon fragile. Un proxy personnel est la solution fiable.";
+  else advice = "❌ Aucun chemin ne répond : vérifie ta connexion, désactive VPN / bloqueur de contenu, ou crée ton proxy personnel (ci-dessous).";
+  summary = `<div class="enka-test-sum">${advice}</div>`;
+  draw();
+  renderEnkaSettings();
+  btn.disabled = false;
+}
+el('btn-enka-test').addEventListener('click', runEnkaTest);
+el('btn-enka-proxy-save').addEventListener('click', () => {
+  try {
+    const n = setEnkaProxy(el('enka-proxy-input').value);
+    el('enka-proxy-input').value = n;
+    toast(n ? 'Proxy enregistré : il sera utilisé en premier.' : 'Proxy retiré : retour au mode automatique.', 'ok');
+    renderEnkaSettings();
+  } catch(e) { toast(e.message, 'err'); }
+});
+el('btn-copy-worker').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(ENKA_WORKER_CODE); toast('Code copié ✔', 'ok'); }
+  catch(e) {
+    const r = document.createRange(); r.selectNodeContents(el('enka-worker-code'));
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    toast('Code sélectionné : copie-le (Ctrl/Cmd + C).', 'warn');
+  }
+});
+
 function renderSettingsView(){
   const links = getUidLinks();
   const historyUids = getHistory().map(h => h.uid);
@@ -4036,6 +4438,7 @@ function renderSettingsView(){
       <button class="dps-remove-btn" data-remove-uid-link="${escapeHtml(uid)}">✕</button>
     </div>
   `).join('') : `<div class="helpbox">Aucun UID pour l'instant — connecte-toi une fois ou ajoutes-en un manuellement ci-dessous.</div>`;
+  renderEnkaSettings();
   showView('view-settings');
 }
 el('uid-links-list').addEventListener('change', (e) => {
@@ -4199,21 +4602,8 @@ function refreshStoredNames(){
   Object.values(cols).forEach(col => {
     Object.values(col.items || {}).forEach(item => {
       const c = item.char; if (!c) return;
-      const ov = CHARACTER_ID_OVERRIDES[c.avatarId] || OVERRIDES_BY_NAME()[String(c.name).toLowerCase()];
-      if (ov) {
-        if (c.name !== ov.name) { c.name = ov.name; fixed++; }
-        if (!c.icon || c.icon !== ov.icon) { c.icon = ov.icon; fixed++; }
-        if (ELEMENTS[ov.elem] && c.elem && c.elem.name !== ELEMENTS[ov.elem].name) { c.elem = ELEMENTS[ov.elem]; fixed++; }
-        if (ov.rarity && c.rarity !== ov.rarity) { c.rarity = ov.rarity; fixed++; }
-      }
-      if (c.weapon) {
-        const n = weaponNameFromIcon(c.weapon.icon) || weaponNameFr(c.weapon.name);
-        if (n && n !== c.weapon.name && !/^Arme inconnue/.test(n)) { c.weapon.name = n; fixed++; }
-      }
-      (c.artifacts || []).forEach(a => {
-        const n = setNameFromIcon(a.icon) || setNameFr(a.setName);
-        if (n && n !== a.setName) { a.setName = n; fixed++; }
-      });
+      const sc = syncChar(c);
+      if (sc !== c) { item.char = sc; fixed++; }
     });
   });
   if (fixed) saveCollections(cols);
@@ -6001,6 +6391,7 @@ function renderLibraryDetail(name){
     ${guide ? section('Description', guide.desc ? `<div>${fx(guide.desc)}</div>` : '') : ''}
     ${guide ? section("L'essentiel pour le jouer", guide.essentials ? `<div>${fx(guide.essentials)}</div>` : '') : ''}
     ${section('Stats cibles <span class="hint" data-hint="Les objectifs de stats à viser une fois les artéfacts équipés.">?</span>', statsTxt ? `<div>${fx(statsTxt)}</div>` : '')}
+    ${section('Rotation conseillée <span class="hint" data-hint="Enchaînement de base issu de guides communautaires ; à adapter à ton équipe, tes constellations et ton énergie.">?</span>', libRotationHtml(name))}
     ${section('Armes recommandées', weaponsHtml)}
     ${section('Artéfacts recommandés', artsHtml)}
     ${guide && guide.advantages ? section('Avantages', `<div>${fx(guide.advantages)}</div>`) : ''}
@@ -6020,100 +6411,238 @@ function renderLibraryDetail(name){
   showView('view-library-detail');
 }
 
+let tcSearch = '';
+function tcPool(){ const pool = collectionList(); return { pool, byKey: Object.fromEntries(pool.map(c => [c.uniqueKey, c])) }; }
+function renderTcSlots(){
+  const { byKey } = tcPool();
+  const chosen0 = tcKeys.filter(Boolean).map(k => byKey[k]).filter(Boolean);
+  const pc = chosen0.length >= 2 ? tcPickCarry(tcItems(chosen0)) : null;
+  const carryKey = pc ? pc.it.c.uniqueKey : null, carryAuto = pc ? pc.auto : false;
+  el('tc-slots').innerHTML = tcKeys.map((key, i) => {
+    const c = key ? byKey[key] : null;
+    if (!c) return `<div class="tc-chip empty" data-slot="${i}">＋ Perso ${i + 1}</div>`;
+    const role = roleOfName(c.name);
+    return `<div class="tc-chip" data-slot="${i}" style="border-color:${c.elem.color}"><img src="${iconUrl(c.icon)}" alt="${escapeHtml(c.name)}" onerror="this.style.opacity=0.3"><div class="tc-chip-txt"><div class="tname" style="color:${c.elem.color}">${escapeHtml(c.name)}</div><div class="tsub">${role ? ROLE_LABEL[role] : elemLabel(c.elem.name)}</div></div><button class="tc-chip-star ${key === carryKey ? (carryAuto ? 'auto' : 'on') : ''}" data-star-tc-slot="${i}" title="${key === carryKey ? 'DPS principal' + (carryAuto ? ' (détecté automatiquement)' : ' (choisi par toi)') + ' — clique pour ' + (carryAuto ? 'le confirmer' : 'revenir à la détection automatique') : 'Définir comme DPS principal'}" aria-label="DPS principal : ${escapeHtml(c.name)}">★</button><button class="tc-chip-x" data-remove-tc-slot="${i}" aria-label="Retirer ${escapeHtml(c.name)}">✕</button></div>`;
+  }).join('');
+}
+function renderTcGrid(){
+  const { pool } = tcPool();
+  const q = normSearch(tcSearch);
+  const list = pool.filter(c => !q || normSearch(c.name + ' ' + elemLabel(c.elem.name)).includes(q));
+  const grid = el('tc-grid'), st = grid.scrollTop;
+  grid.innerHTML = list.map(c => {
+    const on = tcKeys.includes(c.uniqueKey);
+    return `<div class="char-card ${on ? 'selected' : ''}" data-key="${escapeHtml(c.uniqueKey)}" title="${escapeHtml(c.name)} · Nv.${c.level}" style="border-color:${rarityBorder(c.rarity, on)}">
+      <div class="check">${on ? '✓' : ''}</div>
+      <img src="${iconUrl(c.icon)}" alt="${escapeHtml(c.name)}" onerror="this.style.opacity=0.3">
+      <div class="name">${escapeHtml(c.name)}</div>
+      <div class="sub" style="color:${c.elem.color}">${elemLabel(c.elem.name)}</div>
+    </div>`;
+  }).join('') || `<div class="helpbox">${pool.length ? 'Aucun personnage ne correspond à cette recherche.' : "Ta collection active est vide — ajoute des personnages d'abord."}</div>`;
+  grid.scrollTop = st;
+  grid.classList.toggle('full', tcKeys.filter(Boolean).length >= 4);
+  el('tc-count').textContent = pool.length ? `${tcKeys.filter(Boolean).length}/4 choisis` + (list.length !== pool.length ? ` · ${list.length} résultat(s)` : ` · ${pool.length} perso(s)`) : '';
+}
+function tcRefresh(){ renderTcSlots(); renderTcGrid(); calculateTheoryCraft(); }
 function renderTheoryCraftView(){
-  const pool = collectionList();
-  const byKey = Object.fromEntries(pool.map(c => [c.uniqueKey, c]));
   const activeId = getActiveCollectionId();
   el('tc-collection-picker').innerHTML = Object.values(getCollections()).sort((a,b)=>a.createdAt-b.createdAt).map(c => `<option value="${c.id}" ${activeId===c.id?'selected':''}>${escapeHtml(c.name)}</option>`).join('');
-
-  el('tc-slots').innerHTML = tcKeys.map((key,i) => {
-    const c = key ? byKey[key] : null;
-    if (!c) return `<div class="team-slot empty" data-slot="${i}">+</div>`;
-    return `<div class="team-slot filled" data-slot="${i}">
-      <button class="slot-remove" data-remove-tc-slot="${i}">✕</button>
-      <img src="${iconUrl(c.icon)}" alt="${c.name}" onerror="this.style.opacity=0.3">
-      <div class="tname" style="color:${c.elem.color}">${c.name}</div>
-    </div>`;
-  }).join('');
-
-  el('tc-grid').innerHTML = pool.map(c => `
-    <div class="char-card" data-key="${c.uniqueKey}" style="border-color:${rarityBorder(c.rarity, tcKeys.includes(c.uniqueKey))}">
-      <div class="check">${tcKeys.includes(c.uniqueKey) ? '✓' : ''}</div>
-      <img src="${iconUrl(c.icon)}" alt="${c.name}" onerror="this.style.opacity=0.3">
-      <div class="name">${c.name}</div>
-      <div class="sub" style="color:${c.elem.color}">${elemLabel(c.elem.name)} · Nv.${c.level}</div>
-      <div class="stars">${'★'.repeat(c.rarity)}</div>
-    </div>
-  `).join('') || `<div class="helpbox">Ta collection active est vide — ajoute des personnages d'abord.</div>`;
-
-  document.querySelectorAll('#tc-slots [data-remove-tc-slot]').forEach(btn => {
-    btn.addEventListener('click', (e) => { e.stopPropagation(); tcKeys[Number(btn.dataset.removeTcSlot)] = null; renderTheoryCraftView(); });
-  });
-  document.querySelectorAll('#tc-grid .char-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const key = card.dataset.key;
-      const idx = tcKeys.indexOf(key);
-      if (idx !== -1) { tcKeys[idx] = null; }
-      else { const empty = tcKeys.indexOf(null); if (empty === -1) { toast('Équipe complète (4/4) : retire un personnage (✕) pour en ajouter un autre.', 'warn'); return; } tcKeys[empty] = key; }
-      renderTheoryCraftView();
-    });
-  });
-
-  calculateTheoryCraft();
+  tcRefresh();
   showView('view-theorycraft');
 }
 
+// Carte condensée d'un personnage : identité + score + 2 conseils ; le reste se déplie.
+function tcMiniCard(c, role){
+  const guide = buildGuideFor(c.name);
+  let sc = null, adv = [];
+  try { sc = computeBuildScore(c); adv = buildAdvice(c); } catch (e) { sc = null; }
+  const top = adv.slice(0, 2), rest = adv.slice(2);
+  const li = i => `<li title="${escapeHtml(i.text)}">${i.icon} ${escapeHtml(i.text)}</li>`;
+  return `<div class="tc-mini" style="--ec:${c.elem.color}">
+    <div class="tc-mini-head">
+      <img src="${iconUrl(c.icon)}" alt="${escapeHtml(c.name)}" onerror="this.style.opacity=0.3">
+      <div class="tc-mini-id"><div class="tname" style="color:${c.elem.color}">${escapeHtml(c.name)}</div><div class="tsub">${role ? ROLE_LABEL[role] : '&nbsp;'}</div><div class="tsub">${elemLabel(c.elem.name)} · Nv.${c.level}</div></div>
+      ${sc ? `<div class="tc-ring" title="Score de build : ${sc.percent} % — ${sc.tier}">${scoreRingSvg(sc.percent)}<span>${sc.percent}</span></div>` : ''}
+    </div>
+    ${sc ? `<div class="tc-tier">${sc.tier}</div>` : ''}
+    ${top.length ? `<ul class="tc-adv">${top.map(li).join('')}</ul>` : (sc ? `<div class="tc-ok">✅ Build solide</div>` : '')}
+    <details class="tc-more"><summary>${rest.length ? '+' + rest.length + ' conseil(s) · ' : ''}fiche rapide</summary>
+      ${rest.length ? `<ul class="tc-adv">${rest.map(li).join('')}</ul>` : ''}
+      ${guide ? `<div class="subhead">Set(s)</div><div>${(guide.sets || []).map(fx).join(' <span style="color:var(--text-dim);">ou</span> ')}</div>
+        <div class="subhead">Stats</div><div>${fx(formatStatTargetsText(c.name) || guide.stats || '')}</div>
+        <div class="subhead">Rotation</div><div>${fx((kitFor(c.name, c.elem.name) || {}).open || guide.rotation || '')}</div>` : `<div class="helpbox">Pas encore de fiche pour ce personnage dans la Bibliothèque.</div>`}
+    </details>
+  </div>`;
+}
+
+// ---------- Rotation conseillée (équipe de 4) ----------
+// Données par personnage (rôle, ordre, ouverture, boucle, énergie) issues de guides communautaires.
+/*ROTATION_KIT_START*/
+// Recherche web (guides KQM, Icy Veins, Game8…) — oct. 2026. role: main/sub/support · order: rang usuel dans une équipe de 4 · conf: 3 sûr, 2 partiel
+const ROTATION_KIT = {"Aino":{"role":"sub","order":2,"field":"hors-terrain","open":"E (Inspirateur) puis Q (Refroidisseur hydronique de précision) pour poser le canardeur tranquille, puis change de personnage.","refresh":"E puis Q à chaque rotation ; son Q a un temps de recharge court, adapté aux rotations courtes.","energy":"Besoin élevé : ~190–250 % de RE à C0 (~155–205 % avec Favonius) ; le C4 réduit nettement le besoin.","tip":"Ses dégâts viennent surtout des réactions transformatives déclenchées par Q ; quelques AN pendant le Q aident à déclencher Favonius.","conf":3,"src":["https://keqingmains.com/q/aino-quickguide/","https://library.keqingmains.com/characters/hydro/aino"]},"Albedo":{"role":"sub","order":2,"field":"hors-terrain","open":"E pour poser l'aura solaire, puis 1 AN pour déclencher aussitôt un germe éphémère, puis change de personnage. Q facultatif (E d'abord, puis Q).","refresh":"L'aura solaire dure 30 s (un germe éphémère toutes les 2 s) : relance E à son expiration.","energy":"Q facultatif : sans Q, aucune RE requise ; avec Q, ~120–140 % à C0 avec 2 Géo ou plus.","tip":"Q rarement rentable (sauf C6) ; si utilisé, E avant Q, car E juste après Q annule les dégâts des germes fatals.","conf":3,"src":["https://keqingmains.com/q/albedo-quickguide"]},"Alhaitham":{"role":"main","order":4,"field":"terrain","open":"Q sans aucun miroir actif (crée 3 miroirs de diffraction), ou E maintenu si Q indisponible, puis enchaîne les AN.","loop":"3 AN + esquive en boucle ; E ou AC environ toutes les 4 s pour renouveler les miroirs de diffraction.","refresh":"Un miroir de diffraction dure 4 s (3 max) : renouvelle-les environ toutes les 4 s avec E ou AC.","energy":"~175–220 % de RE seul en Dendro ; ~120–130 % avec Nahida ; Q utilisé de préférence à 0 miroir.","tip":"Esquive vers les ennemis pour ne pas rater les attaques de projection ; évite l'AC juste après Q (elle crée un miroir trop tôt).","conf":3,"src":["https://keqingmains.com/q/alhaitham-quickguide"]},"Aloy":{"role":"sub","order":3,"field":"hybride","open":"E, puis Q ; un personnage Anémo peut regrouper les petites bombes glacées entre les deux. Si l'état Cryo des AN est actif : E, 4 AN, puis Q.","refresh":"E a 20 s de temps de recharge ; Q 12 s (40 énergie). Les cumuls de bobine s'effacent 30 s après sa sortie du terrain.","energy":"~140–165 % de RE seule en Cryo ; ~100–125 % avec un 2e Cryo, Venti ou une arme/proc Favonius.","tip":"Ses dégâts viennent surtout de E et Q : Fonte (Pyro d'abord, puis Cryo) ou Gel avec un applicateur Hydro. Priorité au talent de Q.","conf":3,"src":["https://keqingmains.com/q/aloy-quickguide"]},"Alyosha":{"role":"support","order":3,"field":"hors-terrain","open":"E (appui simple) pour poser la marque de broussailleur, puis Q (Tugarin), avant que le DPS n'entre en jeu, puis change de personnage.","refresh":"Q dure 14 s (20 s à C2) ; E puis Q à chaque rotation, ou un Q sur deux à C2+.","energy":"RE élevée : ~235–280 % à C0 sans allié Électro (~195–225 % avec Lance de Favonius).","tip":"Tugarin déclenche les marques sur les ennemis touchés ; E et Q doivent précéder l'entrée du DPS pour qu'il profite des buffs.","conf":3,"src":["https://keqingmains.com/q/alyosha-quickguide"]},"Amber":{"role":"main","order":4,"field":"terrain","open":"AC (tir visé complètement chargé) en boucle ; E (Baron Lapinou) peut taunter et protéger ses AC des interruptions. Q rarement utilisé.","loop":"AC complètes en boucle (~1,5 s de charge) sur un ennemi sous Cryo pour la Fonte, ou près de Dendro pour le Bourgeonnement.","refresh":"À C4+, E a deux charges (~24 s pour recharger les deux lapins).","energy":"Q rarement lancé ; peu de RE requise (~100–120 % en Fonte à C4+).","tip":"En Bourgeonnement, évite de viser directement l'ennemi (Brûlure) ; un bouclier ou le taunt de Baron Lapinou évite les interruptions.","conf":3,"src":["https://keqingmains.com/q/amber-quickguide"]},"Arataki Itto":{"role":"main","order":4,"field":"terrain","open":"Q (idéalement annulée sur la 1re AN), 1 AN, E (Ushi), puis AN et AC Kesagiri ; 2e E vers la fin de Q.","loop":"AN pour cumuler la mégaforce superlative, puis AC Kesagiri (1 cumul par coup) ; jamais d'AC classique.","refresh":"L'état de Q s'efface s'il quitte le terrain ; lance E (Ushi) deux fois pendant Q, près du début et près de la fin.","energy":"~100–160 % de RE selon le nombre de Géo et de E (Favonius inclus) ; moins avec Xilonen.","tip":"Buffs alliés posés avant son entrée (~16 s sur le terrain) ; prévois un autre Géo et un bouclier ou une Cristallisation pour la résonance.","conf":3,"src":["https://keqingmains.com/q/itto-quickguide"]},"Arlecchino":{"role":"main","order":4,"field":"terrain","open":"E dès le début pour poser la dette sanguinaire, puis change ; reviens après les alliés avec une AC qui récupère l'engagement vital.","loop":"Dès 30 % d'engagement vital : 3 AN + esquive (ou 5 AN + esquive) en boucle ; l'esquive saute le long 6e coup.","refresh":"Dette sanguinaire : 30 s ; E a 30 s de temps de recharge (réduit par les AN) : lance-le tôt pour la récupérer plus puissante.","energy":"Quasi aucune RE : Q est gardé comme soin d'urgence en début de rotation, pas à chaque rotation.","tip":"Elle ne se soigne que par Q : préfère un bouclier à un soigneur, et un applicateur Hydro/Cryo pour Vaporisation/Fonte.","conf":3,"src":["https://keqingmains.com/q/arlecchino-quickguide"],"early":1},"Baizhu":{"role":"support","order":1,"field":"hors-terrain","open":"E puis Q pour récupérer les particules Dendro pendant l'animation de Q, puis change de personnage.","refresh":"Q dure 14 s (bouclier aseptique toutes les 2,5 s) ; E a 10 s de temps de recharge : un 2e E est possible si la rotation dépasse 20 s.","energy":"Q de 80 énergie : RE très élevée (~210–370 % seul en Dendro selon l'arme) ; un 2e Dendro la réduit.","tip":"Si le temps de recharge de 20 s de Q s'aligne mal, lance-le une rotation sur deux ; idéal avec un DPS qui reste longtemps sur le terrain.","conf":3,"src":["https://keqingmains.com/q/baizhu-quickguide"]},"Barbara":{"role":"support","order":2,"field":"hors-terrain","open":"E pour poser le cercle de mélodie (soin et Hydro), puis change de personnage. Q uniquement en dernier recours (gros soin).","refresh":"Relance E quand le cercle de mélodie expire ; chaque particule ramassée par le personnage déployé le prolonge de 1 s (A4, 5 s max).","energy":"Q rarement lancé : ~100 % de RE suffit.","tip":"Inutile d'attaquer en soigneuse pure ; l'Hydro appliqué au personnage déployé le rend vulnérable au Gel.","conf":3,"src":["https://keqingmains.com/q/barbara-quickguide"]},"Beidou":{"role":"sub","order":2,"field":"hors-terrain","open":"E maintenu pour bloquer une attaque ennemie au bon moment (contre parfait), sinon E simple, puis Q, puis change de personnage.","loop":"Hors terrain : les AN et AC de l'allié déployé déclenchent les décharges de Q (1 par seconde maximum).","refresh":"Relance Q (80 énergie) chaque rotation ; E simple donne 2 particules.","energy":"RE élevée (~185–250 % seule en Électro) ; une batterie (Fischl, Ineffa) la réduit nettement.","tip":"Évite le Q de Raiden/Clorinde pendant ton Q : leurs attaques converties ne déclenchent pas de décharge. Il faut un DPS qui attaque vite.","conf":3,"src":["https://keqingmains.com/q/beidou-quickguide"]},"Bennett":{"role":"support","order":2,"field":"hors-terrain","open":"E simple pour récupérer ses particules, puis Q, puis change de personnage ; il reste très peu sur le terrain.","refresh":"E : 5 s de recharge (4 s avec A1) ; relance Q chaque rotation (champ de 12 s, il ne buffe que le personnage déployé dans sa zone).","energy":"RE élevée : ~195–255 % seul Pyro, ~160–190 % en triple Pyro.","tip":"Q applique Pyro au personnage déployé (utile pour Dispersion) mais l'expose aux réactions ennemies ; le buff d'ATQ suit son ATQ de base.","conf":3,"src":["https://keqingmains.com/q/bennett-quickguide","https://genshin-impact.fandom.com/wiki/Bennett"]},"Candace":{"role":"support","order":3,"field":"hors-terrain","open":"E simple (2 particules), puis Q : le personnage déployé reçoit la Prière de couronne cramoisie ; puis change vers le DPS.","refresh":"Q dure 9 s (recharge 15 s) ; E simple 6 s de recharge, E maintenu 9 s. Relance Q chaque rotation, idéalement avec 2 E par Q.","energy":"RE très élevée : ~260–280 % seule en Hydro avec 1 E par Q (~230–260 % avec 2 E).","tip":"Pendant Q, alterne AN et changements de personnage pour maximiser l'application Hydro ; ramasse ses 2e particules de E pour baisser la RE.","conf":3,"src":["https://keqingmains.com/q/candace-quickguide","https://library.keqingmains.com/characters/hydro/candace"]},"Charlotte":{"role":"support","order":2,"field":"hors-terrain","open":"E simple (silhouette instantanée, Cryo) puis Q (soin de l'équipe), puis change de personnage.","refresh":"Silhouette instantanée : 6 s ; E simple : 12 s de temps de recharge (E maintenu : 18 s). Relance Q chaque rotation pour soigner.","energy":"RE très élevée : ~185–230 % seule en Cryo ; Favonius et le C4 la réduisent.","tip":"Si les soins ne sont pas utiles, lance Q une rotation sur deux pour réduire la RE ; E simple suffit (plus rapide qu'E maintenu).","conf":3,"src":["https://keqingmains.com/q/charlotte-quickguide"]},"Chasca":{"role":"main","order":4,"field":"terrain","open":"E (80 points de noctâme), puis 4 AC de 6 balles et 1 partielle, puis Q si disponible ; Q fige les buffs au lancement.","loop":"E puis AC en boucle jusqu'à épuisement de la noctâme (80 points, qui se vident en continu) ; relance E ensuite.","refresh":"La Bénédiction noctâme s'arrête à 0 point, à l'atterrissage ou à la relance de E ; relance E pour une nouvelle séquence.","energy":"Q seulement si dispo : ~100–110 % de RE (un Q sur deux) ou ~165–195 % (chaque rotation).","tip":"Les balles se répartissent sur les ennemis à l'écran : isole la cible voulue. Bennett est quasi indispensable en Fonte.","conf":3,"src":["https://keqingmains.com/q/chasca-quickguide"]},"Chevreuse":{"role":"support","order":1,"field":"hors-terrain","open":"Q puis E maintenu, après qu'une Surcharge a été déclenchée ; Q apporte le Pyro nécessaire. Puis change de personnage.","refresh":"Buff d'ATQ 30 s ; RÉS réduite par Surcharge 6 s : provoque une Surcharge environ toutes les 6 s. E : soin 12 s, recharge 15 s.","energy":"~100 % de RE si Q seulement quand disponible ; 175–205 % pour un Q à chaque rotation.","tip":"Équipe uniquement Pyro et Électro pour la réduction de RÉS ; monte les PV vers 40 000 pour le buff d'ATQ de l'A4.","conf":3,"src":["https://keqingmains.com/q/chevreuse-quickguide"]},"Chiori":{"role":"sub","order":3,"field":"hors-terrain","open":"(Q si l'énergie le permet) puis E, et relance E aussitôt pour passer au personnage suivant, qui profite des attaques coordonnées de Tamoto.","refresh":"Tamoto dure 17 s : relance E à chaque rotation (17 à 24 s).","energy":"Q chaque rotation : 160–185 % d'RE (Albedo, Navia, Ningguang), ~115–120 % avec Itto + Gorou.","tip":"Une construction Géo alliée (Zhongli, Albedo, Ningguang, Itto) fait apparaître un 2e Tamoto. Ses AN sont faibles avant C6.","conf":3,"src":["https://keqingmains.com/q/chiori-quickguide/"]},"Chongyun":{"role":"support","order":2,"field":"hors-terrain","open":"E (champ d'infusion Cryo), puis Q (3 lames, DGT Cryo de zone), puis change de personnage. En Fonte inversée, joue après l'application Pyro.","refresh":"Le champ d'infusion Cryo dure ~12–13 s (10 s annoncés en jeu) : relance E à chaque rotation pour le garder actif.","energy":"Cryo seul 150–175 % d'RE, double Cryo 125–135 %, triple Cryo 100–125 % (rotation de 20 s).","tip":"Seul à enchanter Cryo les AN des porteurs d'épée, d'épée à deux mains ou d'arme d'hast dans son champ : Fonte et Gel. Évite ses AN.","conf":3,"src":["https://keqingmains.com/q/chongyun-quickguide/"]},"Citlali":{"role":"support","order":3,"field":"hors-terrain","open":"E puis Q (les particules de E rechargent Q), puis change de personnage. Pas d'AN.","refresh":"E : bouclier et Itzpapa 20 s, recharge 16 s, donc un E par rotation. Le Q n'est pas obligatoire à chaque rotation.","energy":"Cryo seul 170–195 % d'RE, double Cryo 170–185 % (C0–C3) ; moins avec un Codex de Favonius.","tip":"Réduit la RÉS Pyro et Hydro après une Fonte ou un Gel. Son Cryo hors-terrain peut gêner d'autres réactions ; E seul si le Cryo est inutile.","conf":3,"src":["https://keqingmains.com/q/citlali-quickguide/"]},"Clorinde":{"role":"main","order":4,"field":"terrain","open":"Lance Q tôt dans la rotation, puis entre en jeu : E (Vigile nocturne), puis 3 AN + E en boucle jusqu'à la fin de l'état.","loop":"Sous 100 % d'engagement vital : AN (tirs de mousquet) pour le remplir ; dès 100 % : E (Empalement nocturne). Soit 3 AN + E.","refresh":"La Vigile nocturne s'arrête dès qu'elle quitte le terrain. Rotations de ~16 s les plus efficaces.","energy":"Q chaque combo : 200 %+ d'RE en Électro seul, 120–140 % à 2 Électro ; un combo sur deux : 100–130 %.","tip":"Un allié Électro doit appliquer l'Électro avant son entrée (Catalyse, énergie de Résonance, Q renforcé). Les AC sont désactivées en Vigile.","conf":3,"src":["https://keqingmains.com/q/clorinde-quickguide/"]},"Collei":{"role":"support","order":2,"field":"hors-terrain","open":"E puis Q (ses particules rechargent Q), puis change de personnage. Pas d'AN.","refresh":"E : recharge 12 s ; Q : recharge 15 s. Un E supplémentaire est possible si la rotation dure 24 s ou plus.","energy":"~200 % d'RE (180 % en double Dendro) ; 160–170 % avec Arc du sacrifice ou en rotation longue.","tip":"Reste près des ennemis pour que boomerang et effets touchent. Applique le Dendro hors-terrain 3 à 4 fois par rotation avec Q.","conf":3,"src":["https://keqingmains.com/q/collei-quickguide/"]},"Columbina":{"role":"sub","order":2,"field":"hors-terrain","open":"E puis Q (ondulation de gravité et domaine lunaire), puis change de personnage.","loop":"Hors-terrain, rien à jouer : la gravité s'accumule et déclenche son interférence seule. Option sur le terrain : AC avec rosée verdoyante.","refresh":"Ondulation ~25 s (recharge E ~17 s), domaine lunaire ~20 s (recharge Q ~15 s) : relance E et Q à chaque rotation.","energy":"Q chaque rotation : ~200–250 % d'RE (moins avec un 2e Hydro) ; Q une rotation sur deux : ~110–130 %.","tip":"Les réactions sélènes alliées remplissent sa gravité (max 60) : son interférence est sa source de dégâts hors-terrain. Q les renforce.","conf":3,"src":["https://keqingmains.com/q/columbina-quickguide/","https://www.icy-veins.com/genshin-impact/columbina-guide-best-builds"]},"Cyno":{"role":"main","order":4,"field":"terrain","open":"E (assaut), Q (éclaireur sermenté), puis E (rite mortuaire), puis 4 AN + E en boucle.","loop":"4 AN + E en boucle : lance E dès que l'œil violet apparaît (Jugement : 3 projectiles), quitte à sauter une AN.","refresh":"L'éclaireur sermenté dure 18 s max (E le prolonge, recharge de E 3 s) et prend fin s'il quitte le terrain.","energy":"Électro seul 180–200 % d'RE (140–160 % avec 4 pièces Fureur du tonnerre) ; avec Fischl 100–130 %.","tip":"Prépare les effets des alliés avant son entrée : l'état s'arrête quand il part. Rater la fenêtre de l'œil violet fait perdre le Jugement.","conf":3,"src":["https://keqingmains.com/q/cyno-quickguide/"]},"Dahlia":{"role":"support","order":3,"field":"hors-terrain","open":"E (appui simple, particules) puis Q (bouclier et Faveur favonienne pour l'équipe), puis change de personnage.","refresh":"Relance Q à chaque rotation pour renouveler la Faveur favonienne et le bouclier.","energy":"Hydro seul 240–270 % d'RE, double Hydro 170–230 % (100–125 % avec 2 E par rotation).","tip":"Bouclier (250 % contre l'Hydro) et vitesse d'attaque pour le DPS ; idéal avec un personnage à attaques normales. Ses AN servent à Favonius.","conf":3,"src":["https://keqingmains.com/q/dahlia-quickguide/"]},"Dehya":{"role":"main","order":4,"field":"terrain","open":"E (sanctuaire ardent), puis plus tard Q suivi d'environ 10 AN. Le 2e E (Champ flamboyant) peut se lancer au début, après Q ou en fin de rotation.","refresh":"E recharge 20 s : le sanctuaire ardent tire une attaque coordonnée toutes les 2,5 s ; le 2e E déplace le champ une fois.","energy":"Q coûte 70 d'énergie : ~160–180 % d'RE en mono Pyro, 180–225 % en Fonte, 160–210 % en Vaporisation.","tip":"Ne saute jamais pendant Q : cela l'annule et la met en recharge. Elle peut aussi servir hors-terrain avec E seul (Bourgeonnement).","conf":2,"src":["https://keqingmains.com/q/dehya-quickguide/"]},"Diluc":{"role":"main","order":4,"field":"terrain","open":"Q (enchantement Pyro), puis 2 AN + E trois fois de suite, et 2 AN pour finir.","loop":"2 AN + E en boucle : E s'enchaîne jusqu'à 3 fois et annule l'animation des AN.","refresh":"Relance Q à chaque rotation pour l'enchantement Pyro. Après un E, on a 4 s pour le réenchaîner avant sa recharge.","energy":"Q coûte 40 d'énergie : ~120–130 % d'RE suffisent (Vaporisation/Fonte), ~100–115 % avec Bennett.","tip":"Seule la 1re frappe de Q déclenche fiablement la Vaporisation. Il lui faut un Hydro (Vaporisation) ou un Cryo (Fonte) ; Bennett conseillé.","conf":3,"src":["https://keqingmains.com/q/diluc-quickguide/"]},"Diona":{"role":"support","order":3,"field":"hors-terrain","open":"E maintenu (bouclier renforcé, 5 griffes) puis Q, puis change de personnage.","refresh":"Relance E maintenu et Q à chaque rotation (recharge de Q ~20 s). Q ne maintient pas seul l'aura Cryo (application toutes les 2 s).","energy":"Double Cryo : 120–135 % d'RE (Arc du sacrifice), 130–150 % (Arc de Favonius), 145–175 % (autre arc).","tip":"Toujours en E maintenu : bouclier plus fort et plus durable, ~4 particules Cryo. Ses AN ne servent qu'à déclencher Favonius.","conf":3,"src":["https://keqingmains.com/q/diona-quickguide/"]},"Dori":{"role":"support","order":3,"field":"hors-terrain","open":"E (Canon pacificateur) puis Q (djinn : soin, énergie et Électro), puis change de personnage vers le DPS.","refresh":"Q (80 d'énergie) à chaque rotation ; E deux fois par rotation si possible pour récupérer de l'énergie.","energy":"Q : 80 d'énergie. Électro seul 180–260 % d'RE, double Électro 140–180 % ; moins avec Raiden/Fischl.","tip":"Soin et énergie du djinn ne profitent qu'au personnage lié : idéal pour un DPS qui reste sur le terrain. AN utiles seulement à C6.","conf":2,"src":["https://keqingmains.com/q/dori-quickguide/"]},"Durin":{"role":"sub","order":2,"field":"hors-terrain","open":"E Q E (le plus rapide : Q annule l'animation du 1er E), puis change de personnage.","refresh":"Q dure 20 s pour 18 s de recharge : relance-le à chaque rotation. E recharge 12 s.","energy":"Hors-terrain : 100–150 % d'RE selon les alliés Pyro ; aucun besoin avec 2 E par rotation.","tip":"Q est le cœur de son kit. Variante offensive : E, 1 AN puis Q pour ses propres dégâts en Fonte/Vaporisation.","conf":3,"src":["https://keqingmains.com/q/durin-quickguide/"]},"Émilie":{"role":"sub","order":1,"field":"hors-terrain","open":"E (flacon de Lumidouce) dès la 1re rotation, Q si l'énergie suffit (flacon niveau 3), puis change de personnage. Pas d'AN.","refresh":"Flacon de Lumidouce : 22 s, recharge de E 14 s. Ne relance pas E trop tôt : le flacon repasserait au niveau 1.","energy":"Q (50 d'énergie) chaque rotation : 180–255 % d'RE ; une rotation sur deux : 100–120 %.","tip":"Ses dégâts dépendent de la Brûlure : garde un allié Pyro qui l'entretient. Ne monte pas la Maîtrise élémentaire ; CRIT et ATQ d'abord.","conf":3,"src":["https://keqingmains.com/q/emilie-quickguide/"]},"Escoffier":{"role":"support","order":2,"field":"hors-terrain","open":"E (mek cuistot, mode Stockage à froid) puis Q (soin et RÉS réduite), puis change de personnage.","refresh":"Le mek cuistot tire chaque seconde pendant 20 s ; la réduction de RÉS dure 12 s. Relance E à chaque rotation, Q seulement si le soin sert.","energy":"Triple Cryo 120–150 % d'RE, double Cryo 130–165 %, Cryo seul 160–195 % (C0).","tip":"Équipe uniquement Cryo/Hydro (Gel) pour maximiser la baisse de RÉS Cryo/Hydro. Son Q applique déjà ce débuff avant le DPS.","conf":3,"src":["https://keqingmains.com/q/escoffier-quickguide/"]},"Eula":{"role":"main","order":4,"field":"terrain","open":"E (appui simple), Q, 4 AN, E maintenu, puis 4 AN.","loop":"4 à 5 AN en boucle pour charger l'épée de lumière ; E maintenu dès que 2 cumuls de cœur de glace sont actifs.","refresh":"L'épée de lumière dure 7 s max puis explose (DGT Physiques), aussi si Eula quitte le terrain.","energy":"Q non pré-chargeable : double Cryo 140–160 % d'RE, triple Cryo 110–125 % ; Raiden réduit le besoin.","tip":"E maintenu avec 2 cumuls de cœur de glace (baisse de RÉS Physique/Cryo). Équipe type : Eula, un Électro, un Cryo, un libre.","conf":3,"src":["https://keqingmains.com/q/eula-quickguide/"]},"Faruzan":{"role":"support","order":3,"field":"hors-terrain","open":"E, tir visé complètement chargé (flèche d'ouragan), puis Q ; change ensuite de personnage.","refresh":"Q à chaque rotation (recharge 20 s, polyèdre ~12 s) ; E a une recharge de 6 s.","energy":"RE ~220-240 % en double Anémo, ~190-205 % en triple Anémo (avant C6).","tip":"Pour passer les particules à un autre Anémo : E, Q puis tir chargé. La flèche d'ouragan est ce qui génère les particules.","conf":3,"src":["https://keqingmains.com/q/faruzan-quickguide/","https://library.keqingmains.com/characters/anemo/faruzan"]},"Fischl":{"role":"sub","order":1,"field":"hors-terrain","open":"E pour invoquer Oz (ou Q si E est en recharge), puis change de personnage ; annule la transformation du Q en changeant vite.","loop":"Oz attaque seul tant qu'il est actif ; rien à faire sur le terrain.","refresh":"Oz dure 10 s (E : recharge 25 s) ; Q (recharge 15 s) le réinvoque et réinitialise sa durée. Alterne E et Q.","energy":"Q chaque rotation : RE ~120-140 % ; Q une rotation sur deux : ~100 %.","tip":"Relance Oz après avoir déclenché un buff d'arme ou d'artéfact : il capture les bonus à l'invocation.","conf":3,"src":["https://keqingmains.com/q/fischl-quickguide/"]},"Flins":{"role":"main","order":4,"field":"terrain","open":"E (Flamme manifeste), 1 AN, Lances du nord, Q court ; puis AN, Lances du nord et Q court une 2e fois.","loop":"AN entre les Lances du nord et les Q courts (chaque coup Électro peut donner une particule) ; vise 2 Q courts par passage.","refresh":"Flamme manifeste 10 s ; Lances du nord recharge 6 s (4 s à C1) ; Q court (30 d'énergie, sans recharge) seulement dans les 6 s qui suivent.","energy":"RE ~100-145 % selon l'équipier Électro (avec un équipier Favonius) ; Q court : 30 d'énergie.","tip":"Joue-le avec un Hydro hors du terrain (Sélénocution) et un personnage de Nod-Krai (Ineffa idéale) pour libérer tout son kit.","conf":3,"src":["https://keqingmains.com/q/flins-quickguide/","https://www.icy-veins.com/genshin-impact/flins-team-guide"]},"Fréminet":{"role":"main","order":4,"field":"terrain","open":"E (Pressurisation des floes), Q, puis E (Concassage pressurisé) ; reste sur le terrain pour enchaîner.","loop":"Pendant le Q : E, E (Concassage pressurisé) et 1 AN ; chaque AN du Q ajoute 2 niveaux de pression à l'indicateur de Pers.","refresh":"Indicateur de Pers 10 s ; Q 10 s (recharge de E -70 %). Relance E avant la fin du Q pour prolonger l'état.","energy":"Jeu Cryo sans équipier Cryo : RE ~150-170 % (C0-C1) ; avec 1 Cryo : ~110-150 %.","tip":"Un Hydro hors du terrain permet le Gel puis la casse des ennemis gelés ; un équipier Cryo réduit ses besoins en RE.","conf":3,"src":["https://keqingmains.com/q/freminet-quickguide/"]},"Furina":{"role":"sub","order":1,"field":"hors-terrain","open":"E, esquive pour annuler, puis Q ; change de personnage. Si E est en recharge, joue Q d'abord (équipe Hu Tao).","loop":"Les membres du salon attaquent et appliquent Hydro seuls, sans action de sa part.","refresh":"E dure 30 s ; Réjouissance universelle (Q) dure 18 s : relance Q à chaque rotation.","energy":"RE élevée : Hydro seule 200 %+ ; double Hydro ~150-210 % ; triple Hydro ~130-140 %.","tip":"Les membres du salon drainent les PV des alliés au-dessus de 50 % : prévois du soin pour faire monter la fanfare.","conf":2,"src":["https://keqingmains.com/q/furina-quickguide/"]},"Gaming":{"role":"main","order":4,"field":"terrain","open":"Q puis enchaîne E + AP (Augure nébuleux) ; avec Xingqiu/Yelan, commence par E + AP avant Q.","loop":"E puis AP (Augure nébuleux) en boucle, 5 à 7 fois par Q ; une AN peut combler entre deux plongeons.","refresh":"Q à chaque rotation : Man Chai réinitialise le recharge de E et revient à chaque AP améliorée tant que ses PV > 50 %.","energy":"RE ~100-145 % en Vaporisation, ~115-180 % en Fonte, selon constellation et équipier.","tip":"Esquive vers Man Chai plutôt que de l'attendre ; Gaming perd des PV à chaque plongeon : garde-le au-dessus de 50 %.","conf":3,"src":["https://keqingmains.com/q/gaming-quickguide/"]},"Ganyu":{"role":"main","order":4,"field":"terrain","open":"E (lotus de glace), ou une AC d'abord en équipe Gel Kokomi/mono-Cryo ; puis Q et enchaîne les AC.","loop":"AC en boucle (4 à 6 AC en Fonte) ; les AN sont très rarement utilisées.","refresh":"Q dure 15 s, relance-le dès qu'il est prêt ; le lotus de glace attire les ennemis 6 s puis explose.","energy":"Gel / mono-Cryo sur le terrain : RE ~110-115 % en triple Cryo ; en Fonte, pas de besoin de RE.","tip":"Gel : un Hydro est requis ; Fonte : un Pyro hors du terrain. Une AC complète touche deux fois, chaque coup déclenche une réaction.","conf":3,"src":["https://keqingmains.com/q/ganyu-quickguide/"]},"Gorou":{"role":"support","order":3,"field":"hors-terrain","open":"Q (une rotation sur deux), puis E ; passe ensuite au DPS qui doit se trouver dans la zone.","refresh":"Bannière : bonus encore 2 s après la sortie d'un allié ; E à chaque rotation. Q détruit la bannière existante.","energy":"Q chaque rotation : RE ~220 % (arc Favonius) ou 250 % ; Q une rotation sur deux : ~140 % max.","tip":"Joue Gorou avant Albedo pour qu'il capture ses bonus. Bonus selon les Géo de l'équipe : 1 DÉF, 2 RÉS interruption, 3 DGT Géo.","conf":3,"src":["https://keqingmains.com/q/gorou-quickguide/","https://keqingmains.com/q/illuga-quickguide/"]},"Hu Tao":{"role":"main","order":4,"field":"terrain","open":"E (Chaperon de la renaissance), puis AN + AC (1 ou 2 AN, puis AC) annulées par saut ou esquive ; Q en fin de combo.","loop":"1 ou 2 AN + AC en boucle, annulées par saut/esquive : vise ~8-9 AC à C0, ~10 à C1 par E.","refresh":"E dure 9 s (recharge 16 s). Lance Q avant la fin de E, mais seulement une rotation sur deux (Q : recharge 15 s).","energy":"Peu de RE : ~110 % suffit pour lancer Q une rotation sur deux.","tip":"Garde ses PV à 50 % ou moins pour le bonus Pyro ; un Hydro (Xingqiu/Yelan) assure la Vaporisation des AC.","conf":3,"src":["https://keqingmains.com/q/hu-tao-quickguide/","https://keqingmains.com/hutao/"]},"Iansan":{"role":"support","order":3,"field":"hors-terrain","open":"E, puis 1 AN (piétinement d'une volée tonitruante, sans endurance), puis Q avant de changer de personnage.","refresh":"Jauge d'énergie cinétique 12 s (15 s à C6) : Q à chaque rotation ; sans Q avant de partir, les points de noctâme de E sont perdus.","energy":"Double Électro (<20 s) : RE ~135-155 % avec Lance Favonius, ~155-180 % sans.","tip":"Les esquives et sauts du personnage actif maintiennent ses points de noctâme hauts (le bonus d'ATQ suit leur nombre).","conf":3,"src":["https://keqingmains.com/q/iansan-quickguide/"]},"Ifa":{"role":"support","order":4,"field":"terrain","open":"Q puis E, puis AN maintenue (tirs de soutien en continu) ; termine si tu veux par E maintenu (plongeon).","loop":"AN maintenue : tirs toniques en continu ; AN simple, ~1 tir par seconde, pour déclencher les attaques coordonnées (Xingqiu, Yelan, Beidou).","refresh":"E : vol ~10 s, recharge 7,5 s après la fin de l'état ; Q à chaque rotation (ou une sur deux si la RE manque).","energy":"Q chaque rotation, Anémo seul (~20-22 s) : RE ~160-195 % ; Q une rotation sur deux : aucune.","tip":"Reste sur le terrain pour soigner et déclencher des Dispersions ; Q applique la marque de sédation (Hydro, Pyro, Cryo, Électro).","conf":3,"src":["https://keqingmains.com/q/ifa-quickguide/"]},"Illuga":{"role":"support","order":2,"field":"hors-terrain","open":"E (appui simple) puis Q, puis change de personnage. Pour passer les particules au suivant : Q puis E.","refresh":"E et Q : recharge 15 s chacun ; Q dure 20 s ou jusqu'à épuisement des cumuls de chant de rossignol.","energy":"Équipe Zibai : RE ~165-185 % à C0, ~135-150 % à C1+ ; une arme Favonius réduit de 15-30 %.","tip":"Il buffe les DGT Géo directs (pas la réaction) ; E maintenu seulement si l'ennemi est hors de portée d'un appui simple.","conf":3,"src":["https://keqingmains.com/q/illuga-quickguide/"]},"Ineffa":{"role":"sub","order":1,"field":"hors-terrain","open":"E (bouclier + Birgitta), puis Q si disponible, puis change de personnage. Pas de Q à la 1re rotation si l'équipe l'indique.","loop":"Birgitta attaque seule, environ toutes les 2 s, avec de l'Électro.","refresh":"Bouclier et Birgitta durent 20 s : E à chaque rotation ; Q repose Birgitta et réinitialise sa durée.","energy":"Double Électro : RE ~100 % (Q une rotation sur deux), 140-160 % (Q à chaque rotation).","tip":"Birgitta applique Électro à chaque coup : un Hydro équipier déclenche la Sélénocution ; utile aussi pour l'Hyperfloraison.","conf":3,"src":["https://keqingmains.com/q/ineffa-quickguide/","https://www.icy-veins.com/genshin-impact/flins-team-guide"]},"Jahoda":{"role":"support","order":3,"field":"hors-terrain","open":"E (fonce, remplit la flasque), laisse-la se charger quelques secondes, puis Q ; E, E ou une AN annule la charge plus tôt.","refresh":"Q : chatssistants 12 s, recharge 18 s ; relance E et Q dès qu'ils sont prêts.","energy":"RE élevée (C0, arc Favonius) : ~145-180 % double Anémo, ~190-205 % double Électro, 200-255 % sinon.","tip":"La flasque se charge si un ennemi porte Pyro, Hydro, Électro ou Cryo (priorité Pyro > Hydro > Électro > Cryo).","conf":3,"src":["https://keqingmains.com/q/jahoda-quickguide/"]},"Jean":{"role":"support","order":2,"field":"hors-terrain","open":"E (appui simple), puis Q ; change de personnage. Le DPS reste dans le champ de pissenlits pour être soigné.","refresh":"Champ de pissenlits 10 s, Q : recharge 20 s ; E : recharge 6 s. Relance Q à chaque rotation.","energy":"RE ~160-200 % seule Anémo, ~140-160 % en double Anémo ; avec Épée Favonius, négligeable.","tip":"Le champ soigne seulement le personnage actif dedans. Q rend 20 % de son énergie (A4).","conf":2,"src":["https://keqingmains.com/q/jean-quickguide/","https://library.keqingmains.com/characters/anemo/jean"]},"Kachina":{"role":"support","order":2,"field":"hors-terrain","open":"E (Virevolturbo) puis Q, ou Q puis E selon l'équipe ; change ensuite de personnage, Virevolturbo continue seul.","loop":"Virevolturbo frappe seul le sol hors du terrain (DGT Géo selon la DÉF) tant que la noctâme dure.","refresh":"Garde la Bénédiction noctâme active pour le set 4 pièces ; à C2, alterne E et Q une rotation sur deux.","energy":"RE élevée : double Géo ~165-195 % (arc Favonius, C0), triple Géo ~140-170 %.","tip":"Virevolturbo applique Géo un coup sur deux ; il fournit de l'énergie aux équipiers sur le terrain. Priorise le set 4 pièces aux stats.","conf":2,"src":["https://keqingmains.com/q/kachina-quickguide/","https://library.keqingmains.com/characters/geo/kachina"]},"Kaedehara Kazuha":{"role":"support","order":3,"field":"hors-terrain","open":"Après l'élément posé par l'équipe : E (appui court, ou maintenu pour mieux grouper), Q, puis change de personnage.","refresh":"E : recharge 6 s (court) ou 9 s (maintenu). Vent d'automne : 8 s. La Q relance aussi le bonus de DGT élémentaires issu de la Dispersion.","energy":"Q = 60 d'énergie. ~190–200 % de RE en solo Anémo (E court + maintenu) ; ~145–155 % à trois Anémo.","tip":"E puis AP (Contrôle du chaos) sous 10 s. Absorption : Pyro > Hydro > Électro > Cryo. Chaque Dispersion donne un bonus de DGT à l'équipe.","conf":3,"src":["https://keqingmains.com/q/kazuha-quickguide/"]},"Kaeya":{"role":"sub","order":2,"field":"hors-terrain","open":"Q puis E, puis change de personnage. Lance la Q après les buffs de l'équipe (ex. Rosaria) : elle les fige pour toute sa durée.","loop":"Relance E plusieurs fois par rotation (application Cryo + particules). En filler : 2 AN puis AC.","refresh":"Valse glaciale : 8 s (15 s avec C2 si 3 ennemis sont vaincus). E a une recharge court : à relancer à chaque passage.","energy":"Seul Cryo, 1 E : ~230–285 % de RE ; 3 E : ~170–200 % ; double ou triple Cryo : ~115–130 %.","tip":"Reste au contact : le rayon de la Q est petit. Ne la lance pas sur des ennemis entièrement soulevés (Venti). Cryo pour Gel ou Fonte.","conf":3,"src":["https://keqingmains.com/q/kaeya-quickguide/"]},"Kamisato Ayaka":{"role":"main","order":4,"field":"terrain","open":"E, esquive (annule l'animation et donne l'infusion Cryo), 1 AN éventuelle, puis Q (Givre mortel).","loop":"2 AN + AC en boucle (1 AN + AC si l'ennemi bouge) ; esquive régulièrement pour garder l'infusion Cryo.","refresh":"E : recharge 10 s, 2 fois par rotation. Infusion Cryo de l'esquive : 5 s. Bonus d'AN et d'AC de E : 6 s.","energy":"~130–150 % de RE en double Cryo, ~130–140 % en triple Cryo (avec au moins 1 proc de Favonius).","tip":"Gel avec un applicateur Hydro : les ennemis restent en place et tous les coups de la Q touchent. Annule l'animation de E par une esquive.","conf":3,"src":["https://keqingmains.com/q/ayaka-quickguide/"]},"Kamisato Ayato":{"role":"main","order":4,"field":"terrain","open":"Q en début de rotation, puis E suivie d'environ 15 AN en maintenant l'appui. Si un buff doit être figé : E, AN, puis Q.","loop":"Maintiens AN pour enchaîner les Shunsuiken (DGT Hydro de zone). Pas d'AC ni d'AP dans l'état Réflexion torrentielle.","refresh":"Quitter le terrain annule l'état : relance E à chaque retour. Jardin d'eau : 18 s ; 2 E par Q (rotation de ~24–26 s).","energy":"~130–160 % de RE en solo Hydro (2 E par Q) ; ~100–120 % en triple Hydro.","tip":"Plus il a de cumuls, plus les Shunsuiken frappent fort : il démarre avec 2 cumuls et passe au maximum quand l'illusion aqueuse explose.","conf":3,"src":["https://keqingmains.com/q/ayato-quickguide/"]},"Kaveh":{"role":"sub","order":4,"field":"terrain","open":"E, Q, puis 2 × (3 AN + esquive), 1 AN, E, 2 × (3 AN + esquive), 2 AN, E : 3 E par rotation.","loop":"3 AN + esquive en boucle tant que Dôme peint est actif (AN en DGT Dendro).","refresh":"Les effets de Dôme peint s'arrêtent s'il quitte le terrain. E : 1 fois au début, puis 2 fois pendant la Q.","energy":"~210–285 % de RE en solo Dendro (160–200 % avec Favonius) ; ~145–165 % en double Dendro avec Nahida.","tip":"E et Q font éclater les noyaux Dendro ; Dôme peint booste les DGT de Floraison (pas Hyperfloraison ni Bourgeonnement). Reste sur le terrain.","conf":3,"src":["https://keqingmains.com/q/kaveh-quickguide/"]},"Keqing":{"role":"main","order":4,"field":"terrain","open":"E (Lame de foudre), Q, E (téléportation + infusion Électro), puis 5 × (1 AN + AC), 1 AN si le temps le permet.","loop":"1 AN + AC en boucle ; passe à 4 AN + AC si l'endurance est basse. Raccourcis si les ennemis quittent la zone.","refresh":"Relance E pour renouveler l'infusion Électro (5 s) avant la fin du combo. Fenêtre de combo : ~8 s, puis change de personnage.","energy":"Q peu coûteuse : pas de RE à construire. ~140–150 % si 2 Q par rotation avec peu de particules.","tip":"Si E est en recharge : Q puis E E. Une AC fait exploser la Lame de foudre sans se téléporter. Q = 4 Intensifications.","conf":3,"src":["https://keqingmains.com/q/keqing-quickguide/"]},"Kinich":{"role":"main","order":4,"field":"terrain","open":"E en appui bref (grappin, Bénédiction noctâme), Q juste après ou après un tir de canon, puis boucle AN / E.","loop":"« 2 AN puis E » en boucle : tirs en boucle (AN), puis tir de canon (E) à 20 pts de noctâme. Vise 4 à 6 canons par rotation.","refresh":"Bénédiction noctâme : 10 s (+1,7 s avec la Q), +2 pts de noctâme par seconde. Relance E à la fin de la Bénédiction.","energy":"Q une rotation sur deux : ~100–120 % de RE ; Q à chaque rotation : ~200–245 % en solo Dendro.","tip":"Entretiens Brûlure ou Bourgeonnement sur la cible : +7 pts de noctâme par tick (0,8 s), donc plus de canons. Cible unique.","conf":3,"src":["https://keqingmains.com/q/kinich-quickguide/"]},"Kirara":{"role":"support","order":2,"field":"hors-terrain","open":"Q (avant E pour garder le bouclier plus longtemps), puis E : appui long très bref puis nouvel appui pour sortir de l'état ; change de personnage.","refresh":"Bouclier : 12 s. Recharge de E : ~8 s (appui simple ou maintien bref), 12 s en maintien long (état de 10 s max).","energy":"2 E brefs par rotation : ~160 % de RE en solo Dendro ; ~100–120 % en double Dendro.","tip":"Le maintien bref donne 4 particules, 2 applications Dendro et plus de cumuls de bouclier. Monte les PV max : le bouclier en dépend.","conf":3,"src":["https://keqingmains.com/q/kirara-quickguide/","https://keqingmains.com/kirara/"]},"Klee":{"role":"main","order":4,"field":"terrain","open":"1 AN, E annulée tôt par la Q, puis 3 AN, E, puis 5 séquences de 3 AN (AC sans endurance avec une étincelle).","loop":"3 AN en boucle avec 2–3 étincelles ; AC annulées (1 AN + AC…) avec 0–1 étincelle. Esquive-annule pour suivre les petits ennemis.","refresh":"E : 2 charges au départ ; une annulation précoce par la Q peut rendre une charge. Garde-en une pour la dernière rotation.","energy":"~125–140 % de RE avec 1 autre Pyro (110–130 % avec Favonius) ; ~140–160 % en solo Pyro.","tip":"AC contre les ennemis moyens ou élites (équilibre), AN contre les petits. Une AC critique rend 2 d'énergie à l'équipe. Fragile aux coups.","conf":3,"src":["https://keqingmains.com/q/klee-quickguide/"]},"Kujou Sara":{"role":"support","order":3,"field":"hors-terrain","open":"E, un tir chargé complet pour laisser une plume de corbeau (bonus d'ATQ), Q si disponible, puis change vers le DPS.","refresh":"Protection corvidée : 18 s, recharge de E ~10 s. Bonus d'ATQ de la plume : 6 s ; les bonus ne se cumulent pas, le plus récent remplace.","energy":"~140–160 % de RE avec 2 Électro ; ~180 % avec Raiden ; ~200 % en Électro-charge ; ~230 % en solo.","tip":"La plume agit 1,5 s après l'impact : le DPS doit être sur le terrain à ce moment. Le tir doit être complètement chargé (sauf C2).","conf":2,"src":["https://keqingmains.com/q/sara-quickguide/","https://library.keqingmains.com/characters/electro/kujou-sara"]},"Kuki Shinobu":{"role":"support","order":3,"field":"hors-terrain","open":"E (soigne et pose l'anneau qui suit le personnage actif), puis Q si disponible, puis change de personnage.","refresh":"Anneau de consécration : 10 coups, un toutes les 1,5 s (~15 s). C2 ajoute 2 coups pour une couverture continue. Relance E à chaque rotation.","energy":"Hyperfloraison : ~135–175 % de RE (Q toutes les 2 E) ; Intensification (15 s) : ~160–170 %.","tip":"Lance E avant la Q pour regagner les PV sacrifiés. La Q fait éclater les noyaux Dendro (Hyperfloraison). Jamais sous 20 % de PV avec E.","conf":3,"src":["https://keqingmains.com/q/shinobu-quickguide/"]},"Lan Yan":{"role":"support","order":3,"field":"hors-terrain","open":"E (bouclier + élan), puis 1 AN pour lancer les anneaux lunaires, Q si disponible, puis change de personnage.","loop":"En pilote (option) : AN Anémo en boucle pour déclencher des Dispersions pendant que le DPS reste hors terrain.","refresh":"Bouclier : 12,5 s. Recharge de E : 16 s (1 E par rotation avant C6) ; lance E au début du passage du DPS.","energy":"1 E : ~215–280 % de RE si seule Anémo ; ~160–200 % avec 2 Anémo. Moins si Q une rotation sur deux.","tip":"Le bouclier fige son ATQ : lance E sous Bennett. Avec Viridescent Venerer, attends le Pyro de Bennett (Q) avant E. La Q regroupe : saute-la si inutile.","conf":3,"src":["https://keqingmains.com/q/lan-yan-quickguide/"]},"Lauma":{"role":"support","order":3,"field":"hors-terrain","open":"E maintenu puis Q, puis change de personnage. Ou Q puis E maintenu : les cumuls de chant lunaire donnent plus d'hymne pâle.","loop":"Reste peu sur le terrain ; évite l'AC (coûteuse en endurance et en temps). Quelques AN Dendro possibles pour appliquer.","refresh":"Rosée verdoyante : +1 par Sélénofleurissement (2,5 s entre deux), 3 max pour l'équipe ; E maintenu les consomme. Q : 18 cumuls d'hymne pâle.","energy":"Seule Dendro : ~170–210 % de RE (C0) ; double Dendro : ~140–175 % ; avec Nefer : 210–225 %.","tip":"E maintenu, sauf équipe Nefer sans Columbina (E simple). Sa E réduit la RÉS Hydro et Dendro. Idéale en Floraison ou Sélénofleurissement.","conf":3,"src":["https://keqingmains.com/q/lauma-quickguide/"]},"Layla":{"role":"support","order":2,"field":"hors-terrain","open":"Q puis E (la Q avant E allonge le bouclier), puis change de personnage avant l'arrivée du DPS.","refresh":"Rideau de sommeil : 12 s. Étoile vespérale : 1 toutes les 1,5 s ; à 4, étoiles filantes. Rotation de 24 s ou plus : 2 E.","energy":"Seule Cryo : ~220 % de RE avant C2 ; double Cryo : ~120–140 % ; C2 réduit fortement le besoin.","tip":"Monte les PV max (le bouclier en dépend). Bouclier brisé = étoiles perdues. Saute la Q en Fonte/Vaporisation si l'ennemi résiste au Gel.","conf":3,"src":["https://keqingmains.com/q/layla-quickguide/"]},"Linnea":{"role":"sub","order":2,"field":"hors-terrain","open":"Après l'application Hydro : E en appui simple (Lumi en forme super puissante), Q seulement si l'équipe a besoin de soins, puis change.","loop":"Lumi frappe seule hors terrain. Variante : appuis simples répétés sur E pour une frappe Géo massive (fenêtre de buff courte).","refresh":"Lumi en forme standard n'inflige pas de Sélénocristallisation : refais E au tour suivant. La Q réinitialise la durée de Lumi.","energy":"Q à chaque rotation : ~170–185 % de RE ; Q seulement quand elle est disponible : ~100 %.","tip":"Applicateur Hydro indispensable (Columbina idéale). La Q ne fait aucun dégât : soins seulement. Vise 2 000 DÉF.","conf":3,"src":["https://keqingmains.com/q/linnea-quickguide/"]},"Lisa":{"role":"main","order":4,"field":"terrain","open":"E simple + 2 AN pour cumuler la Conductivité, puis E maintenu (~2 s), puis Q. Maintenir E avant la Q capte les particules.","loop":"2 AN + E simple, annulé, en boucle ; AN + AC possibles. Évite la 4e AN (lente).","refresh":"E maintenu à chaque rotation (recharge 16 s, 5 particules). Rose de foudre : 15 s sur 20 s de recharge.","energy":"Terrain, 1 E maintenu : ~100–130 % de RE ; hors terrain : ~130–160 %. Q = 80 d'énergie.","tip":"Le maintien consomme la Conductivité pour plus de DGT. Avec un Dendro : Intensification. Les coups de la Q réduisent la DÉF de 15 %.","conf":2,"src":["https://keqingmains.com/q/lisa-quickguide/","https://keqingmains.com/lisa/"]},"Lohen":{"role":"main","order":4,"field":"terrain","open":"E (Coup de maître), puis AN + AC en boucle pour remplir la joie ; Gravé dans les os et l'âme dès que la joie est pleine (3 fois max).","loop":"1 AN puis AC en boucle ; Gravé dans les os et l'âme quand la joie est pleine ; Q à la place dès qu'elle est prête.","refresh":"Relance E à chaque rotation : Coup de maître dure environ 13 s pour une recharge de 18 s.","energy":"Q coûte 60 d'énergie ; 100 % de Recharge d'énergie = Q une rotation sur deux. Inutile d'en monter.","tip":"Les dégâts des alliés hors-terrain remplissent la détermination qui amplifie Gravé dans les os et l'âme et Q : joue-le après eux.","conf":3,"src":["https://www.icy-veins.com/genshin-impact/lohen-guide-best-builds","https://mobalytics.gg/genshin-impact/characters/lohen-build-guide"]},"Lynette":{"role":"support","order":3,"field":"hors-terrain","open":"E (appui simple : aiguille énigmatique), puis Q (boîte minestyque qui attire les ennemis), puis change de personnage.","refresh":"E (recharge 12 s) et Q à relancer à chaque rotation ; la boîte absorbe le premier élément qui la touche, une fois par Q.","energy":"Élevé : ~180–240 % avec 1 E par rotation en solo Anémo ; moins avec l'Épée de Favonius ou 2 E.","tip":"Équipe-lui le set 4 pièces qui réduit la RÉS Pyro/Hydro/Cryo/Électro ennemie : c'est sa vraie valeur dans l'équipe.","conf":3,"src":["https://keqingmains.com/q/lynette-quickguide/"]},"Lyney":{"role":"main","order":4,"field":"terrain","open":"Enchaîne 3 à 4 AC (tirs chargés) pour créer un chapeau et cumuler la fantasmagorie, puis Q si elle est prête, et E en fin de combo.","loop":"AC (tir chargé) en boucle ; E à la fin pour consommer les cumuls de fantasmagorie ; Q dès qu'elle est prête.","refresh":"Un seul chapeau félinois à la fois : les AC en recréent un ; E sert à la fin de rotation pour consommer un maximum de cumuls.","energy":"Q chaque rotation : ~125–150 % de Recharge d'énergie ; Q une rotation sur deux : ~100 %.","tip":"Joue en équipe mono-Pyro avec Bennett : son A4 bonifie les DGT sur ennemis Pyro, mais Vaporisation et Fonte consomment l'aura et l'annulent.","conf":3,"src":["https://keqingmains.com/q/lyney-quickguide/"]},"Mavuika":{"role":"main","order":4,"field":"hybride","open":"E (appui simple : anneau de rayonnement) puis change de personnage ; elle revient en fin de rotation pour Q suivi des AC sur la moto.","loop":"Pendant Q : AC en boucle sur la moto, sans quitter le terrain (l'état prend fin si elle part) ; vise Fonte ou Vaporisation sur le coup de Q.","refresh":"Relance E à chaque rotation : ses 80 points de noctâme se vident (≈12 s) et l'anneau frappe tant qu'il en reste.","energy":"Q consomme la ferveur guerrière, pas l'énergie : ne monte pas de Recharge d'énergie.","tip":"Cryo (Citlali, Rosaria) pour la Fonte, ou Hydro pour la Vaporisation, pas les deux ; prends au moins un autre personnage de Natlan.","conf":3,"src":["https://keqingmains.com/q/mavuika-quickguide/"],"early":1},"Mika":{"role":"support","order":3,"field":"hors-terrain","open":"Q (soin d'équipe et Plume d'alérion), puis E (appui long possible pour viser plusieurs ennemis), puis change de personnage.","refresh":"E : recharge de 15 s, bonus de VIT d'attaque de 12 s ; Plume d'alérion dure 15 s : relance E et Q à chaque rotation.","energy":"~190–250 % pour une Q par rotation (moins avec la Lance de Favonius) ; C4 réduit beaucoup le besoin.","tip":"Sa VIT d'attaque ne profite qu'aux AN, et E doit être lancé avant que le DPS n'entre ; idéal avec un DPS Physique comme Eula.","conf":3,"src":["https://keqingmains.com/q/mika-quickguide/"]},"Mona":{"role":"support","order":2,"field":"hors-terrain","open":"E (mirage), puis Q (Bulle nocturne + présage), puis jusqu'à 4 AN pour prolonger le présage, puis change de personnage.","refresh":"Relance E et Q à chaque rotation ; le présage est court : avec un allié Hexerei, chaque AN/AC le prolonge de 2 s (8 s max).","energy":"Élevé : ~180–300 % avec un autre Hydro, 260–350 % sans ; Codex de Favonius/Prototype Amber aident.","tip":"Joue-la juste avant le DPS : le présage augmente les DGT subis. Variante possible : Q, 3 AN, E, 1 AN. E en appui simple par défaut.","conf":3,"src":["https://keqingmains.com/q/mona-quickguide/"]},"Mualani":{"role":"main","order":4,"field":"terrain","open":"E (Squalisurf), heurte les ennemis en surfant pour cumuler 3 charges, puis AN : morsures à 3 cumuls, trois fois de suite ; Q à la fin si dispo.","loop":"Heurte les ennemis pour remplir 3 cumuls, AN pour la morsure complète, et recommence tant que la noctâme dure.","refresh":"E dure 6 s (jusqu'à 10 s via l'A1 avec des morsures à 3 cumuls) : relance E à chaque rotation.","energy":"Ne sacrifie pas de stats offensives pour la Recharge d'énergie : Q seulement quand elle est prête.","tip":"Un Pyro hors-terrain (Mavuika, Xiangling) est indispensable pour Vaporiser chaque morsure ; Xilonen est son meilleur soutien.","conf":3,"src":["https://keqingmains.com/q/mualani-quickguide/"]},"Nahida":{"role":"sub","order":1,"field":"hybride","open":"E (appui simple, ou appui long pour marquer jusqu'à 8 ennemis), puis Q si l'allié actif profite de son ME, puis change de personnage.","loop":"Si elle reste sur le terrain : AN et AC pour appliquer du Dendro en continu ; une 2e E ajoute de l'application.","refresh":"Relance E pour marquer les nouveaux ennemis ; Q dure 15 s pour 13,5 s de recharge, à lancer seulement si elle est utile.","energy":"Q coûte 50 ; ~100–160 % de Recharge d'énergie selon l'équipe (Hyperfloraison : 130–140 %).","tip":"Les ennemis marqués déclenchent la purification trikarmique à chaque réaction Dendro ; Q vaut surtout pour l'ME donnée à l'allié actif.","conf":3,"src":["https://keqingmains.com/q/nahida-quickguide/"]},"Navia":{"role":"main","order":4,"field":"terrain","open":"Q en ouverture (le bombardement continue hors-terrain et donne des shrapnels cristallins), puis change ; elle revient pour E et son combo.","loop":"Après E : 3 AN, annulation par esquive, 2 AN, dans les 4 s de conversion Géo ; relance E (2 charges) avec 4 à 6 shrapnels.","refresh":"E : 2 charges, 9 s de recharge ; Q : recharge de 15 s, bombardement de 12 s. Vise 6 shrapnels avant la 2e E de la rotation.","energy":"Q coûte 60 ; ~100–180 % de Recharge d'énergie selon les alliés Géo (Xilonen, Chiori… aident).","tip":"Il faut des alliés hors-terrain qui font des Cristallisations (Pyro, Hydro, Électro, Cryo) : chaque éclat ramassé = +1 shrapnel pour E.","conf":3,"src":["https://keqingmains.com/q/navia-quickguide/"],"early":1},"Nefer":{"role":"main","order":4,"field":"terrain","open":"E (Danse d'ombre), puis 3 AC spéciales Performance fantasmatique (1 rosée verdoyante chacune), annulées par esquive ; Q pour combler.","loop":"AC spéciales (3 par Danse d'ombre, 6 par rotation) tant que l'équipe fournit de la rosée verdoyante ; ses AN sont négligeables.","refresh":"E : 2 charges de 9 s ; 2 E par rotation si elle dure 18 s ou plus. Danse d'ombre se termine si elle quitte le terrain.","energy":"Q une rotation sur deux : ~100 % de Recharge d'énergie avec 2 ou 3 Dendro, ~105 % en Dendro seul.","tip":"Hydro obligatoire (Aino, Kokomi…) pour la rosée verdoyante, un 2e Dendro avant elle, et Lauma pour activer son A1 ; alliés avant son entrée.","conf":3,"src":["https://keqingmains.com/q/nefer-quickguide/"]},"Neuvillette":{"role":"main","order":4,"field":"terrain","open":"Q (6 gouttes d'eau de source) puis change ; il revient pour AC, E, AC : les gouttes absorbées accélèrent la formation du sceau.","loop":"AC maintenues en boucle (3 à 4 par rotation) avec E entre deux AC pour refaire des gouttes ; l'AC du sceau ne coûte pas d'endurance.","refresh":"Relance Q à chaque rotation (source principale de gouttes) ; compte 2 AC à l'entrée, puis 1 à 2 AC à chaque retour.","energy":"Q chaque rotation : ~100–135 % de Recharge d'énergie selon l'équipe ; certaines armes : 100 %.","tip":"Furina est son meilleur soutien ; prévois un bouclier ou un allié résistant aux interruptions, car il est projeté pendant ses AC.","conf":3,"src":["https://keqingmains.com/q/neuvillette-quickguide/"],"early":1},"Nicole":{"role":"support","order":1,"field":"hors-terrain","open":"E (buff d'ATQ d'équipe, DGT Pyro et bouclier), puis Q, puis change de personnage.","refresh":"Relance E à chaque rotation ; avec son set 4 pièces, ses buffs durent 20 s. Q peut être sautée une rotation sur deux selon l'équipe.","energy":"~175–200 % de Recharge d'énergie sur son arme (avant buffs d'équipe) ; moins si Q est sautée.","tip":"E est sa capacité principale (Q apporte bien moins) ; son buff d'ATQ plafonne vers 4 000 ATQ ; joue-la en premier, avec un allié Hexerei.","conf":3,"src":["https://www.icy-veins.com/genshin-impact/nicole-guide-best-builds","https://www.icy-veins.com/genshin-impact/lohen-guide-best-builds"]},"Nilou":{"role":"sub","order":1,"field":"hors-terrain","open":"(Q) puis E ×4 : Pirouette puis 3 pas en Danse de tourbillon ; le 3e pas termine Pirouette, donne le buff et applique l'Hydro, puis change.","refresh":"Le buff de son A1 dure 30 s : refais le combo E à chaque rotation. Il exige une équipe 100 % Hydro/Dendro.","energy":"Aucun besoin : Q optionnelle (une rotation sur deux : ~100–110 % avec des alliés Hydro).","tip":"Équipe Hydro/Dendro uniquement ; ajoute soin ou bouclier (les noyaux de ses Floraisons blessent l'équipe). Seule sur le terrain : dès C2/C6.","conf":3,"src":["https://keqingmains.com/q/nilou-quickguide/"]},"Ningguang":{"role":"main","order":4,"field":"terrain","open":"E (Paravent d'astrolabe) puis Q juste devant lui : le paravent ajoute des tirs de jade ; ensuite AN + AC en boucle.","loop":"AN, marche, AN, AC : l'AC tire tous les jades d'étoile gagnés par les AN ; marche pendant les AN, immobile pendant l'AC.","refresh":"Un seul paravent à la fois : relance E avant chaque Q pour que le paravent renforce Q.","energy":"Q régulière : ~110–140 % de Recharge d'énergie selon le nombre d'alliés Géo et la durée de rotation.","tip":"Évite le Voyageur Géo (ses constructions bloquent ses tirs) ; préfère Xilonen, Chiori ou Albedo, et vise la Résonance Géo avec un bouclier.","conf":3,"src":["https://keqingmains.com/q/ningguang-quickguide/"]},"Noëlle":{"role":"main","order":4,"field":"terrain","open":"Q puis E (cet ordre capte mieux les particules), puis 3 AN et esquive en boucle ; son état de Q persiste si tu changes de personnage.","loop":"3 AN puis esquive en boucle ; AC tournoyante pour la zone et l'application Géo (alterne avec les AN pour l'endurance).","refresh":"E : bouclier et soins par AN/AC, recharge réduite de 1 s tous les 4 coups (A4) ; relance E et Q à chaque rotation.","energy":"Aucune particule propre : 200 %+ sans allié Géo, ~115–135 % avec Xilonen ou Voyageur Géo.","tip":"Ses attaques appliquent le Géo en continu : idéal pour Cristallisation et Sélénocristallisation ; fournis-lui des particules.","conf":3,"src":["https://keqingmains.com/q/noelle-quickguide/"]},"Nomade":{"role":"main","order":4,"field":"terrain","open":"Joue après les buffs des alliés : E (état Bienfait venteux), puis AN/AC en boucle ; Q avant E ou à la fin de l'état.","loop":"2 AN + AC (Kuugo) en boucle pendant Bienfait venteux ; AN seules si tu as de la VIT d'attaque. Évite l'esquive avant le signal de l'A4.","refresh":"Relance E à chaque rotation ; l'état Bienfait venteux dure selon les points Kuugoryoku et s'arrête si E ou Q est relancé.","energy":"Avant C2 : Q une rotation sur deux (~100–115 %) ; dès C2 : Q chaque rotation (~170–230 %).","tip":"Aucune résistance aux interruptions pendant Bienfait venteux : prends un bouclier ou esquive ; Faruzan et Bennett sont ses meilleurs alliés.","conf":3,"src":["https://keqingmains.com/q/wanderer-quickguide/"]},"Odette":{"role":"sub","order":2,"field":"hors-terrain","open":"E (invoque la doublure de danse solo), puis E de nouveau dans les 6 s (Danse lente : Final de l'aube), puis change de personnage.","refresh":"Relance E à chaque rotation : la doublure dure 20 s et le Final de l'aube a environ 15 s de délai.","energy":"Recharge souvent négligeable (100–130 %) car Q est rarement lancé.","tip":"Q est souvent sauté (animation longue) ; il augmente les dégâts de ses réactions astrales. Brille avec Astroconduction/Astrodispersion.","conf":3,"src":["https://keqingmains.com/q/odette-quickguide/","https://www.icy-veins.com/genshin-impact/odette-guide-best-builds"]},"Ororon":{"role":"sub","order":2,"field":"hors-terrain","open":"E (spiritorbe qui rebondit entre les ennemis), Q (spiroculus sonique), puis change de personnage : ses dégâts se font hors du terrain.","refresh":"E et Q ont chacun 15 s de délai ; relance E dans la fenêtre de 15 s qui suit pour garder ses points de noctâme.","energy":"Double Électro : 100–120 % ; Électro seul : 160–195 % avec 1 E par Q (100–120 % avec 2 E).","tip":"Il lui faut des dégâts d'Électro-charge ou de noctâme alliés (Hydro + Électro). Évite d'attaquer juste après E s'il reste sur le terrain.","conf":3,"src":["https://keqingmains.com/q/ororon-quickguide/"]},"Prune":{"role":"support","order":2,"field":"hors-terrain","open":"E (le second E est souvent sauté), puis Q pour poser la cloche de l'ensorceleuse, puis change de personnage.","refresh":"Relance E puis Q à chaque rotation ; la cloche suit le personnage déployé environ 12 s.","energy":"Beaucoup : environ 160–190 % ; moins avec C1 ou une arme de Favonius.","tip":"Il lui faut un élément sur l'ennemi pour provoquer des Dispersions (elles activent le buff d'équipe). Vise environ 4000 ATQ.","conf":3,"src":["https://keqingmains.com/q/prune-quickguide/","https://www.icy-veins.com/genshin-impact/prune-guide-best-builds"]},"Qiqi":{"role":"support","order":2,"field":"hors-terrain","open":"E (héraut de givre), puis Q si disponible (une rotation sur deux en général), puis change de personnage.","refresh":"Relance E dès qu'elle est disponible : c'est son soin principal et son application de Cryo.","energy":"Recharge facultative : Q une rotation sur deux (chaque rotation à C6 en Astroconduction).","tip":"Le héraut applique du Cryo via ses attaques coordonnées. Soins et buffs dépendent de l'ATQ ; privilégie E si l'équipe a besoin de soins.","conf":2,"src":["https://keqingmains.com/q/qiqi-quickguide/"]},"Razor":{"role":"main","order":4,"field":"terrain","open":"E appui simple, Q, puis E appui simple et esquive pour relancer la boucle.","loop":"Pendant Q : 4 AN, dernier coup annulé par E simple ou esquive. Hors Q : 3 AN annulées de la même façon. Évite l'AC.","refresh":"Les sceaux Électro durent 18 s (3 max) : relance E appui simple pour les rafraîchir. Ne quitte pas le terrain avant la fin de Q.","energy":"Double Électro : 100–130 % ; Électro seul : 140–180 % ; les sceaux Électro de E aident.","tip":"E maintenu dépense les sceaux en énergie si tu en manques. En équipe physique, ajoute un Cryo pour la Superconduction.","conf":3,"src":["https://keqingmains.com/q/razor-quickguide/"]},"Rosalia":{"role":"sub","order":2,"field":"hors-terrain","open":"E puis Q, puis change de personnage. Lance toujours E avant Q pour profiter de ses bonus de CRIT.","refresh":"E a un court délai (6 s) : relance-la plusieurs fois par rotation si possible ; Q dès qu'il est prêt.","energy":"Environ 145–210 % selon l'équipe et le nombre de E par rotation ; C4 ou arme de Favonius réduisent.","tip":"Les coups de sa Q n'ont pas de délai d'application : Fonte à chaque coup si l'ennemi est Pyro. Aussi utile en Gel.","conf":3,"src":["https://keqingmains.com/q/rosaria-quickguide/"]},"Sandrone":{"role":"main","order":4,"field":"terrain","open":"AC (Fagio), puis E jusqu'à réparer Fagio ; refais AC + E, et lance Q entre deux AC ou juste après la dernière E.","loop":"AC puis E (annulée par AN ou esquive), 3 fois à C0 et 2 fois à C1+ ; E a 4 s de délai. Ses AN et AP ne servent pas.","refresh":"Entre après les enablers Électro et Cryo : environ 10 à 13 s sur le terrain par rotation.","energy":"Q chaque rotation : environ 120–165 % selon les alliés ; ~100 % si Q une rotation sur deux.","tip":"Il faut un allié Électro (ex. Yae Miko) et Odette pour l'Astroconduction. Annule E au bon moment : trop tôt, Fagio n'est pas réparé.","conf":3,"src":["https://keqingmains.com/q/sandrone-quickguide/","https://mobalytics.gg/genshin-impact/characters/sandrone-build-guide"]},"Sangonomiya Kokomi":{"role":"support","order":2,"field":"hybride","open":"E (méduse fantôme), puis Q (parure cérémoniale, relance la durée de la méduse), puis change de personnage ou reste attaquer.","loop":"Sur le terrain pendant Q : 3 AN puis esquive (soigne l'équipe à chaque coup). Hors Q, ses attaques font peu de dégâts.","refresh":"E a 20 s de délai ; lancer Q quand la méduse est en place relance sa durée sans la déplacer ni remettre E à zéro.","energy":"E seule : aucune. Q chaque rotation : 135–245 % sur le terrain, 260–315 % hors-terrain.","tip":"La méduse est immobile : garde les ennemis à portée, sinon plus d'Hydro ni de particules. Sa Q est surtout un gain de dégâts sur le terrain.","conf":3,"src":["https://keqingmains.com/q/kokomi-quickguide/"]},"Sayu":{"role":"support","order":2,"field":"hors-terrain","open":"E maintenu puis nouvel appui sur E pour finir la roulade (2 Dispersions), Q (soin + Daruma Muji-muji), puis change de personnage.","refresh":"Q dès qu'il est prêt (chaque rotation ou une sur deux). Plus la roulade de E dure, plus son délai est long.","energy":"Q chaque rotation : plus de 200 % ; une rotation sur deux : environ 150–170 %.","tip":"E maintenu absorbe Pyro > Hydro > Électro > Cryo (une fois par lancer). Le Daruma soigne un allié à 70 % PV ou moins, sinon attaque.","conf":3,"src":["https://keqingmains.com/q/sayu-quickguide/"]},"Sethos":{"role":"main","order":4,"field":"terrain","open":"E, Q, puis 5 fois (2 AN + esquive ou saut), 2 AN et un dernier E.","loop":"Avec Q, ses AN tirent des carreaux crépusculaires (considérés comme AC, selon la Maîtrise élémentaire) ; pas de tir visé.","refresh":"E a 8 s de délai : lance-le deux fois par rotation. Fais-lui déclencher une réaction pour récupérer de l'énergie.","energy":"Prévois une batterie Électro (ex. Fischl) : environ 100–160 % selon le nombre de E par rotation.","tip":"Joue-le en Stimulation (Dendro + Électro). Variante sans Q : AC chargées (C, E, 3 AC) pour les équipes à changements rapides.","conf":3,"src":["https://keqingmains.com/q/sethos-quickguide/"]},"Shenhe":{"role":"support","order":3,"field":"hors-terrain","open":"E appui simple puis Q (ou E maintenu puis Q si une seule E par rotation), puis change de personnage.","refresh":"E appui simple a 10 s de délai : lance-le deux fois par rotation de 20 s pour garder le Pennage glacé ; E maintenu une fois.","energy":"Double Cryo : 180–200 % (165–175 % avec Lance de Favonius) ; triple Cryo : 160–175 %.","tip":"Le Pennage glacé n'a qu'un nombre limité de déclenchements : garde-le pour ton DPS Cryo. E maintenu convient aux DPS d'AN/AC.","conf":3,"src":["https://keqingmains.com/q/shenhe-quickguide/"]},"Shikanoin Heizou":{"role":"sub","order":2,"field":"hybride","open":"1 AN + AC, Q, 1 AN, E appui simple, puis change de personnage (combo de soutien à changements rapides).","loop":"En pilote sur le terrain : 4 AN + AC pour l'Électro-charge, ou 2 AN + esquive pour le déchaînement de Beidou.","refresh":"Q a 12 s de délai : relance-le à chaque rotation. Sans Q, prends 2 × (1 AN + AC) puis E.","energy":"Soutien : 200 %+ avec 1 E par rotation (C0–3) ; 120–130 % avec 2 E.","tip":"Évite E maintenu (rallonge la rotation). Les Dispersions donnent des cumuls de Détection (4 max) qui renforcent le prochain Poing.","conf":3,"src":["https://keqingmains.com/q/heizou-quickguide/"]},"Shogun Raiden":{"role":"main","order":4,"field":"terrain","open":"E (Œil de jugement orageux), puis Q en dernier, après les déchaînements des alliés pour cumuler la résolution, puis enchaîne les AN.","loop":"En Harmonie d'idéal : 4 AN + esquive en boucle (potentiel élevé), ou 2 × (4 AN + AC) puis 2 AN + AC pour débuter.","refresh":"Relance E à chaque rotation pour garder l'Œil actif ; Q dès qu'il est prêt, une fois les alliés passés.","energy":"Électro seule : 200–220 % ; avec un autre Électro : 130–190 %.","tip":"Ne lance pas Q avant les alliés : leurs déchaînements nourrissent la résolution (60 max). Ses AN n'ont pas besoin d'être améliorées.","conf":3,"src":["https://keqingmains.com/q/raiden-quickguide/"]},"Sigewinne":{"role":"support","order":2,"field":"hors-terrain","open":"E appui simple (bulles qui rebondissent et soignent), puis change de personnage. Q seulement pour combler un temps mort.","refresh":"Relance E à chaque rotation : ses buffs durent 18 s. Un Ousia se déclenche toutes les 10 s.","energy":"Double Hydro : 155–190 % ; triple Hydro : 115–160 % (si elle capte ses particules).","tip":"Ses soins et dégâts dépendent de ses PV max. Q n'apporte ni buff ni soin : à lancer en temps mort. Furina est sa meilleure alliée.","conf":3,"src":["https://keqingmains.com/q/sigewinne-quickguide/"]},"Skirk":{"role":"main","order":4,"field":"terrain","open":"E appui simple (mode Flash à sept phases, 45 de finesse), puis 5 AN + esquive en boucle, en glissant AC et Q pour absorber les failles.","loop":"5 AN annulées par esquive, répétées autant que possible tant que le mode Flash dure ; ses AN sont infusées Cryo.","refresh":"Le mode Flash dure jusqu'à 12,5 s et E a 8 s de délai : relance E dès qu'il est prêt. La finesse se perd si elle quitte le terrain.","energy":"Aucune recharge utile : sa Q repose sur la finesse serpentine (45 par E, 50 min. pour Ruine).","tip":"Équipe uniquement Cryo et Hydro (au moins un de chaque) : leurs réactions Cryo créent les failles. Escoffier, Furina, Citlali en alliés.","conf":3,"src":["https://keqingmains.com/q/skirk-quickguide/","https://www.prydwen.gg/genshin-impact/characters/skirk"]},"Sucrose":{"role":"support","order":2,"field":"hors-terrain","open":"E (esquive juste après pour la survie), Q si disponible, puis change de personnage.","loop":"Pilote sur le terrain : alterne AN et AC (cooldowns d'application séparés) pour multiplier les Dispersions.","refresh":"E a une seule charge (2 à C1) ; évite d'enchaîner deux E. Beaucoup d'équipes n'ont pas besoin de sa Q.","energy":"Q souvent facultative : recharge requise faible, selon le nombre de Q par rotation.","tip":"Q n'absorbe qu'un élément par lancer ; en Vaporisation, ne la lance que si elle absorbe le Pyro. Maîtrise élémentaire avant tout.","conf":3,"src":["https://keqingmains.com/q/sucrose-quickguide/"]},"Tartaglia":{"role":"sub","order":1,"field":"terrain","open":"Q à distance (Éclair de balle maléfique) pour poser Contre-courant et regagner de l'énergie, puis E pour passer en mêlée et enchaîner AN et AC.","loop":"En mêlée : 2 à 5 AN puis AC en boucle (au moins 1 AN avant l'AC), annulation par esquive ou saut.","refresh":"Mêlée idéale de 9 à 11 s, puis relancer E pour revenir à distance : la recharge s'allonge avec le temps passé en mêlée.","energy":"Environ 100-130 % de RE avec le Q à distance, qui rend de l'énergie.","tip":"Garde de l'endurance pour toute la mêlée. Le Q en mêlée sert surtout à finir une salle ; les tirs chargés restent utiles hors mêlée.","conf":3,"src":["https://keqingmains.com/q/tartaglia-quickguide/"]},"Thomas":{"role":"support","order":2,"field":"hors-terrain","open":"E pour poser la barrière brûlante, Q pour l'o-yoroi embrasé, puis change de personnage.","refresh":"Barrière de 8 s : relancer E avant qu'elle expire. Pendant le Q, les AN du personnage déployé la recréent (1 fois par s).","energy":"Gros besoin de RE pour lancer le Q chaque rotation (environ 210 % en double Pyro, C0).","tip":"Il faut un personnage déployé qui enchaîne des AN pour déclencher l'effondrement ardent, lequel peut gêner certaines réactions.","conf":3,"src":["https://keqingmains.com/q/thoma-quickguide/"]},"Tighnari":{"role":"main","order":4,"field":"terrain","open":"E, puis 3 AC (flèches florales) et Q juste après un tir chargé pour le bonus de ME. Variante : E, 1 AC, Q, puis 2 AC.","loop":"AC (flèche florale) en boucle tant que Suffusion de vijnana dure ; l'AN et l'AP comptent peu.","refresh":"Suffusion de vijnana s'arrête après 3 flèches florales ou en fin de durée : relancer E pour des tirs chargés rapides.","energy":"100-110 % de RE avec 2 E par Q ; 130-160 % avec 1 E par Q.","tip":"Joue en échange rapide avec un Électro hors-terrain (Fischl, Yae Miko, Kuki Shinobu) pour la Propagation ; la ME augmente ses dégâts.","conf":3,"src":["https://keqingmains.com/q/tighnari-quickguide/"]},"Varesa":{"role":"main","order":4,"field":"terrain","open":"E puis AN (déclenche une AC sans endurance), puis AP pour regagner du noctâme. Premier tour : E, AC, AP pour appliquer Électro.","loop":"E, AC, AP en boucle ; à chaque AP qui met fin à la passion ardente, Q court (si l'énergie suffit), puis AC et AP.","refresh":"E : 2 charges, recharge de 9 s. Passion ardente jusqu'à 15 s, déclenchée à 40 de noctâme par une AP.","energy":"RE élevée pour 2 Q courts par rotation : 120-145 % en double Électro, 195-200 % en Électro seul.","tip":"Ses dégâts viennent des AP. Préfère les rotations de moins de 20 s ; bons alliés : Iansan, Xianyun, Furina, Chevreuse.","conf":3,"src":["https://keqingmains.com/q/varesa-quickguide/","https://sportskeeda.com/esports/genshin-impact-varesa-build-guide-best-weapons-artifacts-teams"]},"Varka":{"role":"main","order":4,"field":"terrain","open":"E (appui simple) pour entrer en charge de tempête, puis 5 AN et la compétence spéciale (2 charges), deux fois de suite.","loop":"5 AN puis compétence spéciale en boucle ; chaque coup d'AN réduit un peu sa recharge. Le Q est rarement utilisé.","refresh":"Compétence spéciale : 2 charges, environ 11 s de recharge de base. Relancer E pour renouveler la charge de tempête.","energy":"Quasi aucun besoin de RE : le Q est rarement lancé.","tip":"Équipe : un Anémo et 2 alliés du même élément Pyro, Hydro, Électro ou Cryo (double Pyro idéal). Chaque Dispersion renforce ses dégâts.","conf":3,"src":["https://keqingmains.com/q/varka-quickguide/"]},"Venti":{"role":"support","order":1,"field":"hors-terrain","open":"E en appui simple pour regrouper les ennemis, puis Q (Œil de la tempête), puis change de personnage.","refresh":"Q : Œil de la tempête pendant 8 s. E : recharge de 6 s, utilisable plusieurs fois par rotation.","energy":"Environ 175-210 % de RE en Anémo seul avec 1 E par rotation ; regagne de l'énergie à la fin du Q.","tip":"Une AN juste après E annule l'animation. L'Œil absorbe un élément (priorité Pyro, Hydro, Électro, Cryo) pour des DGT bonus.","conf":3,"src":["https://keqingmains.com/q/venti-quickguide/"]},"Vesna":{"role":"main","order":4,"field":"terrain","open":"E (Armée pour l'action, 2 cumuls d'énergie d'épée), 2 compétences spéciales, Q, une compétence spéciale, puis 4 AN et compétence spéciale.","loop":"4 AN (rendent 1 cumul d'énergie d'épée) puis compétence spéciale, en boucle jusqu'à la fin d'Armée pour l'action.","refresh":"Armée pour l'action dure 15 s max ou jusqu'à 3 compétences spéciales de niveau 3 : relancer E dès qu'elle se termine.","energy":"Q chaque rotation : 120-140 % de RE avec un 2e Anémo, 150-170 % sans.","tip":"Ses dégâts dépendent d'un allié Cryo ou Anémo : Odette ou Voyageur Cryo, avec Faruzan ou Vodyanitsa. Elle joue en dernier.","conf":3,"src":["https://www.icy-veins.com/genshin-impact/vesna-guide-best-builds","https://www.icy-veins.com/genshin-impact/vesna-profile-talents-constellations"]},"Vodyanitsa":{"role":"support","order":1,"field":"hors-terrain","open":"E (Aube sonore : chant d'antan), puis change aussitôt de personnage. Q (Koda) en option.","refresh":"Relancer E à chaque rotation. Q seulement une rotation sur deux ou jamais selon l'équipe.","energy":"Peu de RE (elle monte surtout ses PV) ; seulement si tu lances le Q à chaque rotation.","tip":"Son E réduit la RÉS Hydro et Cryo, soigne et applique Hydro toutes les 3 s : attention à l'aura Cryo des équipes de Dispersion.","conf":3,"src":["https://keqingmains.com/q/vodyanitsa-quickguide/","https://www.icy-veins.com/genshin-impact/vodyanitsa-guide-best-builds"]},"Wriothesley":{"role":"main","order":4,"field":"terrain","open":"E (Ruée glaciale du croc) pour entrer en Châtiment algide, puis 3 AN + AC annulée par un saut, en boucle. Q en fin de présence.","loop":"3 AN puis AC annulée par un saut, 5 à 6 fois ; garde les PV au-dessus de 50 % pour conserver le poing renforcé.","refresh":"Le Châtiment algide s'arrête s'il quitte le terrain (environ 12 s max) : relancer E à chaque entrée en jeu.","energy":"Q une rotation sur deux avec 100-125 % de RE en Cryo seul ; un Q chaque tour n'est pas rentable.","tip":"Ses AN coûtent des PV : un bouclier ou un soigneur l'aide. Sous 60 % de PV, son AC spéciale coûte 0 endurance et le soigne.","conf":3,"src":["https://keqingmains.com/q/wriothesley-quickguide/"]},"Xiangling":{"role":"sub","order":2,"field":"hors-terrain","open":"Q puis E (Gooba), lancés pendant le Q de Bennett pour copier son bonus d'ATQ, puis change de personnage.","refresh":"Relancer E et Q à chaque rotation. Place Gooba pour qu'il touche un ennemi en continu.","energy":"Très gourmande : 220-280 % de RE (rotation de 20 s, 2 E de Bennett) ; canalise les particules.","tip":"Esquive après E pour annuler l'animation. Les bonus sont copiés au lancement du Q : lance-le après le Q de Bennett.","conf":3,"src":["https://keqingmains.com/q/xiangling-quickguide/"]},"Xianyun":{"role":"support","order":3,"field":"hors-terrain","open":"E, puis AP (vague de nuage flottant), puis Q, puis change de personnage.","refresh":"Relancer Q à chaque rotation : l'Étoileur d'osier soigne et donne 8 cumuls d'aide adeptale, un par AP du personnage déployé.","energy":"Q chaque rotation : environ 120-130 % de RE avec Xiao et Faruzan C6, 220-300 % en Anémo seul.","tip":"Avant C6, un seul E avant l'AP : le triple saut fait perdre du temps. Idéale avec les DPS à AP (Xiao, Gaming, Hu Tao).","conf":3,"src":["https://keqingmains.com/q/xianyun-quickguide/"]},"Xiao":{"role":"main","order":4,"field":"terrain","open":"E deux fois (2 charges) pour pré-charger l'énergie, puis Q (Fléau du mal), puis AP en rafale jusqu'à la fin du Masque du Yaksha.","loop":"Saut puis AP en rafale ; une AN entre deux AP peut déclencher des effets d'alliés ou d'arme.","refresh":"Masque du Yaksha : 15 s, consomme des PV et prend fin s'il quitte le terrain. E : relancer avant le Q (pas de particules pendant le Q).","energy":"Q chaque rotation : environ 100 % de RE avec Faruzan C6, 130-140 % sans.","tip":"Place un Anémo batterie (Sucrose, Lynette, Faruzan) avant lui ; les alliés boostent hors-terrain. Prévois un soin ou un bouclier.","conf":3,"src":["https://keqingmains.com/q/xiao-quickguide/"]},"Xilonen":{"role":"support","order":1,"field":"hors-terrain","open":"E puis 2 AN pour remplir son noctâme et activer la réduction de RÉS, Q si le soin est utile, puis change de personnage.","refresh":"Échantillonneurs actifs 15 s une fois 90 de noctâme atteints : refaire E et 2 AN à chaque rotation.","energy":"Q chaque rotation : environ 115-125 % de RE avec 2 E par rotation, 170-190 % avec 1 E (Géo seul).","tip":"Il faut au moins 2 alliés d'éléments différents du Géo. Q facultatif avec un soigneur, indispensable avec Furina, inutile avec Arlecchino.","conf":3,"src":["https://keqingmains.com/q/xilonen-quickguide/"]},"Xingqiu":{"role":"sub","order":2,"field":"hors-terrain","open":"E, esquive pour annuler l'animation, Q, puis 1 AN, avant de changer de personnage.","refresh":"E : environ 21 s de recharge, il rythme la rotation. Relancer le Q à chaque rotation ; ses épées sortent avec les AN de l'allié déployé.","energy":"Environ 190-220 % de RE avec Épée de Favonius, 220-260 % avec une autre arme (hors-terrain).","tip":"Son Q profite des AN du personnage déployé et ne copie pas les bonus. Applicateur Hydro fréquent et durable.","conf":3,"src":["https://keqingmains.com/q/xingqiu-quickguide/"]},"Xinyan":{"role":"support","order":2,"field":"hors-terrain","open":"E contre 2 ou 3 ennemis (bouclier de niveau 2 ou 3, applique Pyro), puis Q (explosions Pyro), puis change de personnage.","refresh":"Relancer E quand le bouclier tombe : jusqu'à 2 fois par rotation, ce qui génère plus d'énergie.","energy":"Environ 190-220 % de RE en Pyro seul, 170-190 % en double Pyro, 150-170 % en triple.","tip":"Touche 2 ou 3 ennemis avec E pour un bon bouclier. Il applique Pyro à Xinyan ; elle peut aussi jouer DPS physique.","conf":2,"src":["https://www.icy-veins.com/genshin-impact/xinyan-guide-best-builds"]},"Yae Miko":{"role":"sub","order":2,"field":"hors-terrain","open":"E trois fois pour poser 3 sakura dévastateurs proches, puis Q (Incarnation de tenko), puis change de personnage.","refresh":"Les sakura durent 14 s. Le Q les consomme mais remet E à zéro : il faut ensuite en reposer 3.","energy":"Q = 90 d'énergie : 150-160 % de RE avec Raiden, 130-140 % avec Fischl, 200 %+ sans autre Électro.","tip":"Place les sakura proches pour qu'ils se relient (dégâts accrus). Lance le Q après E pour des dégâts maximum.","conf":3,"src":["https://www.icy-veins.com/genshin-impact/yae-miko-guide-best-builds"]},"Yanfei":{"role":"main","order":4,"field":"terrain","open":"Avec Q : 1 AN, E puis Q ; sinon 1 AN, E et AC. Puis enchaîne la boucle d'AN + AC.","loop":"3 × (3 AN + AC) (jusqu'à 4 × 2 AN + AC avec beaucoup de Hydro), puis 1 AN, E et AC pour finir.","refresh":"Sceaux écarlates : 10 s, prolongés à chaque AN ; relancer E dès qu'elle est disponible, Q environ une rotation sur deux.","energy":"Q une rotation sur deux : 120-130 % de RE en Pyro seul, 100-120 % avec Bennett.","tip":"Garder du Hydro hors-terrain pour Vaporiser chaque AC ; éviter le Cryo : l'AC brise la glace des ennemis gelés, sans Fonte.","conf":3,"src":["https://keqingmains.com/q/yanfei-quickguide/","https://keqingmains.com/yanfei/"]},"Yaoyao":{"role":"support","order":1,"field":"hors-terrain","open":"E (radis de jade blanc lancés chaque seconde pendant ~10 s) puis change de personnage ; Q seulement en soin d'urgence.","refresh":"E environ 1 fois par rotation (20-22 s) ; Q une rotation sur deux au plus.","energy":"Q 1 rotation sur 2 : ~150 % de RE ; Q à chaque rotation : 170-270 % selon le nombre de Dendro.","tip":"Les radis profitent surtout aux personnages au corps à corps ; Q est surtout utile en équipe Floraison de Nilou.","conf":2,"src":["https://keqingmains.com/q/yaoyao-quickguide/"]},"Yelan":{"role":"sub","order":2,"field":"hors-terrain","open":"E puis Q (pour capter les particules), 1 AN, puis change de personnage.","loop":"Hors-terrain : le dé exquis frappe quand le personnage déployé enchaîne des AN (1 fois/s max) et à chaque explosion de la ligne vitale.","refresh":"Q tôt dans la rotation (le bonus monte avec le temps, remis à zéro si Q est relancé) ; E : 10 s de recharge après avoir touché.","energy":"~215-260 % de RE en Hydro seul avec 1 E (~185-195 % avec 2 Hydro) ; moins en lançant E deux fois.","tip":"Intercaler une AN avant chaque changement pour ajouter des attaques du dé exquis sans rallonger la rotation.","conf":3,"src":["https://keqingmains.com/q/yelan-quickguide/","https://keqingmains.com/yelan/"]},"Yoimiya":{"role":"main","order":4,"field":"terrain","open":"E puis la boucle d'AN ; Q seulement quand elle est disponible (marque l'ennemi d'une Flamme Ryuukin).","loop":"5 AN enchaînées 3 fois, terminées par une esquive ; la Vaporisation inversée tombe sur les 1re, 3e et 5e AN si elle n'est pas interrompue.","refresh":"E : flèches Pyro 10 s, recharge 18 s ; Q marque l'ennemi 10 s, utilisée toutes les 2 à 3 rotations.","energy":"Pas de RE à monter : Q seulement quand disponible (toutes les 2-3 rotations), voire jamais.","tip":"Hydro hors-terrain (Yelan, Xingqiu) pour la Vaporisation inversée ; un bouclier (Zhongli) évite l'interruption de la boucle d'AN.","conf":3,"src":["https://keqingmains.com/q/yoimiya-quickguide/","https://keqingmains.com/yoimiya/"]},"Yumemizuki Mizuki":{"role":"main","order":4,"field":"terrain","open":"E puis flotte librement pendant l'état Flotte-rêves (~10 s) ; Q si elle est disponible.","loop":"Aucun combo : elle flotte et inflige des DGT Anémo de zone régulièrement tant que Flotte-rêves est actif.","refresh":"Flotte-rêves dure environ 10 s : relancer E à chaque rotation ; Q une rotation sur deux.","energy":"Q 1 rotation sur 2 : 100-130 % de RE (100-120 % avec Sucrose ou Faruzan) ; inutile d'en monter plus.","tip":"Joue en dernier : il faut un personnage Cryo hors-terrain (Voyageur Cryo, Odette) sinon elle ne fait que des Dispersions classiques.","conf":3,"src":["https://keqingmains.com/q/mizuki-quickguide/","https://www.icy-veins.com/genshin-impact/yumemizuki-mizuki-guide-best-builds"]},"Yun Jin":{"role":"support","order":3,"field":"hors-terrain","open":"E (appui simple, pour les particules Géo), puis Q, et change de personnage.","refresh":"Q à chaque rotation : bonus de 12 s, limité à 30 coups par personnage ; E surtout pour les particules.","energy":"~160-200 % de RE avec Xilonen, 210-265 % avec Zhongli, 240-270 % si seule Géo (moins avec Favonius).","tip":"Le bonus d'AN de Q dépend de la DÉF de Yun Jin et convient aux DPS en AN rapides ; monter Q en priorité.","conf":3,"src":["https://keqingmains.com/q/yunjin-quickguide/"]},"Zhongli":{"role":"support","order":1,"field":"hors-terrain","open":"E maintenu (bouclier de jade + dorsale rocheuse), puis change de personnage ; Q seulement si l'équipe a du temps mort.","refresh":"Dorsale rocheuse : 30 s, brisable par les ennemis ; refaire un E maintenu pour renouveler le bouclier de jade.","energy":"Aucune en bouclier ; en soutien Q : 100-110 % (1 rotation sur 2), 120-140 % (chaque rotation, 2 Géo)","tip":"Le bouclier de jade réduit de 20 % la RÉS élémentaire et physique des ennemis proches et protège de l'interruption.","conf":3,"src":["https://keqingmains.com/q/zhongli-quickguide/","https://keqingmains.com/zhongli/"]},"Zibai":{"role":"main","order":4,"field":"terrain","open":"E (déphasage lunaire), puis 4 AN + Foulée de destrier spirituel ; si Q est disponible : 1 AN + Q après une Foulée.","loop":"Répète 4 AN + Foulée de destrier spirituel (4 charges à C0) jusqu'à la fin du déphasage lunaire.","refresh":"Déphasage lunaire : 15 s max, fini si les charges sont épuisées ou si Zibai quitte le terrain ; Q le prolonge de 1,7 s.","energy":"Q quand disponible : 100 % de RE ; Q à chaque rotation : 105-145 % selon l'équipe.","tip":"Hydro requis sur l'ennemi pour la Sélénocristallisation ; finir les 4 AN (le 4e coup fait l'essentiel) et utiliser toutes les charges.","conf":3,"src":["https://keqingmains.com/q/zibai-quickguide/"]},"Voyageur Anémo":{"role":"support","order":2,"field":"hors-terrain","open":"Après une application d'élément (Cryo, Pyro, Hydro ou Électro) : E maintenu ~3 coups, Q, puis change de personnage.","refresh":"Q dès qu'elle est disponible (tornade de 6 s, recharge de 15 s) ; E relancée à chaque fois que possible.","energy":"Viser ~160-180 % de RE pour relancer Q à chaque fin de recharge.","tip":"E et Q absorbent un élément (Cryo > Pyro > Hydro > Électro) : le faire appliquer avant ; la Dispersion fait l'essentiel des dégâts.","conf":2,"src":["https://keqingmains.com/anemo-traveler/","https://library.keqingmains.com/characters/anemo/traveler-anemo"]},"Voyageur Cryo":{"role":"sub","order":3,"field":"hybride","open":"E, puis 1 AN + AC, puis Q en enchaînement rapide, et change de personnage.","loop":"Hors-terrain (équipe Dispersion) : l'étoile de E tire un cristal de glace toutes les 2 s pendant 12 s.","refresh":"E : étoile de 12 s ; AC spéciale utilisable toutes les 15 s ; Q à chaque rotation.","energy":"Q (60 d'énergie) chaque rotation : ~120-140 % de RE avec un 2e Cryo, ~100-110 % avec un 3e.","tip":"Les cristaux de l'étoile et l'AC donnent des cumuls (8 max) qui renforcent Q : jouer E, AC puis Q dans cet ordre.","conf":3,"src":["https://www.icy-veins.com/genshin-impact/cryo-traveler-guide-best-builds","https://keqingmains.com/q/mizuki-quickguide/"]},"Voyageur Dendro":{"role":"sub","order":1,"field":"hors-terrain","open":"E, 1 AN, Q (pose la lampe) puis change de personnage ; revient plus tard pour E + 2 AN et récupérer les particules.","loop":"La lampe de Q inflige des DGT Dendro en continu dans sa zone, sans que le Voyageur reste sur le terrain.","refresh":"E environ 2 fois par rotation ; transfigurer la lampe (Hydro ou Électro) dès que possible, avant un éventuel Pyro ennemi.","energy":"Q chaque rotation : ~250-300 % de RE avec 1 E en Dendro seul, ~160-200 % avec 2 E et un 2e Dendro.","tip":"La lampe donne jusqu'à +60 ME aux personnages déployés dans sa zone ; priorité à la transfiguration Électro (cible unique) ou Hydro.","conf":3,"src":["https://keqingmains.com/q/dendro-traveler-quickguide/"]},"Voyageur Électro":{"role":"support","order":1,"field":"hors-terrain","open":"E (laisse des amulettes d'énergie), puis Q si l'énergie suffit, puis change de personnage.","refresh":"E : amulettes valables 15 s, recharge ~13,5 s ; Q : 12 s de durée, 20 s de recharge.","energy":"Besoin élevé : ~200 % de RE conseillé pour relancer Q (80 d'énergie) ; arme à RE utile.","tip":"Les amulettes de E redonnent de l'énergie à celui qui les ramasse : les laisser à portée du DPS ; sous Q, ses AN/AC font tomber des éclairs.","conf":2,"src":["https://genshin-builds.com/en/character/traveler_electro","https://gamewith.net/genshin-impact/article/show/28610"]},"Voyageur Géo":{"role":"sub","order":3,"field":"hors-terrain","open":"E, Q, puis AC (renforcée à 3 cumuls) et change de personnage.","refresh":"E : recharge de 6 s (8 s sans le passif), à relancer si possible ; Q et l'AC renforcée : 15 s de recharge.","energy":"Peu de RE nécessaire : l'arme conseillée et les constellations fournissent l'énergie (Q coûte 60).","tip":"Les constructions Géo (météorite de E, mur de Q) et les boucliers donnent les cumuls de l'AC renforcée ; jouer avec un autre personnage Géo.","conf":2,"src":["https://www.icy-veins.com/genshin-impact/geo-traveler-guide-best-builds","https://www.icy-veins.com/genshin-impact/geo-traveler-team-guide"]},"Voyageur Hydro":{"role":"sub","order":2,"field":"hybride","open":"E maintenu (jusqu'à 6 s de gouttes d'eau, sans bouger), puis Q, puis change de personnage.","refresh":"E ~1 fois par rotation (10 s de recharge, qui ne tourne pas pendant l'appui long) ; Q une rotation sur deux.","energy":"Q à chaque rotation demande beaucoup de RE ; sinon viser les dégâts de E maintenu sans RE.","tip":"Un appui long interrompu ne donne ni particules ni jet final : prévoir un bouclier ou une résistance à l'interruption.","conf":2,"src":["https://keqingmains.com/q/hydro-traveler-quickguide/"]},"Voyageur Pyro":{"role":"sub","order":2,"field":"hors-terrain","open":"E (appui simple), Q, 1 AN, puis change de personnage.","loop":"L'anneau de E suit le personnage déployé, pulse environ chaque seconde et applique du Pyro environ toutes les 3 s.","refresh":"Relancer E à chaque rotation (effet de 12 s max) ; Q restaure aussi des points qui prolongent l'effet.","energy":"~280-300 % de RE sans parchemin ; ~160-220 % avec Raiden, Ororon ou 2 E de Bennett.","tip":"Applique du Pyro hors-terrain pour Vaporisation, Fonte, Surcharge ou Bourgeonnement ; E maintenu pose un seuil qui attaque ~toutes les 3 s.","conf":3,"src":["https://keqingmains.com/q/pyro-traveler-quickguide/"]}};
+/*ROTATION_KIT_END*/
+function kitFor(name, elemName){
+  if (!name) return null;
+  const base = stripConstellationRefinement(name).replace(/\s*\((?:test|essai)\)\s*$/i, '').trim();
+  if (ROTATION_KIT[name]) return ROTATION_KIT[name];
+  if (ROTATION_KIT[base]) return ROTATION_KIT[base];
+  if (/^voyageu(?:r|se)$/i.test(base) && elemName) return ROTATION_KIT['Voyageur ' + elemLabel(elemName)] || null;
+  return null;
+}
+const ROLE_RANK = { support: 0, sub: 1, main: 2 };
+const FIELD_LABEL = { 'terrain': 'joué sur le terrain', 'hors-terrain': 'agit hors du terrain', 'hybride': 'terrain ou hors du terrain' };
+function libRotationHtml(name){
+  const lc = getLibraryList().find(x => x.name === name);
+  const k = kitFor(name, lc && lc.elem && lc.elem.name);
+  if (!k) return '';
+  const rows = [['Ouverture', k.open], ['Boucle', k.loop], ['À relancer', k.refresh], ['Énergie', k.energy], ['Astuce', k.tip]].filter(r => r[1])
+    .map(([l, v]) => `<li><b>${l} :</b> ${fx(v)}</li>`).join('');
+  let host = ''; try { host = k.src && k.src[0] ? new URL(k.src[0]).hostname.replace(/^www\./, '') : ''; } catch (e) {}
+  return `<div style="font-size:.78rem; color:var(--text-dim);">${ROLE_LABEL[k.role] || ''} · ${FIELD_LABEL[k.field] || ''} · rang usuel : ${k.order}/4 dans une équipe de 4</div>
+    <ul style="margin:6px 0 0; padding-left:18px; font-size:.85rem; line-height:1.5;">${rows}</ul>
+    <div style="font-size:.72rem; color:var(--text-dim); margin-top:4px;">E = compétence · Q = déchaînement · AN / AC / AP = attaque normale / chargée / plongeante${host ? ' · source : <a href="' + escapeHtml(k.src[0]) + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">' + escapeHtml(host) + '</a>' : ''}</div>`;
+}
+const ROT_ORDER_BY_ROLE = { support: 1, sub: 2, main: 4 };
+let tcCarry = null; // DPS principal choisi à la main (uniqueKey) ; sinon détecté automatiquement
+
+// Effets d'équipement connus (arme / artéfacts) qui changent la façon de jouer ou l'ordre.
+const EQUIP_SWAP_WEAPONS = [ { en: 'Thrilling Tales of Dragon Slayers', icon: 'Catalyst_Pulpfic' } ]; // le personnage qui entre ensuite gagne de l'ATQ
+const EQUIP_TEAM_SETS = [
+  { en: 'Noblesse Oblige', effect: "son déchaînement (Q) donne +20 % d'ATQ à toute l'équipe pendant 12 s", tip: 'lance son Q avant que {C} attaque' },
+  { en: 'Viridescent Venerer', effect: "ses Dispersions réduisent de 40 % la RÉS de l'élément dispersé pendant 10 s", tip: 'fais-lui disperser l\'élément de {C} avant que {C} attaque' },
+  { en: 'Deepwood Memories', effect: "après un E ou un Q qui touche, la RÉS Dendro de l'ennemi baisse de 30 % pendant 8 s", tip: 'lance son E / Q avant que {C} attaque' },
+  { en: 'Instructor', effect: "après une réaction élémentaire, toute l'équipe gagne +120 de ME pendant 8 s", tip: 'déclenche la réaction avant que {C} attaque' }
+];
+function tcSwapWeapon(c){
+  const w = c.weapon; if (!w) return null;
+  const n = normSearch(weaponNameFr(w.name || '')), raw = normSearch(w.name || '');
+  return EQUIP_SWAP_WEAPONS.find(x => (w.icon && String(w.icon).includes(x.icon)) || n === normSearch(weaponNameFr(x.en)) || raw === normSearch(x.en)) || null;
+}
+function tcSetCount(c, en){ const t = normSearch(setNameFr(en)); return (c.artifacts || []).filter(a => normSearch(setNameFr(a.setName)) === t || normSearch(a.setName) === normSearch(en)).length; }
+
+function tcItems(chosen){
+  return chosen.map((c, idx) => {
+    const k = kitFor(c.name, c.elem.name), g = buildGuideFor(c.name);
+    const role = (k && k.role) || roleOfName(c.name) || 'sub';
+    return { c, k, g, role, idx, order: (k && Number(k.order)) || ROT_ORDER_BY_ROLE[role] || 2 };
+  });
+}
+// DPS principal : choisi par l'utilisateur (★) sinon attaquant principal le plus « carry » (rôle, ouverture-retour, score de build).
+function tcPickCarry(items){
+  const rank = it => it.role === 'main' ? 2 : it.role === 'sub' ? 1 : 0;
+  if (tcCarry) { const f = items.find(it => it.c.uniqueKey === tcCarry); if (f) return { it: f, auto: false }; }
+  const keyOf = it => { let pct = 0; try { const s = computeBuildScore(it.c); pct = s ? s.percent : 0; } catch (e) {} return [rank(it), it.k && it.k.early ? 1 : 0, pct, -it.idx]; };
+  const gt = (a, b) => { for (let i = 0; i < a.length; i++) { if (a[i] !== b[i]) return a[i] > b[i]; } return false; };
+  let best = null, bk = null;
+  items.forEach(it => { const k = keyOf(it); if (!bk || gt(k, bk)) { best = it; bk = k; } });
+  return best && rank(best) > 0 ? { it: best, auto: true } : null;
+}
+// Ordre de jeu : (DPS « ouvreur » en premier) – supports – sous-DPS – (DPS en dernier) ; l'arme de changement se place juste avant le DPS.
+function tcPlan(chosen){
+  const items = tcItems(chosen);
+  const pc = tcPickCarry(items), carry = pc ? pc.it : null;
+  const early = !!(carry && carry.k && carry.k.early);
+  let seq = items.slice().sort((a, b) => a.order - b.order || (ROLE_RANK[a.role] - ROLE_RANK[b.role]) || a.idx - b.idx);
+  if (carry) { seq = seq.filter(x => x !== carry); if (early) seq.unshift(carry); else seq.push(carry); }
+  const holder = carry ? items.find(it => it !== carry && tcSwapWeapon(it.c)) : null;
+  if (holder) { seq = seq.filter(x => x !== holder); const ci = seq.indexOf(carry); seq.splice(ci === 0 ? seq.length : ci, 0, holder); holder.swapFor = carry; }
+  const nm = it => `<b>${escapeHtml(it.c.name)}</b>`;
+  const joinFr = a => a.length <= 1 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' et ' + a[a.length - 1];
+  const notes = [];
+  if (carry && items.length > 1) notes.push(`🎯 DPS principal : ${nm(carry)} ${pc.auto ? '(détecté automatiquement — clique sur ★ dans la barre d\'équipe pour en choisir un autre)' : '(choisi par toi)'}${early ? ' — il ouvre la rotation puis revient en fin de cycle pour ses dégâts' : ''}.`);
+  if (holder) {
+    const w = weaponNameFr(holder.c.weapon.name);
+    notes.push(`🎁 ${nm(holder)} tient « ${escapeHtml(w)} » : quand on change de personnage, celui qui entre gagne un bonus d'ATQ (10 s, une fois toutes les 20 s) → ordre retenu : ${nm(holder)} en n°${seq.indexOf(holder) + 1}, juste avant le passage à ${nm(carry)}${early ? ' (retour sur le n°1)' : ''}. Change directement de l'un à l'autre.`);
+  }
+  if (carry && tcSwapWeapon(carry.c)) notes.push(`⚠️ ${nm(carry)} tient « ${escapeHtml(weaponNameFr(carry.c.weapon.name))} » : son bonus profite au personnage qui entre après lui, pas à lui — il est plus utile chez un soutien joué juste avant le DPS.`);
+  EQUIP_TEAM_SETS.forEach(s => {
+    const ws = items.filter(it => tcSetCount(it.c, s.en) >= 4);
+    if (!ws.length) return;
+    const sn = escapeHtml(setNameFr(s.en));
+    if (ws.length >= 2) notes.push(`⚠️ ${joinFr(ws.map(nm))} portent chacun 4 pièces « ${sn} » : cet effet d'équipe ne se cumule pas — un seul porteur suffit, les autres peuvent viser un autre set.`);
+    else {
+      const w = ws[0], tip = (carry && w !== carry) ? ' → ' + s.tip.replace(/\{C\}/g, escapeHtml(carry.c.name)) : '';
+      notes.push(`📦 ${nm(w)} porte 4 pièces « ${sn} » : ${s.effect}${tip}.`);
+    }
+  });
+  return { items, seq, carry, early, holder, notes, react: suggestReaction(items.slice().sort((a, b) => (b.order - a.order) || (a.idx - b.idx)).map(it => it.c.elem.name)) };
+}
+function tcRotationHtml(chosen){
+  if (chosen.length < 4) return `<div class="tc-rot-wait">🔁 <b>Rotation conseillée</b> — choisis 4 personnages (${chosen.length}/4) : la proposition d'enchaînement des sorts apparaîtra ici.</div>`;
+  const { seq, carry, early, holder, notes: eqNotes, react } = tcPlan(chosen);
+  const fallbackOpen = it => it.role === 'main' ? 'E puis Q, puis enchaîne tes attaques.' : it.role === 'support' ? 'E puis Q (si l\'énergie est prête), puis change de personnage.' : 'E puis Q, puis change de personnage.';
+  const steps = seq.map(it => {
+    const text = (it.k && it.k.open) || fallbackOpen(it);
+    const field = it.k && it.k.field ? `<span class="tag">${escapeHtml(it.k.field)}</span>` : '';
+    const star = it === carry ? '<span class="tag" style="color:var(--gold-soft,#e8c477);">★ DPS</span>' : '';
+    const gift = it === holder ? `<div class="tc-gift">🎁 Son arme donne un bonus d'ATQ à ${escapeHtml(carry.c.name)} : passe-lui directement la main.</div>` : '';
+    return `<li><img src="${iconUrl(it.c.icon)}" alt="${escapeHtml(it.c.name)}" onerror="this.style.opacity=0.3"><div><span class="who" style="color:${it.c.elem.color}">${escapeHtml(it.c.name)}</span>${star}${field}<div>${fx(text)}</div>${it.k && it.k.loop && (it.role === 'main' || it === carry) ? `<div class="tc-loop">↻ ${fx(it.k.loop)}</div>` : ''}${gift}</div></li>`;
+  }).join('');
+  const detRows = seq.map(it => {
+    const rows = [];
+    const add = (l, v) => { if (v) rows.push(`<li><b>${l} :</b> ${fx(v)}</li>`); };
+    if (it.k) { if (!(it.role === 'main' || it === carry)) add('Boucle', it.k.loop); add('À relancer', it.k.refresh); add('Énergie', it.k.energy); add('Astuce', it.k.tip); }
+    else if (it.g && it.g.rotation) add('Fiche', it.g.rotation);
+    return rows.length ? `<div class="tc-det"><div class="tc-det-name" style="color:${it.c.elem.color}">${escapeHtml(it.c.name)}</div><ul>${rows.join('')}</ul></div>` : '';
+  }).join('');
+  const notes = detRows ? `<details class="tc-detail"><summary>Détails par personnage : boucle, durées à relancer, énergie, astuces</summary><div class="tc-dets">${detRows}</div></details>` : '';
+  const q = encodeURIComponent('genshin impact ' + chosen.map(c => c.name).join(' ') + ' rotation équipe');
+  const hasKit = seq.some(it => it.k);
+  const srcLinks = seq.filter(it => it.k && it.k.src && it.k.src[0]).map(it => {
+    let host = ''; try { host = new URL(it.k.src[0]).hostname.replace(/^www\./, ''); } catch (e) { return ''; }
+    return `<a href="${escapeHtml(it.k.src[0])}" target="_blank" rel="noopener noreferrer">${escapeHtml(it.c.name)} <span style="opacity:.7">· ${escapeHtml(host)}</span></a>`;
+  }).filter(Boolean).join('');
+  const partial = seq.filter(it => it.k && it.k.conf < 3).map(it => it.c.name);
+  const back = carry && early ? ` ↻ <span style="opacity:.85">(retour sur ${escapeHtml(carry.c.name)})</span>` : '';
+  return `<div class="tc-rot">
+    <h3>🔁 Rotation conseillée pour cette équipe</h3>
+    <div style="font-size:.78rem; color:var(--text-dim);">Ordre de jeu : ${seq.map(it => escapeHtml(it.c.name)).join(' → ')}${back}${react ? ' · Réaction visée : <b>' + escapeHtml(react) + '</b>' : ''}. ${early && carry ? 'Puis ' + escapeHtml(carry.c.name) + ' revient pour ses dégâts.' : 'Puis répète en commençant par le premier dont les effets expirent.'}</div>
+    <div class="tc-legend">E = compétence élémentaire · Q = déchaînement élémentaire · AN / AC / AP = attaque normale / chargée / plongeante</div>
+    <ol class="tc-steps">${steps}</ol>
+    ${eqNotes.length ? `<div class="tc-deduct"><div class="t">🔧 Déduit de ton équipe et de tes équipements</div><ul>${eqNotes.map(n => `<li>${n}</li>`).join('')}</ul></div>` : ''}
+    ${notes}
+    ${srcLinks ? `<div class="tc-src"><span>Sources des fiches :</span>${srcLinks}</div>` : ''}
+    <div class="tc-links"><span style="font-size:.76rem; color:var(--text-dim);">Vérifier / aller plus loin :</span>
+      <a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener noreferrer">🔎 Chercher cette équipe sur le web</a>
+      <a href="https://www.youtube.com/results?search_query=${q}" target="_blank" rel="noopener noreferrer">▶ Vidéos de rotation</a>
+    </div>
+    <div class="helpbox" style="margin-top:8px;">${hasKit ? 'Proposition construite à partir de guides communautaires (rôles, ordre de jeu, ouvertures)' + (partial.length ? ' — fiche partielle ou déduite du kit pour : ' + escapeHtml(partial.join(', ')) : '') + '. ' : ''}C'est une base générique : les timings exacts dépendent de tes constellations, armes et de l'énergie disponible.</div>
+  </div>`;
+}
+
 function calculateTheoryCraft(){
-  const pool = collectionList();
-  const byKey = Object.fromEntries(pool.map(c => [c.uniqueKey, c]));
+  const { byKey } = tcPool();
   const chosen = tcKeys.filter(Boolean).map(k => byKey[k]).filter(Boolean);
-  if (chosen.length === 0) { el('tc-result').innerHTML = `<div class="helpbox">Choisis jusqu'à 4 personnages ci-dessous : l'analyse de l'équipe s'affiche ici (rôles, résonance, réactions, état de chaque build et pièces à améliorer).</div>`; return; }
+  if (chosen.length === 0) { el('tc-result').innerHTML = `<div class="helpbox">Choisis jusqu'à 4 personnages dans la liste ci-dessus : l'analyse (rôles, résonance, réactions, builds) et la rotation conseillée s'affichent ici.</div>`; return; }
 
   const elems = chosen.map(c => c.elem.name);
-  const roles = chosen.map(c => roleOfName(c.name));
+  const roles = chosen.map(c => { const k = kitFor(c.name, c.elem.name); return (k && k.role) || roleOfName(c.name); });
   const txts = chosen.map(c => guideText(c.name));
   const warns = [], infos = [];
-  if (chosen.length < 4) warns.push(`Équipe incomplète : ${chosen.length}/4 personnage(s).`);
+  if (chosen.length < 4) infos.push(`Équipe incomplète : ${chosen.length}/4`);
   const nMain = roles.filter(r => r === 'main').length, nUnknown = roles.filter(r => !r).length;
-  if (!nMain && !nUnknown) warns.push("Aucun attaquant principal repéré : à qui confies-tu la majorité des dégâts ?");
-  if (nMain >= 3) warns.push("Trois attaquants principaux ou plus : l'énergie et le temps de jeu se partagent mal, garde un ou deux soutiens.");
+  if (!nMain && !nUnknown) warns.push("Aucun attaquant principal repéré");
+  if (nMain >= 3) warns.push("3 attaquants principaux ou plus : l'énergie se partage mal");
   const heal = txts.some(t => /\b(soins?|soigne\w*|boucliers?|shielder|heal\w*)\b/.test(t));
-  if (chosen.length >= 3 && !heal) warns.push("Aucun soin ni bouclier repéré dans l'équipe : prévois-en pour les combats difficiles (Abysse, Théâtre).");
-  if (new Set(elems).size === 1 && chosen.length > 1) infos.push("Équipe mono-élément : peu de réactions, mais la résonance est assurée.");
+  if (chosen.length >= 3 && !heal) warns.push("Ni soin ni bouclier repéré");
+  if (new Set(elems).size === 1 && chosen.length > 1) infos.push("Équipe mono-élément : peu de réactions");
 
-  let scores = [];
-  const cards = chosen.map((c, idx) => {
-    const guide = buildGuideFor(c.name);
-    let sc = null, adv = [];
-    try { sc = computeBuildScore(c); adv = buildAdvice(c).slice(0, 3); } catch (e) { sc = null; }
-    if (sc) scores.push(sc.percent);
-    const role = roles[idx];
-    return `<div class="tc-card">
-      <div class="portrait"><img src="${iconUrl(c.icon)}" alt="${escapeHtml(c.name)}" onerror="this.style.opacity=0.3" style="width:80px;height:80px;object-fit:cover;border-radius:50%;"></div>
-      <div>
-        <h3 style="color:${c.elem.color}; margin:0;">${escapeHtml(c.name)}${role ? `<span class="tc-role">${ROLE_LABEL[role]}</span>` : ''}</h3>
-        ${sc ? `<div style="font-size:.84rem; margin-top:4px;">Score de build : <b>${sc.percent} %</b> — ${sc.tier}</div>` : ''}
-        ${adv.length ? `<div class="advice"><div class="advice-title">🎯 À améliorer en priorité</div><ol>${adv.map(i => `<li>${i.icon} ${escapeHtml(i.text)}</li>`).join('')}</ol></div>` : (sc ? `<div class="advice ok"><div class="advice-title">✅ Build solide</div></div>` : '')}
-        ${guide ? `<details style="margin-top:8px;"><summary style="cursor:pointer; font-size:.82rem; color:var(--accent);">Fiche rapide : sets, stats, rotation</summary>
-          <div class="subhead">Set(s) recommandé(s)</div>
-          <div style="font-size:.82rem;">${(guide.sets || []).map(fx).join(' <span style="color:var(--text-dim);">ou</span> ')}</div>
-          <div class="subhead">Priorité de stats</div>
-          <div style="font-size:.82rem;">${fx(formatStatTargetsText(c.name) || guide.stats || '')}</div>
-          <div class="subhead">Rotation</div>
-          <div style="font-size:.82rem;">${fx(guide.rotation || '')}</div>
-        </details>` : `<div class="helpbox">Pas encore de fiche pour ce personnage dans la Bibliothèque.</div>`}
-      </div>
-    </div>`;
-  }).join('');
+  const scores = [];
+  const cards = chosen.map((c, idx) => { try { const s = computeBuildScore(c); if (s) scores.push(s.percent); } catch (e) {} return tcMiniCard(c, roles[idx]); }).join('');
   const avg = scores.length ? Math.round(scores.reduce((s, x) => s + x, 0) / scores.length) : null;
   el('tc-result').innerHTML = `
-    ${avg !== null ? `<div class="subhead">Bilan de l'équipe</div><div style="font-size:.9rem;">Score moyen des builds : <b>${avg} %</b> <span class="hint" data-hint="Moyenne des scores de build des personnages choisis (stats, artéfacts, niveaux, set, arme). Les rôles sont estimés d'après les fiches.">?</span></div>` : ''}
-    ${warns.map(w => `<div class="tc-warn">⚠️ ${escapeHtml(w)}</div>`).join('')}${infos.map(w => `<div class="tc-info">ℹ️ ${escapeHtml(w)}</div>`).join('')}
-    ${computeReactions(elems)}
-    ${resonanceHtml(elems)}
+    <div class="tc-summary">
+      ${avg !== null ? `<div class="tc-score"><div class="tc-ring">${scoreRingSvg(avg)}<span>${avg}</span></div><div>Score moyen des builds <span class="hint" data-hint="Moyenne des scores de build des personnages choisis (stats, artéfacts, niveaux, set, arme). Les rôles sont estimés d'après les fiches.">?</span></div></div>` : ''}
+      ${warns.map(w => `<span class="tc-pill">⚠️ ${escapeHtml(w)}</span>`).join('')}${infos.map(w => `<span class="tc-pill info">ℹ️ ${escapeHtml(w)}</span>`).join('')}
+    </div>
+    <div class="tc-two">
+      <div>${computeReactions(elems)}</div>
+      <div>${resonanceHtml(elems)}</div>
+    </div>
     <div class="subhead">Analyse personnage par personnage</div>
-    <div style="display:grid; gap:12px; margin-top:8px;">${cards}</div>
-    <div class="helpbox" style="margin-top:14px;">Les fiches reprennent des guides communautaires et évoluent avec les patchs : vérifie les dernières recommandations pour un personnage récent. Rôles et alertes sont des estimations.</div>
+    <div class="tc-minis">${cards}</div>
+    ${tcRotationHtml(chosen)}
+    <div class="helpbox" style="margin-top:14px;">Les fiches reprennent des guides communautaires et évoluent avec les patchs : vérifie les dernières recommandations pour un personnage récent. Rôles, alertes et rotations sont des estimations.</div>
   `;
 }
 
@@ -6469,21 +6998,26 @@ function dpsFilterPanelHtml(key){
     <button class="btn-primary btn-small" data-filter-close="${key}">OK</button>
   </div>`;
 }
+// Le panneau vit directement dans <body> : le .panel a un backdrop-filter, ce qui fait de lui le repère
+// de tout descendant « fixed » et décalait le panneau au milieu du tableau. Coordonnées de page (absolute).
+function positionDpsFilterPopup(th){
+  const popup = el('dps-filter-popup');
+  if (!th || popup.style.display !== 'block') return;
+  const rect = th.getBoundingClientRect();
+  const w = popup.offsetWidth || 240, h = popup.offsetHeight || 260;
+  let left = Math.min(Math.max(rect.left, 10), Math.max(10, window.innerWidth - w - 10));
+  let top = rect.bottom + 2;
+  if (top + h > window.innerHeight - 10 && rect.top - h - 2 >= 10) top = rect.top - h - 2;   // plus de place au-dessus
+  popup.style.left = (left + window.scrollX) + 'px';
+  popup.style.top = (top + window.scrollY) + 'px';
+}
 function openDpsFilterPopup(th, key){
   const popup = el('dps-filter-popup');
+  if (popup.parentElement !== document.body) document.body.appendChild(popup);
+  popup.dataset.forCol = key;
   popup.innerHTML = dpsFilterPanelHtml(key);
   popup.style.display = 'block';
-  const rect = th.getBoundingClientRect();
-  const popupWidth = 240; // correspond au max-width du panneau
-  let left = rect.left;
-  if (left + popupWidth > window.innerWidth - 10) left = window.innerWidth - popupWidth - 10;
-  if (left < 10) left = 10;
-  let top = rect.bottom + 4;
-  // Si ça déborderait en bas de l'écran, on l'ouvre plutôt au-dessus de la colonne.
-  const estimatedHeight = 260;
-  if (top + estimatedHeight > window.innerHeight - 10) top = Math.max(10, rect.top - estimatedHeight - 4);
-  popup.style.left = left + 'px';
-  popup.style.top = top + 'px';
+  positionDpsFilterPopup(th);
 }
 function closeDpsFilterPopup(){
   const popup = el('dps-filter-popup');
@@ -6635,7 +7169,7 @@ function renderDpsView(){
   </colgroup>`;
 
   const thead = `<thead><tr><th><input type="checkbox" id="dps-select-all-checkbox" title="Tout sélectionner"></th>${DPS_COLUMNS.map(c => `<th data-col="${c.key}" class="${/^r\d$/.test(c.key) ? 'c-r ' : ''}${dpsSortCol===c.key ? 'sorted '+(dpsSortAsc?'asc':'') : ''}${dpsColumnFilters[c.key] && dpsColumnFilters[c.key].size ? ' has-filter' : ''}">
-    <span class="th-label" data-sort-col="${c.key}" title="${c.label} — ${(DPS_COLUMN_HELP[c.key] || '').replace(/"/g, '&quot;')} (clic : trier)">${c.label}</span><button type="button" class="th-filter" data-filter-btn="${c.key}" title="Filtrer la colonne ${c.label}" aria-label="Filtrer la colonne ${c.label}">▾</button>
+    <span class="th-label" data-sort-col="${c.key}" title="${c.label} — ${(DPS_COLUMN_HELP[c.key] || '').replace(/"/g, '&quot;')} (clic : trier · clic droit : filtrer)">${c.label}</span>
   </th>`).join('')}<th></th></tr></thead>`;
 
   const rowsHtml = display.map(({row, moyenne, pbr, rank}) => {
@@ -6789,11 +7323,24 @@ el('dps-table').addEventListener('contextmenu', (e) => {
   const th = e.target.closest('th[data-col]');
   if (!th) return;
   e.preventDefault(); // empêche le menu contextuel du navigateur, ouvre le nôtre à la place
+  if (Date.now() - dpsLongPressAt < 900) return;   // l'appui long vient déjà d'ouvrir le panneau
   const popup = el('dps-filter-popup');
   const alreadyOpenForThisCol = popup.style.display === 'block' && popup.dataset.forCol === th.dataset.col;
   if (alreadyOpenForThisCol) { closeDpsFilterPopup(); return; }
-  popup.dataset.forCol = th.dataset.col;
   openDpsFilterPopup(th, th.dataset.col);
+});
+// Téléphone / tablette : appui long sur un en-tête = filtrer (le clic droit n'existe pas au toucher).
+let dpsLongPressAt = 0, dpsLpTimer = null, dpsLpStart = null;
+el('dps-table').addEventListener('pointerdown', (e) => {
+  if (e.pointerType !== 'touch') return;
+  const th = e.target.closest('th[data-col]'); if (!th) return;
+  dpsLpStart = { x: e.clientX, y: e.clientY };
+  clearTimeout(dpsLpTimer);
+  dpsLpTimer = setTimeout(() => { dpsLongPressAt = Date.now(); openDpsFilterPopup(th, th.dataset.col); }, 550);
+});
+['pointerup', 'pointercancel'].forEach(t => el('dps-table').addEventListener(t, () => clearTimeout(dpsLpTimer)));
+el('dps-table').addEventListener('pointermove', (e) => {
+  if (dpsLpStart && Math.hypot(e.clientX - dpsLpStart.x, e.clientY - dpsLpStart.y) > 10) clearTimeout(dpsLpTimer);
 });
 
 // Le panneau flottant vit hors du tableau (pour ne jamais être coupé par son défilement) :
@@ -6835,19 +7382,12 @@ el('dps-table').addEventListener('click', (e) => {
     renderDpsView();
     return;
   }
-  const fb = e.target.closest('[data-filter-btn]');
-  if (fb) {
-    const thEl = fb.closest('th[data-col]'), popup = el('dps-filter-popup');
-    if (popup.style.display === 'block' && popup.dataset.forCol === thEl.dataset.col) { closeDpsFilterPopup(); return; }
-    popup.dataset.forCol = thEl.dataset.col;
-    openDpsFilterPopup(thEl, thEl.dataset.col);
-    return;
-  }
-  const th = e.target.closest('span.th-label[data-sort-col]');
-  if (th) {
-    const col = th.dataset.sortCol;
-    if (dpsSortCol === col) dpsSortAsc = !dpsSortAsc;
-    else { dpsSortCol = col; dpsSortAsc = false; }
+  const thc = e.target.closest('th[data-col]');
+  if (thc) {
+    if (Date.now() - dpsLongPressAt < 900) return;   // appui long = filtre, pas un tri
+    const col = thc.dataset.col;
+    if (dpsSortCol === col) dpsSortAsc = !dpsSortAsc;   // 2e clic : décroissant, 3e : croissant…
+    else { dpsSortCol = col; dpsSortAsc = true; }       // 1er clic : croissant
     closeDpsFilterPopup();
     renderDpsView();
     return;
@@ -6856,7 +7396,7 @@ el('dps-table').addEventListener('click', (e) => {
 
 // Cases à cocher des panneaux de filtre (colonne, valeur individuelle, tout sélectionner)
 el('btn-dps-compact').addEventListener('click', () => { dpsCompact = !dpsCompact; persistUiState(); renderDpsView(); });
-document.addEventListener('scroll', (e) => { if (e.target && e.target.classList && e.target.classList.contains('dps-wrap')) updateDpsScrollHint(); }, true);
+document.addEventListener('scroll', (e) => { if (e.target && e.target.classList && e.target.classList.contains('dps-wrap')) { updateDpsScrollHint(); const pp = el('dps-filter-popup'); if (pp.style.display === 'block') positionDpsFilterPopup(document.querySelector(`th[data-col="${pp.dataset.forCol}"]`)); } }, true);
 window.addEventListener('resize', () => { if (activeView === 'view-dps') updateDpsScrollHint(); });
 el('btn-dps-glossary').addEventListener('click', openGlossary);
 el('btn-dps-clear-filters').addEventListener('click', () => { dpsColumnFilters = {}; closeDpsFilterPopup(); renderDpsView(); });
@@ -6934,18 +7474,27 @@ async function loadUid(uid){
       progress('uid', 0.5);
     }
     progress('uid', 0.6, 'Récupération de la vitrine…');
-    currentData = await fetchPlayer(uid);
+    currentData = await fetchPlayer(uid, { onStep: (m) => progress('uid', 0.65, 'Enka · ' + m) });
     progress('uid', 0.9, 'Construction de la vitrine…');
     currentChars = buildCharacters(currentData);
     progress('uid', 1, 'Terminé !');
 
     if (currentChars.length === 0) {
-      status.textContent = "Aucun personnage dans la vitrine (active-la en jeu : Profil ▸ Afficher la vitrine de personnages).";
+      const pi0 = currentData.playerInfo || {};
+      const detailsHidden = Array.isArray(pi0.showAvatarInfoList) && pi0.showAvatarInfoList.length > 0;
+      status.textContent = detailsHidden
+        ? "La vitrine contient des personnages mais leurs détails sont masqués : en jeu, ouvre Profil ▸ vitrine de personnages et active l'affichage des détails des personnages, puis réessaie (Enka met à jour environ chaque minute)."
+        : "Aucun personnage dans la vitrine (active-la en jeu : Profil ▸ Afficher la vitrine de personnages, puis ajoutes-y des personnages).";
       status.classList.add('error');
+      const lf = lastKnownShowcase(uid), lfBtn = el('btn-lastfull');
+      if (lf) { lfBtn.style.display = ''; lfBtn.textContent = '↩ Utiliser la dernière vitrine connue (' + fmtWhen(lf.savedAt) + ')'; lfBtn.dataset.uid = uid; }
+      else lfBtn.style.display = 'none';
+      el('uid-retry-row').style.display = 'flex';
       el('btn-load').disabled = false;
       progressHide('uid');
       return;
     }
+    el('btn-lastfull').style.display = 'none';
 
     saveHistory(uid, (currentData.playerInfo && currentData.playerInfo.nickname) || null);
     currentUidRef = uid;
@@ -6992,7 +7541,7 @@ async function refreshReferenceBase(){
 }
 el('btn-refresh-refbase').addEventListener('click', refreshReferenceBase);
 
-async function refreshCurrent(prefix, btnId){
+async function refreshCurrent(prefix, btnId, force){
   if (!currentUidRef) return;
   const btn = el(btnId);
   btn.disabled = true;
@@ -7001,7 +7550,7 @@ async function refreshCurrent(prefix, btnId){
   try {
     if (!ASSETS) ASSETS = await loadAssets(false); // ne devrait normalement jamais se produire ici
     progress(prefix, 0.4, 'Récupération de la vitrine…');
-    currentData = await fetchPlayer(currentUidRef, { force:false });
+    currentData = await fetchPlayer(currentUidRef, { force: !!force, onStep: (m) => progress(prefix, 0.6, 'Enka · ' + m) });
     progress(prefix, 0.8, 'Mise à jour de la vitrine…');
     currentChars = buildCharacters(currentData);
     progress(prefix, 1, 'À jour !');
@@ -7021,6 +7570,69 @@ async function refreshCurrent(prefix, btnId){
     progressHide(prefix);
   }
 }
+
+// ---------- Bannière « cache de secours » + réessai automatique ----------
+let _autoRetryTimer = null, _autoRetryCount = 0, _autoRetryUid = null, _autoRetryAt = 0;
+function fmtWhen(ts){ try { return new Date(ts).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }); } catch(e){ return ''; } }
+function renderFetchNotice(){
+  const box = el('fetch-notice'); if (!box) return;
+  const f = lastPlayerFetch;
+  if (!f || String(f.uid) !== String(currentUidRef)) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  if (f.state === 'stale') {
+    if (!f.noAutoRetry) scheduleAutoRetry(f.uid);
+    const when = _autoRetryTimer && !f.noAutoRetry ? ' Nouvel essai automatique vers ' + new Date(_autoRetryAt).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit', second:'2-digit' }) + '.' : '';
+    box.className = 'fetch-notice warn';
+    box.innerHTML = `⚠️ <b>Vitrine du ${escapeHtml(fmtWhen(f.savedAt))}</b> (cache de secours) — ${escapeHtml(f.error || 'Enka ne répond pas')}${escapeHtml(when)} <button class="btn-ghost" id="btn-fetch-retry">🔁 Réessayer maintenant</button>`;
+    box.style.display = 'block';
+  } else if (f.state === 'relay') {
+    const r = enkaAllRoutes().find(x => x.id === f.via);
+    box.className = 'fetch-notice info';
+    box.innerHTML = `ℹ️ Vitrine récupérée via « ${escapeHtml(r ? r.label : 'un relais')} » : l'accès direct à Enka n'a pas répondu depuis ton réseau. Le test de connexion des Paramètres détaille ce qui fonctionne.`;
+    box.style.display = 'block';
+  } else { box.style.display = 'none'; box.innerHTML = ''; }
+}
+function applyFreshData(data){
+  currentData = data; currentChars = buildCharacters(data);
+  if (activeView === 'view-stats' && statsIsLive) {
+    const keys = new Set(statsList.map(c => c.uniqueKey));
+    renderStatsView(currentChars.filter(c => keys.has(c.uniqueKey)), { backTarget: statsBackTarget, isLive: true });
+  } else if (activeView === 'view-select') renderSelectView();
+}
+function scheduleAutoRetry(uid){
+  if (_autoRetryTimer && _autoRetryUid === String(uid)) return;
+  clearTimeout(_autoRetryTimer); _autoRetryTimer = null; _autoRetryUid = String(uid);
+  const delays = [40000, 100000, 240000];
+  if (_autoRetryCount >= delays.length) return;
+  const wait = enkaMs(delays[_autoRetryCount++]);
+  _autoRetryAt = Date.now() + wait;
+  _autoRetryTimer = setTimeout(async () => {
+    _autoRetryTimer = null;
+    if (String(currentUidRef) !== String(uid)) return;
+    try {
+      const data = await fetchPlayer(uid, { force: true });
+      const st = lastPlayerFetch && lastPlayerFetch.state;
+      if (st === 'ok' || st === 'relay') {
+        _autoRetryCount = 0;
+        if (hasAvatars(data)) { applyFreshData(data); toast('Vitrine mise à jour depuis Enka ✔', 'ok'); }
+        renderFetchNotice();
+      } else renderFetchNotice();
+    } catch(e) { renderFetchNotice(); }
+  }, wait);
+}
+el('fetch-notice').addEventListener('click', (e) => {
+  if (e.target.closest('#btn-fetch-retry')) { _autoRetryCount = 0; clearTimeout(_autoRetryTimer); _autoRetryTimer = null; refreshCurrent('refresh', 'btn-refresh', true); }
+});
+el('btn-lastfull').addEventListener('click', () => {
+  const uid = el('btn-lastfull').dataset.uid, lf = uid && lastKnownShowcase(uid);
+  if (!lf) return;
+  const chars = buildCharacters(lf.data);
+  if (!chars.length) return;
+  currentData = lf.data; currentChars = chars; currentUidRef = uid; selectedIds = new Set();
+  saveHistory(uid, (lf.data.playerInfo && lf.data.playerInfo.nickname) || null);
+  lastPlayerFetch = { uid: String(uid), state:'stale', savedAt: lf.savedAt, error: 'la vitrine actuelle est vide ou ses détails sont masqués en jeu', noAutoRetry: true };
+  el('uid-status').textContent = ''; el('uid-retry-row').style.display = 'none';
+  renderSelectView();
+});
 
 el('btn-load').addEventListener('click', () => loadUid(el('uid-input').value));
 el('uid-input').addEventListener('keydown', e => { if (e.key === 'Enter') loadUid(el('uid-input').value); });
@@ -7116,7 +7728,7 @@ el('btn-add-team-to-dps').addEventListener('click',()=>{
 el('app-title').addEventListener('click', () => showView('view-uid'));
 el('btn-open-team-header').addEventListener('click', renderTeamView);
 el('btn-open-theorycraft').addEventListener('click', renderTheoryCraftView);
-el('tc-collection-picker').addEventListener('change', (e) => { setActiveCollectionId(e.target.value); tcKeys=[null,null,null,null]; renderTheoryCraftView(); });
+el('tc-collection-picker').addEventListener('change', (e) => { setActiveCollectionId(e.target.value); tcKeys=[null,null,null,null]; tcCarry=null; renderTheoryCraftView(); });
 el('btn-open-library').addEventListener('click', () => { librarySearch=''; libraryElem=''; libraryRarity=0; el('library-search').value=''; renderLibraryView(); });
 el('btn-open-wishes').addEventListener('click', renderWishesView);
 el('btn-download-wish-script').addEventListener('click', () => downloadText(WISH_SCRIPT_TEXT, 'GenshinAnalytics-invocations.ps1'));
@@ -7181,7 +7793,21 @@ document.addEventListener('keydown', (e) => {
   }
 });
 el('btn-back-from-theorycraft').addEventListener('click', () => showView('view-uid'));
-el('btn-tc-calculate').addEventListener('click', calculateTheoryCraft);
+el('tc-search').addEventListener('input', (e) => { tcSearch = e.target.value; renderTcGrid(); });
+el('tc-slots').addEventListener('click', (e) => {
+  const s = e.target.closest('[data-star-tc-slot]');
+  if (s) { const k = tcKeys[Number(s.dataset.starTcSlot)]; if (k) { tcCarry = (tcCarry === k) ? null : k; tcRefresh(); } return; }
+  const b = e.target.closest('[data-remove-tc-slot]'); if (!b) return;
+  const i = Number(b.dataset.removeTcSlot); if (tcKeys[i] === tcCarry) tcCarry = null;
+  tcKeys[i] = null; tcRefresh();
+});
+el('tc-grid').addEventListener('click', (e) => {
+  const card = e.target.closest('.char-card[data-key]'); if (!card) return;
+  const key = card.dataset.key, idx = tcKeys.indexOf(key);
+  if (idx !== -1) { if (tcKeys[idx] === tcCarry) tcCarry = null; tcKeys[idx] = null; }
+  else { const empty = tcKeys.indexOf(null); if (empty === -1) { toast('Équipe complète (4/4) : retire un personnage (✕) pour en ajouter un autre.', 'warn'); return; } tcKeys[empty] = key; }
+  tcRefresh();
+});
 el('btn-tc-glossary').addEventListener('click', openGlossary);
 
 // init
@@ -7202,7 +7828,7 @@ if (h.length) el('uid-input').value = h[0].uid;
 // l'affichage — prête pour l'autocomplétion (tableau DPS, etc.) avant même
 // toute connexion à Enka. En cas d'échec, le bouton dédié ou la prochaine
 // connexion retentera normalement.
-loadAssets().then(a => { ASSETS = a; }).catch(() => {});
+loadAssets().then(a => { ASSETS = a; libraryListCache = null; try { repairKnownUnknowns(); updateCollectionCount(); } catch(e){} }).catch(() => {});
 </script>
 </body>
 </html>
